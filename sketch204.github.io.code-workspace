@@ -8,6 +8,10 @@
     "editor.tabSize": 2,
     "markdownlint.config": {
       "html": false
-    }
+		},
+		"cSpell.words": [
+			"LLDB",
+			"objc"
+		]
 	}
 }

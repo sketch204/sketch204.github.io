@@ -20,7 +20,7 @@ To create a code snippet, simply select a piece of code, right click it and choo
 
 ![A demonstration of how to make a placeholder in Xcode](./assets/placeholder_demo.gif)
 
-You can find existing code snippets in Xcode's library. Access it by either clicking the `+` button on the top right or using the `Command`+`Shift`+`L` shortcut. Once there open the first tab. These should be all of the code snippets available to you.
+You can find existing code snippets in Xcode's library. Access it by either clicking the `+` button on the top right or using the `Command`+`Shift`+`L` shortcut. Once there open the first tab. These should be all of the code snippets available to you. Keep in mind that the tab might not show up if you don't have an source code editor open.
 
 ### Spell checker
 
@@ -120,30 +120,159 @@ That's because that is a macOS shortcut for switching between desktops. The tric
 
 ## Workflow
 
-- Sound when build succeeds/fails
-- Clear-All Issues
-- Display build time duration
-  - defaults write com.apple.dt.Xcode ShowBuildOperationDuration -bool YES
-- SF Symbol Gallery is built into Xcode now
-- Cmd+Alt+Enter SwiftUI previews shortcut
-- Cmd+Alt+P to restart previews
-- Cmd+Ctl+Shift+A Toggles blame
-- Cmd+\ to toggle breakpoint on line
+### Behavior sounds
+
+One neat feature of Xcode that a lot of people don't know about is that you can customize its behavior when certain things happen. This is done in the Preferences' `Behaviors` tab. Select the event from the sidebar, that you want to configure, and then choose what you want to have happen when that event occurs. For me, I set it up to play one sound when a build or test fails, and a different sound when they succeed.
+
+![A screenshot of Xcode Preferences' Behavior tab](./assets/behaviors_demo.png)
+
+### Clear-All Issues
+
+Unfortunately Xcode has been getting quite buggy recently with its pre-compiler. Often times it'll show inline errors and warnings that have long been resolved now. These errors and warnings also show up in the issues tab, clogging up the output there.
+
+Interestingly enough, rather than fixing it, the Xcode team decided to just give us a "nuke all" option in the form of a menu button that clears the list of issues. It is located in `Product`->`Clear All Issues`.
+
+There is no default shortcut to it, but you can set one through `Key Bindings` in Preference if you want. I personally just press `Command`+`Shift`+`/` to bring up the Help menu, then type in "Clear". It's usually the second result.
+
+### Display build durations
+
+If you're curious how long each build takes, Xcode can actually display that for you. It is disabled by default, and unfortunately there is no GUI toggle to turn it on anywhere in Preference. Instead you have to manually modify the preferences file, using this command.
+
+    defaults write com.apple.dt.Xcode ShowBuildOperationDuration -bool YES
+
+After running this command, Xcode should start displaying the build time in the trailing side of the top "build status" strip. It is handy if you're trying to optimize build times in your project.
+
+![A screenshot of the build duration in Xcode](./assets/build_duration_demo.png)
+
+To turn it off, run the same command but replace the last `YES` with `NO`.
+
+### SF Symbol Gallery
+
+Before Xcode 14, if you wanted to browse through SF Symbols you had to download Apple's [SF Symbols app](https://developer.apple.com/sf-symbols/). You can still do so. In fact, you most likely will have to, if you want to make your own SF Symbols. However if you just need to browse, Xcode 14 has that built in now.
+
+The feature is located in the Library, which again you can access by either clicking the `+` button in the top right, or using the shortcut `Command`+`Shift`+`L`. The last tab should present you with a list of SF Symbols. You have the option of viewing them in a grid or list. In that window you can also start typing the name of the symbol that you're looking for. Use the arrow keys to navigate. Press enter, or double click on a result to insert its name wherever your cursor was in the editor.
+
+This feature only seems to work in the code editor as far as I've tested. Also keep in mind that the tab might not show up if you don't have a source code editor open.
+
+### Console output of previous runs
+
+The last tab in the left sidebar contains a log of the operations that you've run in the current project. Typically it lists out all the times you've run tests, built the project or ran it. This will be sorted and organized by target, date and time. If you click on any of the rows you will be taken to a log of what happened for each of those operations.
+
+If you have an obscure build error, this is usually a good place to check that out, as it will give you the full context of what happened.
+
+Additionally, if you want to see the log output of previous runs, simply expand the appropriate `Run` row and you should have a `Console` item in there. Clicking that should show you what was printed to the console during that run.
+
+### Workflow shortcuts
+
+Below is a short list of workflow related shortcuts that I use often.
+
+#### Toggle SwiftUI previews
+
+Use `Command`+`Option`+`Enter` to quickly open and close SwiftUI previews. This is particularly useful to me when I know I'm about to make a lot of changes to my view and I don't need them all rendered. I just dismiss the preview and go to town.
+
+#### Restart SwiftUI previews
+
+If ever your previews crash as a result of bad code, you can quickly restart them with `Command`+`Option`+`P`.
+
+#### Authors
+
+You can quickly see who authored which part of the file by enabling the authors overlay. Open the editor menu in the top right and click on `Authors`. Alternatively use the `Command`+`Shift`+`Control`+`A` shortcut to quickly toggle it.
+
+![A screenshot of the editor options menu with Authors highlighted](./assets/authors_demo.png)
+
+Enabling it should give you a line by line breakdown of who touched which line of code last, along with a date and the commit message that they did it with. Essentially this is an inline Git blame.
+
+#### Toggle breakpoint on line
+
+Use `Command`+`\` to quickly toggle a breakpoint on the current line.
+
+---
 
 ## Navigation
 
-- Open Quickly
-  - Open quickly can also go to symbols, not just files
-- Jump bar (Ctl+6)
-- Sidebar navigation (Cmd+1)
-- Ctl+Alt+Left/Right Arrow
-- Ctl+Alt+Up/Down Arrow (More useful with ObjC or if you have Tests with the same name)
-  - Can be modified to scroll through more types of file
-- Cmd+Shift+J Reveal current file in the Project Navigator
-- Cmd+Shift+[ or Cmd+Shift+] to move the left or right tab
-- Minimap
-  - Cmd+Ctl+Shift+M Toggles minimap
-  - MARK: comments show up on there
+### Open Quickly
+
+If there is one thing that I wish you learn first, it is Open Quickly. You can think of it as Spotlight but for your codebase. Open it with `Command`+`Shift`+`O`. This should present you with a small search bar in the middle of the screen. Start typing the name of any symbol in your codebase and results will start loading below. Use arrow keys to navigate through them, then press `Enter` to open one. You will immediately be taken to wherever that symbol is located.
+
+Notice how I say symbol and not file or class name. That is because this works not just for searching files but for searching code. Quickly jump to a specific function, class, variable or any other code symbol.
+
+It will search through the standard library too, though it will prioritize code in your codebase first. However if you wanted to see the header of some standard library file, you can find it through there too.
+
+![A screenshot of the Open Quickly window](./assets/open_quickly_demo.png)
+
+### Jump bar
+
+One thing that I see almost no-one use is the Jump Bar. I don't quite understand why, because I find it amazing for in-file navigation, especially if you have a rather large file.
+
+The jump bar is located in the last part of the breadcrumbs, right above the source code editor. It goes right after the file name section and usually displays the name of the symbol that you currently have your cursor on. If you're inside a long function or class and not sure what it is called, it will show it to you there. However that's just the breadcrumbs, not the Jump Bar.
+
+You can invoke the Jump Bar by either clicking on the last part of the breadcrumbs (the symbol name) or pressing `Control`+`6`. This will open a popup with a list of all the symbols in the current file, as well as all the `MARK:`, `TODO:` and `FIXME:` markers in the file. You can use your mouse to scroll through it and select a symbol to jump to. However, a much faster approach is to simply start typing the name of the symbol you want to jump to. Then you use your arrow keys and press `Enter` to jump to it. This is absolutely the fastest way to navigate through a file for me.
+
+![A demonstration of the jump bar in action](./assets/jump_bar_demo.gif)
+
+### Navigation Stack
+
+I don't see a lot of people use the navigation stack in Xcode that much. It works very similar to the back and forth buttons in most web browsers and is actually quite helpful. Basically, each file that you open or go to in Xcode is put on a stack. You can go back and forth through the stack using the left and right arrows in the top of the editor, right where the file tabs start.
+
+![A screenshot of the back and forth navigation buttons in Xcode](./assets/navigation_stack_buttons.png)
+
+However a much faster approach is to use the shortcuts `Command`+`Control`+`Left Arrow` and `Command`+`Control`+`Right Arrow` to go back and forth. Imagine you were following some very convoluted code logic, jumping through dozen of classes and functions, to end up somewhere deep in the codebase. You're so deep in fact, that you're not even sure where you started. Well you can use the navigation stack to trace your steps back to where you were. Simply use the buttons (or the shortcuts) to trace your steps back to where you were.
+
+One thing to be aware of is that a lot of IDEs and editors will place cursor position changes on the stack. What I mean is, if you were to click somewhere in the editor, that position would be placed on the stack. Xcode doesn't behave like that. Instead it only puts explicit navigation actions on the stack. This includes things like opening a file from the Project Navigator or jumping to a symbol using using Open Quickly or the Jump Bar.
+
+That last part is particularly useful when working on two or more functions that are in the same file, but are far apart. Rather than scrolling back and forth between them, you can instead navigate to them all in succession using the jump bar. Then quickly switch between them using the back and forth navigation shortcuts.
+
+Some other useful things to keep in mind is that once you go back a few times and go somewhere else, that trunk on the navigation stack is lost. So if you need to preserve your path, be mindful of that. Another useful thing to know is that each window tab in Xcode will have its own navigation stack. I find this helpful when working on two disparate place in the codebase.
+
+*By window tab I don't mean the small file tabs that you get by opening files. I mean the big tabs that you create by pressing `Command`+`T`*
+
+Personally, the navigation stack is an integral part of my workflow. So much so, that I bound it to the side buttons on my mouse. It allows me to move between files with barely a thought.
+
+### Counterpart file navigation
+
+This feature is more useful for Objective-C or if you thoroughly test test your code. You can make more meaningful use of however if you fiddle with some config files within Xcode.
+
+Similar to the back and forth navigation shortcuts, you can use `Command`+`Control`+`Up Arrow` or `Command`+`Control`+`Down Arrow` to view related files. Xcode calls these "counterparts". For most Swift code, by default that will be the auto-generated headers. I don't often have a lot of use for this, unless I'm working on a library and want to make sure I expose what I meant to expose. It is very useful in Objective-C however, since the headers there are not auto-generated and have to be written by hand.
+
+If the source code file that you're working on has an associated test file then it will also be considered a counterpart. So long as it uses the same name with a `Tests` suffix. For example if you're working on a file called `Model.swift` and your test file is called `ModelTests.swift`, Xcode will consider them counterparts of each other.
+
+You can customize this behavior by specifying more suffixes that should be considered counterparts. You do this with the following command.
+
+    defaults write com.apple.dt.Xcode IDEAdditionalCounterpartSuffixes -array-add "ViewController" "ViewModel"
+
+Here I added two more suffixes, but you can add as many as you'd like. You may need to restart Xcode for these changes to take effect. To check which suffixes are currently set use.
+
+    defaults read com.apple.dt.Xcode IDEAdditionalCounterpartSuffixes
+
+To reset use.
+
+    defaults delete com.apple.dt.Xcode IDEAdditionalCounterpartSuffixes
+
+### Minimap
+
+I wouldn't call the minimap the most useful feature added to Xcode, but I do enjoy quite a bit. You can toggle the minimap by enabling it from the Editor Options menu, similar to the Authors overlay. You can quickly toggle it using the `Command`+`Control`+`Shift`+`M` shortcut.
+
+The biggest help that I find from it prominently shows all of your `MARK:`s, along with the current scroll position. Albeit, not always correctly. With that it makes it easier to quickly find yourself within the file and scroll to related parts.
+
+Hovering over it with the mouse will highlight different parts of the file. Clicking on the will take you to them. Holding down `Command` while hovering will show a list of all other symbols, similar to the jump bar. Personally I don't find these two features as useful, and much prefer the Jump Bar, as it is much more accessible from the keyboard, and therefore faster. I can see how it can be useful in a more mouse oriented workflow though.
+
+### Navigation Shortcuts
+
+Below are a few navigation shortcuts that I use quite often.
+
+#### File explorer
+
+Use `Command`+`1` to quickly open the Project Navigator. You can also use the other numbers 1 through 9 to open any of the other nine tabs in the left sidebar.
+
+#### Reveal file in Project Navigator
+
+If you want to see where the currently open file is in the Project Navigator, the action for that is located in `Navigate`->`Reveal in Project Navigator`. However the shortcut `Command`+`Shift`+`J` is much faster.
+
+#### Tab navigation
+
+You can move back and forth through **window** tabs using `Control`+`Tab` and `Control`+`Shift`+`Tab`. This will also work in almost any other macOS application. However in Xcode, you can also move through **file** tabs using `Command`+`Shift`+`[` and `Command`+`Shift`+`]`.
+
+---
 
 ## Search
 
@@ -152,20 +281,76 @@ That's because that is a macOS shortcut for switching between desktops. The tric
 - You can give breakpoint a name, and disable them. This way they act as sort of bookmarks in the code
 - Cmd+G to select next search result
 
-## Storyboards
+## Interface Builder
 
-- Ctl+Shift+Click on a view in storyboard and it will let you select any view layered under your cursor
-- While a view is selected, hold option and hover on another view to see the distance to it
+### Select layer
+
+When you're working with a scene that has a very complicated view structure, it can be difficult to select just the right view. However Interface Builder has a very nifty trick for us. Hold down `Control`+`Shift` and click on the area containing the view that you want to select. This should open a popup of all the layers that appear under your mouse. Scrolling through that should highlight the views inside the scene. Then simply click the view that you want from the list and it will be selected.
+
+![A demonstration of the layer popup in Interface Builder](./assets/storyboard_layer_select_demo.gif)
+
+### Distance to view
+
+Similarly, if you're working on a design and need to verify that all number are correct, in terms of size and spacing, Interface Builder has a very useful trick for us. If you wanted to quickly see what the distance is from one view to another in the current scene, simply select one of the views and hover your mouse over the other, while holding down `Option`.
+
+![A screenshot showcasing the distance to view feature of Interface Builder](./assets/storyboard_distance_demo.png)
+
+Here I have selected the yellow view and I'm hovering over the red view while holding down `Option`. We can see that the distance from the edges of the yellow view to the edges of the red view is 20 points along the vertical axis, and 56 points along the horizontal axis.
 
 ## Debugging
 
-- Cmd+Shift+Y to toggle the debug console
-- Cmd+Shift+C to focus on the output console
-- Cmd+K to clear the output console
+### LLDB
+
+One of the best debugging skills you can learn for iOS is how to use the LLDB console. There are a lot of other articles that explain it better than I could. I personally learned about it through [this one](https://www.objc.io/issues/19-debugging/lldb-debugging/), from [objc.io](https://www.objc.io). I'll will go over it here briefly, but I encourage you to read the article I linked. It's quite long and it goes in-depth, but I highly recommend it. I guarantee what you'll learn will be a valuable skill.
+
+The LLDB console can only be activated when by hitting a breakpoint. Once activated you are given a console that you can put commands into, to prompt the current state of your application. The console is signified by the green `(lldb)` prompt in your output console.
+
+![A screenshot of the lldb console](./assets/lldb_console_demo.png)
+
+Now you might say, "I can already do that in the debugger panel, it show me all my variables and everything! This just seems like more work". To this I'll say two things.
+
+- That panel is just a wrapper around the LLDB console. It is useful if you want to use a mouse, but for a keyboard workflow, direct access to the LLDB console is much more useful. Additionally it is much easier to drill down into data through the text console, rather than using the drill down controls in the debug panel. By drill down I mean accessing things like `viewModel.service.items[0].id` for example.
+- In my experience, it has a habit of showing wrong values. Especially if you're on a more complicated codebase, or you're doing something that is not very straightforward, when it comes to data storage. I can tell you for a fact that if you use [Realm](https://realm.io) in your project, the database objects will almost never have the right values in their variables.
+
+The console has a number of commands that you can employ, but I typically only use these five or six. Each command has a full version such as `print` but most of the time you use its shorthand variant, in this case just `p`.
+
 - lldb commands
   - p vs po
   - e
+  - c
+  - n
   - Link to https://www.objc.io/issues/19-debugging/lldb-debugging/
-- Watchpoints
+
+### Advanced breakpoints
+
+In [the article](https://www.objc.io/issues/19-debugging/lldb-debugging/) linked above, you will come across a more advanced usage of breakpoints. This is a super useful debugging skill.
+
+### Output console
+
+If you're doing print statement debugging, you can save yourself a lot of time and work by knowing how to filter the console. I'm sure you know that you can search the console output by focusing it (click it), and use the usual `Command`+`F` shortcut.
+
+You can also clear the current contents either by clicking the trash button in the bottom right or by using the `Command`+`K` shortcut. This is useful when what you're debugging comes at a later point in the app's life cycle. Get to a point right before your prints start and clear the console to reduce the amount of noise in there.
+
+You can also remove all noise from your console output by using the filter functionality. This works best when you give all of your print statements a common prefix (or suffix).
+
+![A screenshot of the debugging UI](./assets/debugging_tools_demo.png)
+
+### Debugging Shortcuts
+
+#### Toggle debug area
+
+Use `Command`+`Shift`+`Y` to quickly hide and show the debug area. It usually pops up automatically when you're running and you start printing something to the console (which you can configure in the `Behaviors` tab in Preferences btw). But it's a good idea to hide it if you're not running anymore and just need to work on code.
+
+#### Focus on output console
+
+Using `Command`+`Shift`+`C`, you can bring focus to the output console. From there you can either start typing LLDB commands or use `Command`+`F` to start searching through the console output. Again, not the biggest shortcut, but good for a keyboard oriented workflow.
+
+Sources
+-------
+
+A lot of these were just written by me from memory. I also looked at some lists online to remind myself of what I know. Can't always recall everything on the spot. I won't claim to know everything though, I definitely learned some new things from these lists.
+
+[Set up CounterpartSuffixes to make file movement a bit easier | 9to5Tutorials](https://9to5tutorial.com/xcode-set-up-counterpartsuffixes-to-make-file-movement-a-bit-easier)
+[Dancing in the Debugger — A Waltz with LLDB | objc.io](https://www.objc.io/issues/19-debugging/lldb-debugging/)
 
 <link rel="stylesheet" href="/css/styles.css?v=1.0">
