@@ -2,7 +2,7 @@
 
 <span class="articleDate">Written on: April 21, 2023</span>
 
-I've been a developer for a number of years now. Primarily iOS. Over the years I've learned to use Xcode quite efficiently. I wont claim to now all the ins and outs of Xcode but I do consider myself to know more than most. Below is a list of my learnings. Perhaps you'll find it useful too.
+I've been a developer for a number of years now. Primarily iOS. Over the years I've learned to use Xcode quite efficiently. I wont claim to now all the ins and outs of Xcode but I do consider myself to know more than most. Below is a list of my learnings. Perhaps you'll find them useful.
 
 They are grouped into categories by what they are most closely related to, however they are listed in no particular order. If you wish to integrate them into your daily workflow, I recommend choosing a few at a time and honing them in, rather than trying to jump into all of them at once.
 
@@ -14,17 +14,17 @@ They are grouped into categories by what they are most closely related to, howev
 
 ### Code snippets
 
-Code snippets are something that you learn to build over time. Notice a pattern of code that you find yourself writing over and over again? Make it into a code snippet!
+Code snippets are something that you will build over time. Notice a pattern of code that you find yourself writing over and over again? Make it into a code snippet!
 
 To create a code snippet, simply select a piece of code, right click it and choose `Create Code Snippet...` from the menu. One could also employ Xcode's placeholder to make your snippets even more powerful. You can create a placeholder at any time by surrounding a piece of text with `<#` and `#>`. The Xcode editor will automatically recognize and render it as a placeholder.
 
 ![A demonstration of how to make a placeholder in Xcode](./assets/placeholder_demo.gif)
 
-You can find existing code snippets in Xcode's library. Access it by either clicking the `+` button on the top right or using the `Command`+`Shift`+`L` shortcut. Once there open the first tab. These should be all of the code snippets available to you. Keep in mind that the tab might not show up if you don't have an source code editor open.
+You can find existing code snippets in Xcode's library. Access it by either clicking the `+` button in the top right corner or using the `Command`+`Shift`+`L` shortcut. Once there open the first tab. These should be all of the code snippets available to you. Keep in mind that the tab might not show up if you don't have a source code editor open.
 
 ### Spell checker
 
-Would you believe me if I told you that Xcode has a built in spell-checker? It's off by default too for some odd reason. To turn it on go to `Edit` -> `Format` -> `Spelling and Grammar` and turn on `Check Spelling While Typing`. Now whenever you make a typo in your source code, Xcode will highlight it and give you suggestion to fix it when you right click on it.
+Would you believe me if I told you that Xcode has a built in spell-checker? It's off by default too for some odd reason. To turn it on go to `Edit` -> `Format` -> `Spelling and Grammar` and turn on `Check Spelling While Typing`. Now whenever you make a typo in your source code, Xcode will highlight it and give you suggestions to fix it when you right click on it.
 
 It even works for combined words like `thisIsSoneVariable`.
 
@@ -36,7 +36,7 @@ If you're working on a project with long symbol names, you can actually resize t
 
 ### Multi-Cursor editing
 
-Starting in Xcode 10, you can now have multiple cursors in your editor. This allows you to edit multiple spots in your source code at once.
+Starting in Xcode 10, you can have multiple cursors in your editor. This allows you to edit multiple spots in your source code at once.
 
 ![A demonstration of multiple cursors in Xcode](./assets/multi_cursor_demo.gif)
 
@@ -92,7 +92,7 @@ While editing a function, property, class or struct, use `Command`+`Option`+`/` 
 
 Select a piece of code and automatically indent it by using the `Control`+`I` shortcut. Use `Command`+`A` before hand to select the whole file. Keep in mind that with particularly large files this can freeze up Xcode for a few seconds (or more).
 
-If it is not indenting correctly, then either you didn't select enough code, or there is a syntax error, somewhere in your selection.
+If it is not indenting correctly, either you didn't select enough code, or there is a syntax error, somewhere in your selection.
 
 #### Move line up or down
 
@@ -102,7 +102,7 @@ Use `Command`+`[` or `Command`+`]` to move the current line up or down.
 
 If you hold down `Command` and use the left or right arrow keys, the cursor will jump to the beginning or end of the current line. Using the up and down arrow keys will take you to the beginning or end of the file.
 
-Holding `Option` instead of `Command` will move it to the beginning or end of the current token or the previous or next tokens. Token in this case refers to any word separated by whitespace or a punctuation symbol (brackets included). Up and down arrow keys move the cursor to the beginning or end of the current line.
+Holding `Option` instead of `Command` will move it to the beginning or end of the current token or the previous or next tokens, depending on where the cursor was. Token in this case refers to any word separated by whitespace or a punctuation symbol (brackets included). Up and down arrow keys move the cursor to the beginning or end of the current line.
 
 These macros actually work almost everywhere in MacOS. I highly recommend you make use of them as they speed up your editing skills tremendously. Inside and outside Xcode.
 
@@ -128,9 +128,9 @@ One neat feature of Xcode that a lot of people don't know about is that you can 
 
 ### Clear-All Issues
 
-Unfortunately Xcode has been getting quite buggy recently with its pre-compiler. Often times it'll show inline errors and warnings that have long been resolved now. These errors and warnings also show up in the issues tab, clogging up the output there.
+Unfortunately Xcode has been getting quite buggy recently with its pre-compiler. Often times it'll show inline errors and warnings that have long been resolved. These errors and warnings also show up in the issues tab, clogging up the output there.
 
-Interestingly enough, rather than fixing it, the Xcode team decided to just give us a "nuke all" option in the form of a menu button that clears the list of issues. It is located in `Product`->`Clear All Issues`.
+It has gotten better in Xcode 14, but it's still not fixed completely. Xcode 14 also comes with a "nuke all" option in the form of a menu button that clears the list of issues. It is located in `Product`->`Clear All Issues`. This is very useful for quickly validating your code. `Clear All Issues` and build again. Any new issues that pop up after that are bound to be legitimate.
 
 There is no default shortcut to it, but you can set one through `Key Bindings` in Preference if you want. I personally just press `Command`+`Shift`+`/` to bring up the Help menu, then type in "Clear". It's usually the second result.
 
@@ -276,10 +276,48 @@ You can move back and forth through **window** tabs using `Control`+`Tab` and `C
 
 ## Search
 
-- Search Symbol/Call Hierarchy
-- File Search (Cmd+F) vs Project Search (Cmd+Alt+F)
-- You can give breakpoint a name, and disable them. This way they act as sort of bookmarks in the code
-- Cmd+G to select next search result
+### Find Symbol/Find Call Hierarchy
+
+The default project search functionality within Xcode works well enough. At least when what you're looking for is fairly unique, like `ScoreBoardQueryResultsViewController`. However when you need to find all usages of a public property called `title`, you might run into some trouble. Since the default search in Xcode only does a simple string matching, you'll often get very cluttered results. There is a better way.
+
+If you right click on the symbol that you are trying to search for, the go to the `Find` submenu, you'll see three options in there.
+
+![A screenshot of the find submenu](./assets/find_menu_demo.png)
+
+1. First there is the `Find Selected Text in Workspace`. This will do a normal **text** search like the one that we're used to. Doing it this way may be faster than copying the text, going to the global search and pasting it there.
+1. Second we have the `Find Selected Symbol in Workspace`. This will perform a **symbol** search. What this means is, if you were to perform that search on a property called `title`, defined on some `SpecialViewController` class, it wont just find you any text that matches `title`. It will search for instances of that specific property, when it belongs to an instance of that specific class. The search results will consist of all usages of the symbol in question, plus a declaration. Usages are defined as follows;
+    - For properties it will find you all places where it is read or written
+    - For functions it will find you all places where the function is called, or is passed as data
+    - For types it will find all references to said type, whether that is instantiation, a constraint or subclassing.
+1. Lastly there is `Find Call Hierarchy`. This is typically used with function and it works a little different from the other two options. When you use this on a function your results will form a tree. Typically you will start at one or more roots. These are all the immediate call sites of your function. If you expand any of those, this will in turn show you the call sites of the second level of branches. If you expand the third, you'll see a forth, and so on until you reach a leaf of some sort. This is typically a `viewDidLoad` or a `viewWillAppear` or a `main` of some sort. This is better explained with an example.
+
+![A screenshot of an example search of a function called shuffledLabel(accidentals:)](./assets/find_call_hierarchy_demo.png)
+
+In the screenshot above we see a Call Hierarchy search of an instance function called `shuffledLabel(accidentals:)` defined a type called `Note`. Looking at the first level we see that it is used in the same type in two static functions called `random(in:accidentals:)` (These are overrides, they have different types). We can see that the first one has no more branches so it is a leaf. However the second does have branches, and it is itself used in two more places. First in a function called `createRound` on a type called `ChordGuessingGame` and then in a function of the same name on a type called `IntervalGuessingGame`. I think this should be enough to show you the power of this search.
+
+One thing to keep in mind is that these alternate searches will change your search settings and you'll either need to use these right-click options or change them manually next time you need to search. Below is a demonstration of how to change it manually.
+
+![A demonstration of how to reset your search back to a text search](./assets/reset_search_demo.gif)
+
+### Breakpoints as bookmarks
+
+This is a trick I often use when I start working on an already established codebase and I'm still getting my bearings. If you have a place in your codebase that you want to bookmark, you can set a disabled breakpoint on it. To disabled a breakpoint simply click on it after creating it. Now navigate to the breakpoints tab (2nd from the right) in the left sidebar and you should see it there, along with any other breakpoints you've set.
+
+You can take this further by double clicking on the breakpoint and giving it a name. Unfortunately this name will not show up in the list, so I usually use the name field to provide some context to the breakpoint if needed.
+
+It's unfortunate that bookmarks don't exist as a feature in Xcode, but this will help make do.
+
+### Search Shortcuts
+
+#### File vs. Project search & replace
+
+Use `Command`+`F` to trigger a search in the current file. Use `Command`+`Shift`+`F` to trigger a search in the workspace. Use `Option` with either of those shortcuts to do a find & replace instead of just a search.
+
+#### Next Result
+
+When performing a file search use `Command`+`G` to quickly have your cursor jump to the next result.
+
+---
 
 ## Interface Builder
 
@@ -297,6 +335,8 @@ Similarly, if you're working on a design and need to verify that all number are 
 
 Here I have selected the yellow view and I'm hovering over the red view while holding down `Option`. We can see that the distance from the edges of the yellow view to the edges of the red view is 20 points along the vertical axis, and 56 points along the horizontal axis.
 
+---
+
 ## Debugging
 
 ### LLDB
@@ -312,18 +352,27 @@ Now you might say, "I can already do that in the debugger panel, it show me all 
 - That panel is just a wrapper around the LLDB console. It is useful if you want to use a mouse, but for a keyboard workflow, direct access to the LLDB console is much more useful. Additionally it is much easier to drill down into data through the text console, rather than using the drill down controls in the debug panel. By drill down I mean accessing things like `viewModel.service.items[0].id` for example.
 - In my experience, it has a habit of showing wrong values. Especially if you're on a more complicated codebase, or you're doing something that is not very straightforward, when it comes to data storage. I can tell you for a fact that if you use [Realm](https://realm.io) in your project, the database objects will almost never have the right values in their variables.
 
-The console has a number of commands that you can employ, but I typically only use these five or six. Each command has a full version such as `print` but most of the time you use its shorthand variant, in this case just `p`.
+The console has many commands that you can use. Each one usually has a full version, for example `print` but most of the time you use its shorthand variant, in this case just `p`.
 
-- lldb commands
-  - p vs po
-  - e
-  - c
-  - n
-  - Link to https://www.objc.io/issues/19-debugging/lldb-debugging/
+Majority of the time I only really use the following commands:
 
-### Advanced breakpoints
+- `e` for `expression`. This command is used to execute a statement. Any statement in the language of the current breakpoint context is valid. You print something using `print` or `NSLog`, you can try to call a function or even set some variables to change the state of your program mid run. Keep in mind that if your breakpoint stopped in Swift code, then the console will expect to see Swift code after the `e` or `expression` prompt. If it stopped in Objective-C code then you'll have to write Objective-C statements.
+- `p` for `print`. This is actually just an alias to `e --`. So in essence it is a variation of the `expression` command, fine tuned for printing its output. That means that you can still give this command expressions to run, even if they modify state like setting variables. The difference is that you will not be able to pass in any extra flags or arguments that you can pass to `expression`.
+- `po` for `print object`. This is also just an alias but this time to `e --O --`. This makes it behave pretty much the same as `print`, except right before printing the result, it will check if that result is an Objective-C object (subclass of NSObject) and if it is, it will instead print the result of it's `description` method. This is handy for when you're working with complex objects.
+- `c` for `continue` will release the current breakpoint. This is equivalent to pressing the `Resume` button (1 from the screenshot below) in the debugger actions strip.
+- `n` for `next` will move to the next executable statement. This is equivalent to pressing the `Next` button (1 from the screenshot below) in the debugger action strip.
 
-In [the article](https://www.objc.io/issues/19-debugging/lldb-debugging/) linked above, you will come across a more advanced usage of breakpoints. This is a super useful debugging skill.
+![A screenshot of the debugger strip, with the resume and next buttons labeled 1 and 2](./assets/debugger_actions_demo.png)
+
+The beauty of these commands is that they work with any expression. You can access some deeply nested property or call a function and print out the results. You can't get that from the debugger panel.
+
+### Conditional breakpoints
+
+When creating a breakpoint, you can double click on it to opens its options. Inside of the options popup, you can use the `Condition` field to control when this breakpoint should trigger. Provide a boolean expression, which when resolving to true should allow the breakpoint to trigger. This is very useful in cases where your code executes more than once, but you only care about a very specific execution instance. If you can provide a meaningful condition then the debugger will automatically filter out the other triggers.
+
+### Breakpoint actions
+
+Breakpoint actions are lldb commands that you can attach to breakpoints and have run as soon as the breakpoint is hit. This can tremendously speed up debugging. They're covered in more detail in [this article](https://www.objc.io/issues/19-debugging/lldb-debugging/), but I'll go over them here very quickly. In essence you can double click on any breakpoint, and in the popup that opens, press the `Add Action` button to create an action. By default the action can be configured to be a `Log Message`, so you can put a code expression in there, and the result of that expression will be printed to the console. Alternatively, you can change the action using the dropdown to a `Debugger Command`, and now you can execute an LLDB debugger command, every time the breakpoint is hit. You can create ad-hoc automations, by checking the `Automatically continue after evaluation actions` checkmark to have your breakpoint execute the actions and resume automatically.
 
 ### Output console
 
@@ -350,7 +399,7 @@ Sources
 
 A lot of these were just written by me from memory. I also looked at some lists online to remind myself of what I know. Can't always recall everything on the spot. I won't claim to know everything though, I definitely learned some new things from these lists.
 
-[Set up CounterpartSuffixes to make file movement a bit easier | 9to5Tutorials](https://9to5tutorial.com/xcode-set-up-counterpartsuffixes-to-make-file-movement-a-bit-easier)
-[Dancing in the Debugger — A Waltz with LLDB | objc.io](https://www.objc.io/issues/19-debugging/lldb-debugging/)
+- [Set up Counterpart suffixes to make file movement a bit easier | 9to5Tutorials](https://9to5tutorial.com/xcode-set-up-counterpartsuffixes-to-make-file-movement-a-bit-easier)
+- [Dancing in the Debugger — A Waltz with LLDB | objc.io](https://www.objc.io/issues/19-debugging/lldb-debugging/)
 
 <link rel="stylesheet" href="/css/styles.css?v=1.0">
