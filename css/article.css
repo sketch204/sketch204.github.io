@@ -1,0 +1,18 @@
+.markdown-body img {
+  max-width: 100%;
+  box-sizing: initial;
+  background-color: transparent;
+}
+
+.markdown-body code {
+  font-family: Courier, monospace;
+  color: var(--accent-color);
+  background-color: var(--code-background-color);
+  padding: 0px 4px 0px 4px;
+  border-radius: 5px;
+}
+
+.markdown-body a {
+  color: var(--accent-color);
+  text-decoration-line: underline;
+}
