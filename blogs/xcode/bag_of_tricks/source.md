@@ -8,8 +8,6 @@ They are grouped into categories by what they are most closely related to, howev
 
 *Word of caution: this is a rather long list :D*
 
----
-
 ## Editor
 
 ### Code snippets
@@ -118,8 +116,6 @@ That's because that is a macOS shortcut for switching between desktops. The tric
 
 *Note: Holding down `Shift` to select also works with just the arrow keys as well as `Command` and `Option`. I recommend you make a habit of using that, it's very handy.*
 
----
-
 ## Workflow
 
 ### Behavior sounds
@@ -140,7 +136,7 @@ There is no default shortcut to it, but you can set one through `Key Bindings` i
 
 If you're curious how long each build takes, Xcode can actually display that for you. It is disabled by default, and unfortunately you won't find a GUI toggle to turn it on anywhere in Preferences. Instead you have to manually modify the preferences file, using this command:
 
-    defaults write com.apple.dt.Xcode ShowBuildOperationDuration -bool YES
+`defaults write com.apple.dt.Xcode ShowBuildOperationDuration -bool YES`
 
 After running this command, Xcode should start displaying the build time in the trailing side of the top "build status" strip. It is handy if you're trying to optimize build times in your project.
 
@@ -183,8 +179,6 @@ You can quickly see who authored which part of the file by enabling the authors 
 ![A screenshot of the editor options menu with Authors highlighted](./assets/authors_demo.png)
 
 Enabling it should give you a line by line breakdown of who touched which line of code last, along with a date and the commit message that they did it with. Essentially this is an inline Git blame.
-
----
 
 ## Navigation
 
@@ -236,15 +230,15 @@ If the source code file that you're working on has an associated test file then 
 
 You can customize this behavior by specifying more suffixes that should be considered counterparts. You do this with the following command.
 
-    defaults write com.apple.dt.Xcode IDEAdditionalCounterpartSuffixes -array-add "ViewController" "ViewModel"
+`defaults write com.apple.dt.Xcode IDEAdditionalCounterpartSuffixes -array-add "ViewController" "ViewModel"`
 
 Here I added two suffixes: `ViewController` and `ViewModel`, but you can add as many as you'd like. You may need to restart Xcode for these changes to take effect. To check which suffixes are currently set, use:
 
-    defaults read com.apple.dt.Xcode IDEAdditionalCounterpartSuffixes
+`defaults read com.apple.dt.Xcode IDEAdditionalCounterpartSuffixes`
 
 To reset use:
 
-    defaults delete com.apple.dt.Xcode IDEAdditionalCounterpartSuffixes
+`defaults delete com.apple.dt.Xcode IDEAdditionalCounterpartSuffixes`
 
 ### Minimap
 
@@ -269,8 +263,6 @@ If you want to see where the currently open file is in the Project Navigator, th
 #### Tab navigation
 
 You can move back and forth through **window** tabs using `Control`+`Tab` and `Control`+`Shift`+`Tab`. This will also work in almost any other macOS application. However in Xcode, you can also move through **file** tabs using `Command`+`Shift`+`[` and `Command`+`Shift`+`]`.
-
----
 
 ## Search
 
@@ -315,8 +307,6 @@ Use `Command`+`F` to trigger a search in the current file. Use `Command`+`Shift`
 
 When performing a file search use `Command`+`G` to quickly have your cursor jump to the next result.
 
----
-
 ## Interface Builder
 
 ### Select layer
@@ -332,8 +322,6 @@ Similarly, if you're working on a design and need to verify that all numbers are
 ![A screenshot showcasing the distance to view feature of Interface Builder](./assets/storyboard_distance_demo.png)
 
 Here I have selected the yellow view and I'm hovering over the red view while holding down `Option`. We can see that the distance from the edges of the yellow view to the edges of the red view is 20 points along the vertical axis, and 56 points along the horizontal axis. In this example I'm measuring distances between a parent and child, however this works across view branches too.
-
----
 
 ## Debugging
 
