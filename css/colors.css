@@ -4,5 +4,20 @@
   --secondary-text-color: #64605f; /* Jet */
   --accent-color: #F95738; /* Red Salsa */
   --highlight-color: #FF9921; /* Light Salmon */
-  --code-background-color: #EFD7D2 /* Ebony */
+  --code-text-color: var(--accent-color);
+  --code-background-color: #EFD7D2; /* Ebony */
+  --rule-color: var(--accent-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #000000; /* Black */
+    --text-color: #D7D6D5; /* Anti-flash White */
+    --secondary-text-color: #888281; /* Taupe Gray */
+    --accent-color: #F95738; /* Tomato */
+    --highlight-color: #FFA947; /* Orange Peel */
+    --code-text-color: var(--highlight-color);
+    --code-background-color: #ffbd723a; /* Ebony */
+    --rule-color: var(--secondary-text-color);
+  }
 }

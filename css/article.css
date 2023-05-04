@@ -1,3 +1,23 @@
+.markdown-body {
+  color: unset;
+  font: unset;
+}
+
+.markdown-body h1 {
+  color: var(--accent-color);
+  border-bottom: 1px solid var(--rule-color);
+}
+
+.markdown-body h2 {
+  /* color: var(--accent-color); */
+  border-bottom: 0.5px solid var(--secondary-text-color);
+}
+
+.markdown-body a {
+  color: var(--accent-color);
+  text-decoration-line: underline;
+}
+
 .markdown-body img {
   max-width: 100%;
   box-sizing: initial;
@@ -6,13 +26,17 @@
 
 .markdown-body code {
   font-family: Courier, monospace;
-  color: var(--accent-color);
+  color: var(--code-text-color);
   background-color: var(--code-background-color);
   padding: 0px 4px 0px 4px;
   border-radius: 5px;
 }
 
-.markdown-body a {
-  color: var(--accent-color);
-  text-decoration-line: underline;
+.markdown-body hr {
+  background-color: var(--rule-color);
+}
+
+.articleDate {
+  color: var(--secondary-text-color);
+  font-size: small;
 }
