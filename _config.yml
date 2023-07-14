@@ -1,3 +1,8 @@
+title: Inal's Gotov
+description: Inal's personal webpage!
+tagline: Inal's personal webpage!
+url: https://inal.dev
+author: Inal Gotov
 lsi: false
 safe: true
 incremental: false
@@ -7,3 +12,7 @@ gist:
 kramdown:
   math_engine: mathjax
   syntax_highlighter: rouge
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-seo-tag
