@@ -1,6 +1,8 @@
-# Big bag of Xcode tips & tricks
-
-<span class="articleDate">Written on: May 1, 2023</span>
+---
+layout: post
+title: Big bag of Xcode tips & tricks
+description: A list of Xcode tips and tricks that I've learned through the years
+---
 
 I've been a developer for a number of years now. Primarily iOS. Over the years I've learned to use Xcode quite efficiently. I won't claim to now all the ins and outs of it but I do consider myself to know more than most. Below is a list of my learnings. Perhaps you'll find them useful.
 
@@ -18,7 +20,7 @@ To create a code snippet, simply select a piece of code in the editor, right cli
 
 When creating your code snippets don't forget to use placeholders! You create a placeholder by surrounding a piece of text with `<#` and `#>`. The Xcode editor will automatically recognize and render it as a placeholder. You can either add your place holder by editing the code snippets in the library popup, or by setting them up before creating the code snippet.
 
-![A demonstration of how to make a placeholder in Xcode](./assets/placeholder_demo.gif)
+![A demonstration of how to make a placeholder in Xcode](/assets/img/2023-05-01-xcode-bag-of-tricks/placeholder_demo.gif)
 
 You can find existing code snippets in Xcode's library. Access it by either clicking the `+` button in the top right corner or using the `Command`+`Shift`+`L` shortcut. Once there open the first tab. These should be all of the code snippets available to you, many of which are built into Xcode. Keep in mind that the tab might not show up if you don't have a source code editor open.
 
@@ -28,7 +30,7 @@ Would you believe me if I told you that Xcode has a built in spell-checker? It's
 
 It even works with combined words like `thisIsSoneVariable`. The fix suggestions won't show up for these though.
 
-![A demonstration of Xcode's spell checker](./assets/spell_checker_demo.png)
+![A demonstration of Xcode's spell checker](/assets/img/2023-05-01-xcode-bag-of-tricks/spell_checker_demo.png)
 
 ### Autocomplete window size
 
@@ -38,7 +40,7 @@ If you're working on a project with long symbol names, you can actually resize t
 
 Starting in Xcode 10, you can have multiple cursors in your editor. This allows you to edit multiple spots in your source code at once.
 
-![A demonstration of multiple cursors in Xcode](./assets/multi_cursor_demo.gif)
+![A demonstration of multiple cursors in Xcode](/assets/img/2023-05-01-xcode-bag-of-tricks/multi_cursor_demo.gif)
 
 There are a number of ways to invoke this.
 
@@ -60,7 +62,7 @@ In both cases your editor should start looking for all references to the symbol.
 
 When renaming functions you also have the ability to rename its external argument labels. When all results have been loaded, simply click on them and start typing.
 
-![Demonstration of renaming a function's external argument label](./assets/rename_demo.gif)
+![Demonstration of renaming a function's external argument label](/assets/img/2023-05-01-xcode-bag-of-tricks/rename_demo.gif)
 
 Cancel a rename at any point by pressing `Escape`.
 
@@ -108,7 +110,7 @@ These macros actually work almost everywhere in MacOS. I highly recommend you ma
 
 One thing that you will be surprised to find in Xcode though, is the ability to move the cursor by word. Here is what I mean.
 
-![A gif demonstrating moving the cursor by word through a function name called sendDataToServerAsynchronously](./assets/move_cursor_by_word.gif)
+![A gif demonstrating moving the cursor by word through a function name called sendDataToServerAsynchronously](/assets/img/2023-05-01-xcode-bag-of-tricks/move_cursor_by_word.gif)
 
 The key combination for this is `Control` and left/right arrow keys. If you go and try that you'll find that it won't work. If you use multiple macOS desktops, you'll also find that it actually jumped to a different desktop.
 
@@ -122,7 +124,7 @@ That's because that is a macOS shortcut for switching between desktops. The tric
 
 One neat feature of Xcode that a lot of people don't know about is that you can customize its behavior when certain things happen. This is done in the `Behaviors` tab in Preferences. Select the event from the sidebar, that you want to configure, and then choose what you want to have happen when that event occurs. For me, I set it up to play one sound when a build or test fails, and a different sound when they succeed.
 
-![A screenshot of Xcode Preferences' Behavior tab](./assets/behaviors_demo.png)
+![A screenshot of Xcode Preferences' Behavior tab](/assets/img/2023-05-01-xcode-bag-of-tricks/behaviors_demo.png)
 
 ### Clear-All Issues
 
@@ -140,7 +142,7 @@ If you're curious how long each build takes, Xcode can actually display that for
 
 After running this command, Xcode should start displaying the build time in the trailing side of the top "build status" strip. It is handy if you're trying to optimize build times in your project.
 
-![A screenshot of the build duration in Xcode](./assets/build_duration_demo.png)
+![A screenshot of the build duration in Xcode](/assets/img/2023-05-01-xcode-bag-of-tricks/build_duration_demo.png)
 
 To turn it off, run the same command but replace the last `YES` with `NO`.
 
@@ -176,7 +178,7 @@ If ever your previews crash as a result of bad code, you can quickly restart the
 
 You can quickly see who authored which part of the file by enabling the authors overlay. Open the editor menu in the top right and click on `Authors`. Alternatively use the `Command`+`Shift`+`Control`+`A` shortcut to quickly toggle it.
 
-![A screenshot of the editor options menu with Authors highlighted](./assets/authors_demo.png)
+![A screenshot of the editor options menu with Authors highlighted](/assets/img/2023-05-01-xcode-bag-of-tricks/authors_demo.png)
 
 Enabling it should give you a line by line breakdown of who touched which line of code last, along with a date and the commit message that they did it with. Essentially this is an inline Git blame.
 
@@ -190,7 +192,7 @@ Notice how I say symbol and not file or class name. That is because this works n
 
 It will search through the standard library too, though it will prioritize code in your codebase first. However if you wanted to see the header of some standard library file, you can find it through there too.
 
-![A screenshot of the Open Quickly window](./assets/open_quickly_demo.png)
+![A screenshot of the Open Quickly window](/assets/img/2023-05-01-xcode-bag-of-tricks/open_quickly_demo.png)
 
 ### Jump bar
 
@@ -200,13 +202,13 @@ The jump bar is located in the last part of the breadcrumbs, right above the sou
 
 You can invoke the Jump Bar by either clicking on the last part of the breadcrumbs (the symbol name) or pressing `Control`+`6`. This will open a popup with a list of all the symbols in the current file, as well as all the `MARK:`, `TODO:` and `FIXME:` markers in the file. You can use your mouse to scroll through it and select a symbol to jump to. However, a much faster approach is to simply start typing the name of the symbol you want to jump to. Then use your arrow keys and `Enter` to jump to it. This is absolutely the fastest way to navigate through a file for me.
 
-![A demonstration of the jump bar in action](./assets/jump_bar_demo.gif)
+![A demonstration of the jump bar in action](/assets/img/2023-05-01-xcode-bag-of-tricks/jump_bar_demo.gif)
 
 ### Navigation Stack
 
 The navigation stack in Xcode works very similar to the back and forth buttons in most web browsers and is actually quite helpful. Basically, each file that you open or go to in an Xcode window will be put on a stack. You can go back and forth through the stack using the left and right chevrons in the top left of the editor, right where the file tabs start.
 
-![A screenshot of the back and forth navigation buttons in Xcode](./assets/navigation_stack_buttons.png)
+![A screenshot of the back and forth navigation buttons in Xcode](/assets/img/2023-05-01-xcode-bag-of-tricks/navigation_stack_buttons.png)
 
 However a much faster approach is to use the shortcuts `Command`+`Control`+`Left Arrow` and `Command`+`Control`+`Right Arrow` to go back and forth. Imagine you were following some very convoluted code logic, jumping through dozens of classes and call sites, to end up somewhere deep in the codebase. You're so deep in fact, that you're not even sure where you started. Well you can use the navigation stack to trace your steps back to where you were. Simply use the chevron buttons (or the shortcuts) to trace your steps back to where you were.
 
@@ -272,7 +274,7 @@ The default project search functionality within Xcode works well enough. At leas
 
 If you right click on the symbol that you are trying to search for, then go to the `Find` submenu, you'll see three options in there.
 
-![A screenshot of the find submenu](./assets/find_menu_demo.png)
+![A screenshot of the find submenu](/assets/img/2023-05-01-xcode-bag-of-tricks/find_menu_demo.png)
 
 1. First there is the `Find Selected Text in Workspace`. This will do a normal **text** search like the one that we're used to. Doing it this way may be faster than copying the text, going to the global search and pasting it there.
 1. Second we have the `Find Selected Symbol in Workspace`. This will perform a **symbol** search. Going back to our example, if you were to perform this kind of search on our `title` property, defined on some `SpecialViewController` class, it won't just find any text that matches `title`. It will actually search for instances of that specific `title` property, when it belongs to an instance of `SpecialViewController` class. The search results will consist of all usages of the symbol, plus a declaration. Usages are defined as follows;
@@ -281,13 +283,13 @@ If you right click on the symbol that you are trying to search for, then go to t
     - For types it will find all references to said type, whether that is instantiation, a constraint or subclassing.
 1. Lastly there is `Find Call Hierarchy`. This is typically used with function and it works a little different from the other two options. When you use this on a function your results will form a tree. Typically you will start at one or more roots. These are all the immediate call sites of your function. If you expand any of those, this will in turn show you the call sites of the second level of branches. If you expand the third, you'll see a forth, and so on until you reach a leaf of some sort. This is typically a `viewDidLoad`, a `viewWillAppear` or some kind of `main`. This is better explained with an example.
 
-![A screenshot of an example search of a function called shuffledLabel(accidentals:)](./assets/find_call_hierarchy_demo.png)
+![A screenshot of an example search of a function called shuffledLabel(accidentals:)](/assets/img/2023-05-01-xcode-bag-of-tricks/find_call_hierarchy_demo.png)
 
 In the screenshot above we see a Call Hierarchy search of an instance function called `shuffledLabel(accidentals:)` defined a type called `Note`. Looking at the first level we see that it is used in the same type in two static functions called `random(in:accidentals:)` (These are overrides, they have different types of parameters). We can see that the first one has no more branches so it is a leaf. However the second does have branches, and it is itself used in two more places. First in a function called `createRound` on a type called `ChordGuessingGame` and then in a function of the same name on a type called `IntervalGuessingGame`. I think this should be enough to show you the power of this search.
 
 One thing to keep in mind is that these alternate searches will change your search settings and you'll either need to use these right-click options or change them manually next time you need to search. Below is a demonstration of how to change it manually.
 
-![A demonstration of how to reset your search back to a text search](./assets/reset_search_demo.gif)
+![A demonstration of how to reset your search back to a text search](/assets/img/2023-05-01-xcode-bag-of-tricks/reset_search_demo.gif)
 
 *Note: `Find Selected Symbol in Workspace` may often not find all usages of a symbol in mixed code codebases. I think this is due to the differences in selector syntax between Swift and Objective-C. Keep that in mind when using it.*
 
@@ -313,13 +315,13 @@ When performing a file search use `Command`+`G` to quickly have your cursor jump
 
 When you're working with a scene that has a very complicated view structure, it can be difficult to select just the right view. However Interface Builder has a very nifty trick for us. Hold down `Control`+`Shift` and click on the area containing the view that you want to select. This should open a popup of all the layers that appear under your mouse. Scrolling through that should highlight the views inside the scene. Then simply click the view that you want from the list and it will be selected.
 
-![A demonstration of the layer popup in Interface Builder](./assets/storyboard_layer_select_demo.gif)
+![A demonstration of the layer popup in Interface Builder](/assets/img/2023-05-01-xcode-bag-of-tricks/storyboard_layer_select_demo.gif)
 
 ### Distance to view
 
 Similarly, if you're working on a design and need to verify that all numbers are correct, in terms of spacing, Interface Builder has a very useful trick for us. Select one of the views and hover your mouse over the other, while holding down `Option`. You should see distances along all axes between the two views.
 
-![A screenshot showcasing the distance to view feature of Interface Builder](./assets/storyboard_distance_demo.png)
+![A screenshot showcasing the distance to view feature of Interface Builder](/assets/img/2023-05-01-xcode-bag-of-tricks/storyboard_distance_demo.png)
 
 Here I have selected the yellow view and I'm hovering over the red view while holding down `Option`. We can see that the distance from the edges of the yellow view to the edges of the red view is 20 points along the vertical axis, and 56 points along the horizontal axis. In this example I'm measuring distances between a parent and child, however this works across view branches too.
 
@@ -331,7 +333,7 @@ One of the best debugging skills you can learn for iOS is how to use the LLDB co
 
 The LLDB console is activated by hitting a breakpoint. Once activated you are given a console that you can put commands into, to prompt the current state of your application. The console is signified by the green `(lldb)` prompt in your output console.
 
-![A screenshot of the lldb console](./assets/lldb_console_demo.png)
+![A screenshot of the lldb console](/assets/img/2023-05-01-xcode-bag-of-tricks/lldb_console_demo.png)
 
 Now you might say, "I can already do that in the debugger panel, it show me all my variables and everything! This just seems like more typing". To this I'll say two things.
 
@@ -348,7 +350,7 @@ I mostly find myself using these commands:
 - `c` for `continue` will release the current breakpoint. This is equivalent to pressing the `Resume` button (1 from the screenshot below) in the debugger actions strip.
 - `n` for `next` will move to the next executable statement. This is equivalent to pressing the `Next` button (1 from the screenshot below) in the debugger action strip.
 
-![A screenshot of the debugger strip, with the resume and next buttons labeled 1 and 2](./assets/debugger_actions_demo.png)
+![A screenshot of the debugger strip, with the resume and next buttons labeled 1 and 2](/assets/img/2023-05-01-xcode-bag-of-tricks/debugger_actions_demo.png)
 
 The beauty of these commands is that they work with any expression. You can access some deeply nested property or call a function and print out the results. You can't get that from the debugger panel.
 
@@ -368,7 +370,7 @@ You can also clear the current contents either by clicking the trash button in t
 
 You can also remove a lot of noise from your console output by using the filter functionality. This works best when you give of your debug print statements a common prefix (or suffix).
 
-![A screenshot of the debugging UI](./assets/debugging_tools_demo.png)
+![A screenshot of the debugging UI](/assets/img/2023-05-01-xcode-bag-of-tricks/debugging_tools_demo.png)
 
 ### Debugging Shortcuts
 
@@ -389,12 +391,10 @@ Sources
 
 A lot of these were just written by me from memory. I also looked at some lists online to remind myself of what I know. Can't always recall everything on the spot. I won't claim to know everything though, I definitely learned some new things from these lists.
 
-- [Xcode tips and tricks – part one | Hacking with Swift](https://www.hackingwithswift.com/articles/166/xcode-tips-and-tricks-part-one)
-- [Xcode tips and tricks – part two | Hacking with Swift](https://www.hackingwithswift.com/articles/168/xcode-tips-and-tricks-part-two)
-- [Xcode tips and tricks – part three | Hacking with Swift](https://www.hackingwithswift.com/articles/171/xcode-tips-and-tricks-part-three)
-- [Xcode tips and tricks – part four | Hacking with Swift](https://www.hackingwithswift.com/articles/176/xcode-tips-and-tricks-part-four)
-- [37 Xcode Tips and Shortcuts | Snowdog](https://snow.dog/blog/how-to-speed-up-your-daily-development-37-xcode-tips-and-shortcuts)
-- [Set up Counterpart suffixes to make file movement a bit easier | 9to5Tutorials](https://9to5tutorial.com/xcode-set-up-counterpartsuffixes-to-make-file-movement-a-bit-easier)
-- [Dancing in the Debugger — A Waltz with LLDB | objc.io](https://www.objc.io/issues/19-debugging/lldb-debugging/)
-
-<link rel="stylesheet" href="/css/styles.css?v=1.0">
+- [Xcode tips and tricks – part one \| Hacking with Swift](https://www.hackingwithswift.com/articles/166/xcode-tips-and-tricks-part-one)
+- [Xcode tips and tricks – part two \| Hacking with Swift](https://www.hackingwithswift.com/articles/168/xcode-tips-and-tricks-part-two)
+- [Xcode tips and tricks – part three \| Hacking with Swift](https://www.hackingwithswift.com/articles/171/xcode-tips-and-tricks-part-three)
+- [Xcode tips and tricks – part four \| Hacking with Swift](https://www.hackingwithswift.com/articles/176/xcode-tips-and-tricks-part-four)
+- [37 Xcode Tips and Shortcuts \| Snowdog](https://snow.dog/blog/how-to-speed-up-your-daily-development-37-xcode-tips-and-shortcuts)
+- [Set up Counterpart suffixes to make file movement a bit easier \| 9to5Tutorials](https://9to5tutorial.com/xcode-set-up-counterpartsuffixes-to-make-file-movement-a-bit-easier)
+- [Dancing in the Debugger — A Waltz with LLDB \| objc.io](https://www.objc.io/issues/19-debugging/lldb-debugging/)

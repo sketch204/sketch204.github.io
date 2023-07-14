@@ -1,7 +1,8 @@
-Preserve Xcode Customizations
-===============================
-
-<span class="articleDate">Written on: April 20, 2023</span>
+---
+layout: post
+title: Preserve Xcode Customizations
+description: A list file and folders that contain some of the customization that you've made to Xcode
+---
 
 The files containing your Xcode customization are typically at the following paths:
 
@@ -23,6 +24,4 @@ It is a good idea to backup all the files that you care about from these directo
 Sources
 -------
 
-[Uninstall xcode 10 | Apple Developer Forums](https://developer.apple.com/forums/thread/110227?answerId=341753022#341753022)
-
-<link rel="stylesheet" href="/css/styles.css?v=1.0">
+- [Uninstall xcode 10 \| Apple Developer Forums](https://developer.apple.com/forums/thread/110227?answerId=341753022#341753022)

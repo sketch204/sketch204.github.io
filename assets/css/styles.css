@@ -1,5 +1,5 @@
-@import url(./colors.css);
-@import url(./article.css);
+@import url(colors.css);
+@import url(article.css);
 
 body {
     font-family: system-ui, Helvetica, sans-serif;
@@ -77,4 +77,9 @@ footer {
 .highlight {
     color: var(--highlight-color);
     display: inline;
+}
+
+.readingMargins {
+    max-width: 800px;
+    margin: auto;
 }

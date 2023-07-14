@@ -1,7 +1,8 @@
-Uninstalling Xcode
-==================
-
-<span class="articleDate">Written on: April 20, 2023</span>
+---
+layout: post
+title: Uninstalling Xcode
+description: A list of all the files and folder you must delete to fully uninstall Xcode.
+---
 
 Assuming you put Xcode in the Applications folder; to remove all traces of Xcode from your disk, delete the following files/folders:
 
@@ -19,6 +20,4 @@ Assuming you put Xcode in the Applications folder; to remove all traces of Xcode
 Sources
 -------
 
-[Uninstall xcode 10 | Apple Developer Forums](https://developer.apple.com/forums/thread/110227?answerId=341753022#341753022)
-
-<link rel="stylesheet" href="/css/styles.css?v=1.0">
+[Uninstall xcode 10 \| Apple Developer Forums](https://developer.apple.com/forums/thread/110227?answerId=341753022#341753022)
