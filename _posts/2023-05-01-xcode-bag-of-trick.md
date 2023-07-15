@@ -386,8 +386,7 @@ Use `Command`+`Shift`+`Y` to quickly hide and show the debug area. It usually po
 
 Using `Command`+`Shift`+`C`, you can bring focus to the output console. From there you can either start typing LLDB commands or use `Command`+`F` to start searching through the console output. Not the biggest shortcut, but good for a keyboard oriented workflow.
 
-Sources
--------
+## Sources
 
 A lot of these were just written by me from memory. I also looked at some lists online to remind myself of what I know. Can't always recall everything on the spot. I won't claim to know everything though, I definitely learned some new things from these lists.
 
