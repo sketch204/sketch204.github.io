@@ -32,7 +32,7 @@ article img {
   margin-right: auto;
 }
 
-article code {
+article code.highlighter-rouge {
   font-family: Courier, monospace;
   color: var(--code-text-color);
   background-color: var(--code-background-color);
@@ -47,4 +47,22 @@ article hr {
 article .date {
   color: var(--secondary-text-color);
   font-size: small;
+}
+
+article aside {
+  padding: 16px;
+  border-radius: 2%;
+}
+
+article aside.info {
+  background-color: rgba(0, 170, 255, 0.2);
+}
+
+article aside h1 {
+  color: rgba(0, 170, 255, 0.7);;
+  border: none;
+  padding: 0;
+  font-size: 1em;
+  font-weight: 800;
+  line-height: 1;
 }
