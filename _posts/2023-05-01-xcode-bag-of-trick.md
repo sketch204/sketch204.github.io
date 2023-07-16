@@ -2,6 +2,7 @@
 layout: post
 title: Big bag of Xcode tips & tricks
 description: A list of Xcode tips and tricks that I've learned through the years
+tags: xcode
 ---
 
 I've been a developer for a number of years now. Primarily iOS. Over the years I've learned to use Xcode quite efficiently. I won't claim to now all the ins and outs of it but I do consider myself to know more than most. Below is a list of my learnings. Perhaps you'll find them useful.
@@ -386,6 +387,42 @@ Use `Command`+`Shift`+`Y` to quickly hide and show the debug area. It usually po
 
 Using `Command`+`Shift`+`C`, you can bring focus to the output console. From there you can either start typing LLDB commands or use `Command`+`F` to start searching through the console output. Not the biggest shortcut, but good for a keyboard oriented workflow.
 
+## Misc
+
+### Uninstalling Xcode
+
+Assuming you put Xcode in the Applications folder, to remove all traces of Xcode from your machine, delete the following files/folders:
+
+1. `/Applications/Xcode.app`
+1. `~/Library/Caches/com.apple.dt.Xcode`
+1. `~/Library/Developer`
+1. `~/Library/MobileDevice`
+1. `~/Library/Preferences/com.apple.dt.Xcode.plist`
+1. `/Library/Preferences/com.apple.dt.Xcode.plist`
+1. `/System/Library/Receipts/com.apple.pkg.XcodeExtensionSupport.bom`
+1. `/System/Library/Receipts/com.apple.pkg.XcodeExtensionSupport.plist`
+1. `/System/Library/Receipts/com.apple.pkg.XcodeSystemResources.bom`
+1. `/System/Library/Receipts/com.apple.pkg.XcodeSystemResources.plist`
+
+### Preserve Xcode Customizations
+
+Files containing your Xcode customization are typically at the following paths:
+
+1. `~/Library/Developer/Xcode/UserData/CodeSnippets`
+    - This contains your custom saved code snippets. There will be one file with a unique name, per code snippet. There is no easy way to tell which is which, except by opening it as a text file and looking at the contents.
+1. `~/Library/Developer/Xcode/UserData/FontAndColorThemes`
+    - This contains your custom themes. One file per theme.
+1. `~/Library/Developer/Xcode/UserData/KeyBindings`
+    - This is where you keybindings are. If you've never customized your key bindings there should be a single file called `Default.idekeybindings`. If you have customized key binding but never saved them to a dedicated key bindings set, they will saved in the `Default` file. Otherwise if you did create a separate key bindings set, there should be a file for that.
+1. `~/Library/Developer/Xcode/Templates`
+    - If you've created custom file templates, those will be stored here.
+1. `~/Library/Preferences/com.apple.dt.Xcode.plist`
+    - This should contain settings that you've set through Xcode's preferences pane. Keep in mind not all options might be stored in this file.
+1. `~/Library/MobileDevice/Provisioning Profiles`
+    - This contains all the provisioning profiles you've created for any physical devices that you've deployed apps for. It's a good idea to save these so you don't have to regenerate them.
+
+It is a good idea to backup all the files that you care about from this list. Personally I save them to a GitHub repo along with config files for other applications that I use often. In case you loose your laptop, or have to set up a new one, it will greatly simplify the process for you. Just drop these files in their respective locations and you're good to go!
+
 ## Sources
 
 A lot of these were just written by me from memory. I also looked at some lists online to remind myself of what I know. Can't always recall everything on the spot. I won't claim to know everything though, I definitely learned some new things from these lists.
@@ -397,3 +434,4 @@ A lot of these were just written by me from memory. I also looked at some lists 
 - [37 Xcode Tips and Shortcuts \| Snowdog](https://snow.dog/blog/how-to-speed-up-your-daily-development-37-xcode-tips-and-shortcuts)
 - [Set up Counterpart suffixes to make file movement a bit easier \| 9to5Tutorials](https://9to5tutorial.com/xcode-set-up-counterpartsuffixes-to-make-file-movement-a-bit-easier)
 - [Dancing in the Debugger — A Waltz with LLDB \| objc.io](https://www.objc.io/issues/19-debugging/lldb-debugging/)
+- [Uninstall xcode 10 \| Apple Developer Forums](https://developer.apple.com/forums/thread/110227?answerId=341753022#341753022)

@@ -2,7 +2,7 @@
 layout: post
 title: From C to Swift - Part 2
 description: Learn to how to integrate C system libraries into your Swift code
-tags: Swift
+tags: swift swiftpm c
 ---
 
 In [part 1]({% post_url 2023-07-15-from-c-to-swift-pt1 %}) of this series we looked at how we can integrate a C library with SwiftPM such that we can import it into our code. In this article, we will be taking a look at how to actually use the C code, and what the edge cases of using C code in Swift are. If you missed the first part, I highly recommend you give it a read.

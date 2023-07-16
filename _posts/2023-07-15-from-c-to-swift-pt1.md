@@ -2,7 +2,7 @@
 layout: post
 title: From C to Swift - Part 1
 description: Learn to how to integrate C system libraries into your Swift code
-tags: Swift
+tags: swift swiftpm c
 ---
 
 In this article I will walk you through the steps required to set up a C library as a SwiftPM package. This will allow you to use C code within a Swift project. I will then also show you how to use said C code from Swift, as well as how to make it more Swift-friendly.
