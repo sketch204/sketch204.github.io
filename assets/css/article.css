@@ -40,6 +40,22 @@ article code.highlighter-rouge {
   border-radius: 5px;
 }
 
+article figure.highlight {
+  margin: 0;
+}
+
+article figure.highlight pre {
+  padding: 5px 10px;
+  border-radius: 10px;
+  overflow-x: scroll;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+article figure.highlight pre::-webkit-scrollbar {
+  display: none;
+}
+
 article hr {
   background-color: var(--rule-color);
 }
@@ -50,19 +66,43 @@ article .date {
 }
 
 article aside {
-  padding: 16px;
-  border-radius: 2%;
-}
-
-article aside.info {
-  background-color: rgba(0, 170, 255, 0.2);
+  padding: 0 10px;
+  margin: 2em 0;
+  border-radius: 10px;
+  border: 1px solid white;
 }
 
 article aside h1 {
-  color: rgba(0, 170, 255, 0.7);;
   border: none;
   padding: 0;
   font-size: 1em;
   font-weight: 800;
   line-height: 1;
+}
+
+article aside.info {
+  background-color: rgba(197, 197, 197, 0.2);
+  border-color: var(--text-color);
+}
+
+article aside.info h1 {
+  color: var(--text-color);
+}
+
+article aside.note {
+  background-color: rgba(0, 170, 255, 0.2);
+  border-color: rgba(0, 170, 255, 0.7);
+}
+
+article aside.note h1 {
+  color: rgba(0, 170, 255, 0.7);
+}
+
+article aside.warning {
+  background-color: #ffbd723a;
+  border-color: #ffbd72;
+}
+
+article aside.warning h1 {
+  color: #ffbd72;
 }

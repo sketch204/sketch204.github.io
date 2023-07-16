@@ -38,6 +38,7 @@ Let's get started, first we create a directory to hold the "sources" of our libr
 Next we will create two files in this directory. The first is a bridging header. It will be a C header file. That is, a plain-text file ending with the `.h` extension. The name of the file doesn't really matter. I will call mine `bridging-header.h`, since it technically acts as a bridge between the C and Swift interfaces. In this bridging header we must import any C code that we wish to be a part of this Swift Package. These imports are done in C syntax and look as follows:
 
 {% highlight c %}
+<!-- markdownlint-disable-next-line -->
 #include <libraryHeader>
 {% endhighlight %}
 
@@ -46,21 +47,21 @@ You can import individual C files here if you wish, however for most libraries t
 In my case I am trying to import the `ncurses` library, so I will do it like so:
 
 {% highlight c %}
+<!-- markdownlint-disable-next-line -->
 #include <ncurses.h>
 {% endhighlight %}
 
-<aside class="info">
+{% capture info_box_1 %}
+If you are unfamiliar with C there is one thing that is good to know. C and Swift work a little different in terms of how they share code between source files.
 
-<h1>Info</h1>
+In swift we are used to having access to all the code that is within the same module. For code outside of our module, we can simply import the whole module and we get access to all public members. For example, if you are working on an app, all code that belongs to the app can freely reference each other (so long as it has an access level of `internal` of higher). However for code defined outside of our app, such as in the `UIKit`, `SwiftUI` and `Foundation` frameworks or some third-party library such as `Firebase` or `Realm`, we must first import those modules, before we can use their code.
 
-<p>If you are unfamiliar with C there is one thing that is good to know. C and Swift work a little different in terms of how they share code between source files.</p>
+C works a little different. Everything declared in a `.c` source code file is private by default. You make it public by also including forward declarations of its members in an accompanying header file. A forward declaration is similar to how a protocol declaration looks (though that's where the similarities end, C does not have objects or protocols). Other source code can then import whatever headers they need, to use code from other source code files. With this difference in mind it is easy to see that these two systems are not really compatible out of the box.
 
-<p>In swift we are used to having access to all the code that is within the same module. For code outside of our module, we can simply import the whole module and we get access to all public members. For example, if you are working on an app, all code that belongs to the app can freely reference each other (so long as it has an access level of <code>internal</code> of higher). However for code defined outside of our app, such as in the <code>UIKit</code>, <code>SwiftUI</code> and <code>Foundation</code> frameworks or some third-party library such as <code>Firebase</code> or <code>Realm</code>, we must first import those modules, before we can use their code.</p>
+This is why we must use a bridging header to **bridge** the gap between the two systems. We define one or more headers that import all the code that our Swift module needs to use. Swift will then treat that bridging header as one module, that you can import. If you have a mixed Swift/Objective-C codebase, you will have a bridging header generated for you by Xcode that performs the same function. That bridging header will imported implicitly. In our case we will need to import it manually.
+{% endcapture %}
 
-<p>C works a little different. Everything declared in a <code>.c</code> source code file is private by default. You make it public by also including forward declarations of its members in an accompanying header file. A forward declaration is similar to how a protocol declaration looks (though that's where the similarities end, C does not have objects or protocols). Other source code can then import whatever headers they need, to use code from other source code files. With this difference in mind it is easy to see that these two systems are not really compatible out of the box.</p>
-
-<p>This is why we must use a bridging header to <b>bridge</b> the gap between the two systems. We define one or more headers that import all the code that our Swift module needs to use. Swift will then treat that bridging header as one module, that you can import. If you have a mixed Swift/Objective-C codebase, you will have a bridging header generated for you by Xcode that performs the same function. That bridging header will imported implicitly. In our case we will need to import it manually.</p>
-</aside>
+{% include aside.html type="info" content=info_box_1 %}
 
 Next, we define a `modulemap` file.
 
@@ -145,7 +146,7 @@ Build complete! (1.55s)
  %
 {% endhighlight %}
 
-Now the C library is imported and you can use all of its compatible member. This is the end of part 1. In part 2, we will go through what using this library is actually like, as well as some tips on how to wrap the C API behind a more Swift-friendly interface.
+Now the C library is imported and you can use all of its compatible member. This is the end of part 1. In [part 2]({% post_url 2023-07-15-from-c-to-swift-pt2 %}), we will go through what using this library is actually like, as well as some tips on how to wrap the C API behind a more Swift-friendly interface.
 
 ## Sources
 
