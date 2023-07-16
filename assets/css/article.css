@@ -45,6 +45,7 @@ article figure.highlight {
 }
 
 article figure.highlight pre {
+  background-color: var(--code-background-color);
   padding: 5px 10px;
   border-radius: 10px;
   overflow-x: scroll;
@@ -69,7 +70,7 @@ article aside {
   padding: 0 10px;
   margin: 2em 0;
   border-radius: 10px;
-  border: 1px solid white;
+  border: 1px solid;
 }
 
 article aside h1 {
@@ -81,28 +82,28 @@ article aside h1 {
 }
 
 article aside.info {
-  background-color: rgba(197, 197, 197, 0.2);
-  border-color: var(--text-color);
+  background-color: var(--aside-info-background);
+  border-color: var(--aside-info-text);
 }
 
 article aside.info h1 {
-  color: var(--text-color);
+  color: var(--aside-info-text);
 }
 
 article aside.note {
-  background-color: rgba(0, 170, 255, 0.2);
-  border-color: rgba(0, 170, 255, 0.7);
+  background-color: var(--aside-note-background);
+  border-color: var(--aside-note-text);
 }
 
 article aside.note h1 {
-  color: rgba(0, 170, 255, 0.7);
+  color: var(--aside-note-text);
 }
 
 article aside.warning {
-  background-color: #ffbd723a;
-  border-color: #ffbd72;
+  background-color: var(--aside-warning-background);
+  border-color: var(--aside-warning-text);
 }
 
 article aside.warning h1 {
-  color: #ffbd72;
+  color: var(--aside-warning-text);
 }

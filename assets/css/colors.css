@@ -5,8 +5,15 @@
   --accent-color: #F95738; /* Red Salsa */
   --highlight-color: #FF9921; /* Light Salmon */
   --code-text-color: var(--accent-color);
-  --code-background-color: #EFD7D2; /* Ebony */
+  --code-background-color: #efd7d283; /* Ebony */
   --rule-color: var(--accent-color);
+
+  --aside-info-background: #c5c5c533;
+  --aside-info-text: var(--text-color);
+  --aside-note-background: #41c0ff33;
+  --aside-note-text: #00aaffb3;
+  --aside-warning-background: #ff97212c;
+  --aside-warning-text: #FF9921;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,7 +24,14 @@
     --accent-color: #F95738; /* Tomato */
     --highlight-color: #FFA947; /* Orange Peel */
     --code-text-color: var(--highlight-color);
-    --code-background-color: #ffbd723a; /* Ebony */
+    --code-background-color: #404040;
     --rule-color: var(--secondary-text-color);
+
+    --aside-info-background: #c5c5c533;
+    --aside-info-text: var(--text-color);
+    --aside-note-background: #00aaff33;
+    --aside-note-text: #00aaffb3;
+    --aside-warning-background: var(--code-background-color);
+    --aside-warning-text: #ffbd72;
   }
 }
