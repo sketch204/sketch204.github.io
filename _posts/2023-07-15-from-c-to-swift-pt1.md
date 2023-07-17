@@ -38,7 +38,6 @@ Let's get started, first we create a directory to hold the "sources" of our libr
 Next we will create two files in this directory. The first is a bridging header. It will be a C header file. That is, a plain-text file ending with the `.h` extension. The name of the file doesn't really matter. I will call mine `bridging-header.h`, since it technically acts as a bridge between the C and Swift interfaces. In this bridging header we must import any C code that we wish to be a part of this Swift Package. These imports are done in C syntax and look as follows:
 
 {% highlight c %}
-<!-- markdownlint-disable-next-line -->
 #include <libraryHeader>
 {% endhighlight %}
 
@@ -47,7 +46,6 @@ You can import individual C files here if you wish, however for most libraries t
 In my case I am trying to import the `ncurses` library, so I will do it like so:
 
 {% highlight c %}
-<!-- markdownlint-disable-next-line -->
 #include <ncurses.h>
 {% endhighlight %}
 

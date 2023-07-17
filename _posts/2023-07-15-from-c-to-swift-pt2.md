@@ -48,7 +48,6 @@ extern int pair_content(short, short*, short*);
 Note the last two arguments, they are pointer types. In my case, the Swift compiler interpreted this declaration like so:
 
 {% highlight swift %}
-<!-- markdownlint-disable-next-line -->
 public func pair_content(_: Int16, _: UnsafeMutablePointer<Int16>!, _: UnsafeMutablePointer<Int16>!) -> Int32
 {% endhighlight %}
 
@@ -220,7 +219,6 @@ The only way around this, that I found to work is to go back to my bridging head
 
 In `bridging-header.h`
 {% highlight c %}
-<!-- markdownlint-disable-next-line -->
 #include <ncurses.h>
 
 int getUnderlineAttribute() {
