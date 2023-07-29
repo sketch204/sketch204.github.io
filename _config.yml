@@ -1,7 +1,8 @@
 title: Inal's Gotov
-description: Inal's personal webpage!
-tagline: Inal's personal webpage!
-url: https://inal.dev
+description: Inal's personal webpage
+tagline: Inal's personal webpage
+url: https://inalgotov.com
+contact_email: hello@inalgotov.com
 author: Inal Gotov
 lsi: false
 safe: true
@@ -16,3 +17,12 @@ plugins:
   - jekyll-sitemap
   - jekyll-feed
   - jekyll-seo-tag
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+  - scope:
+      path: "_posts"
+    values:
+      layout: "post"

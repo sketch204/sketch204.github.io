@@ -31,7 +31,7 @@ footer {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    height: 95vh;
+    height: 92.5vh;
     max-width: 800px;
     margin: auto;
 }
@@ -70,6 +70,9 @@ footer {
     }
 }
 
+.highlight {
+    color: var(--highlight-color);
+}
 
 .content h1 {
     color: var(--accent-color);

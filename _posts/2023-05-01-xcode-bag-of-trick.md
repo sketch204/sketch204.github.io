@@ -1,5 +1,4 @@
 ---
-layout: post
 title: Big bag of Xcode tips & tricks
 description: A list of Xcode tips and tricks that I've learned through the years
 tags: xcode

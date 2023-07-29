@@ -1,5 +1,4 @@
 ---
-layout: post
 title: From C to Swift - Part 2
 description: Learn to how to integrate C system libraries into your Swift code
 tags: swift swiftpm c
