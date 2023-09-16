@@ -50,20 +50,24 @@
 
 <p>First, most basic constants and functions that are defined in C, will be available in Swift as their global constant and function Swift counterparts. You can call them without any name-spacing from any context. For example, the <code class="language-plaintext highlighter-rouge">ncurses</code> library has a <code class="language-plaintext highlighter-rouge">getch</code> function which reads a characters from the input stream. It returns an <code class="language-plaintext highlighter-rouge">int</code> and takes no arguments. In my <code class="language-plaintext highlighter-rouge">main.swift</code>, after importing <code class="language-plaintext highlighter-rouge">Cnurses</code>, I can very easily call this function.</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="kt">Cncurses</span>
-<span class="k">let</span> <span class="nv">c</span> <span class="o">=</span> <span class="nf">getch</span><span class="p">()</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="code"><pre><span class="kd">import</span> <span class="kt">Cncurses</span>
+<span class="k">let</span> <span class="nv">c</span> <span class="o">=</span> <span class="nf">getch</span><span class="p">()</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>However, to make things clear for myself and help me keep my sanity, I try not to access the C library members directly as top-level members. Instead I prepend their module name to the member names. So given the above example, I prefer to make the call like so:</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="kt">Cncurses</span>
-<span class="k">let</span> <span class="nv">c</span> <span class="o">=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">getch</span><span class="p">()</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="code"><pre><span class="kd">import</span> <span class="kt">Cncurses</span>
+<span class="k">let</span> <span class="nv">c</span> <span class="o">=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">getch</span><span class="p">()</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>This makes it very explicit when I am working with C code.</p>
 
-<aside class="note">
-<h1>Note</h1>
+<aside class="note "><h1>Note </h1>
 <p>In part 1 we defined the main <code class="language-plaintext highlighter-rouge">Curses</code> target as a library. This means it cannot have top-level executable code. If you wish to test if some code compiles, you can declare a top level testing function, and place your executable code there. However if you wish to execute that code, the easiest way would be to either call it from a test, or write the code in the test directly. New SwiftPM packages are typically created with tests, so looks for a <code class="language-plaintext highlighter-rouge">Tests</code> folder.</p>
-
 </aside>
 
 <h3 id="structs">Structs</h3>
@@ -88,13 +92,30 @@
 
 <p>Notice that the two C <code class="language-plaintext highlighter-rouge">short</code> pointers were transformed into <code class="language-plaintext highlighter-rouge">UnsafeMutablePointer&lt;Int16&gt;</code>. The way to use these functions in Swift would be to simply pass two in-out references to it.</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">CShort</span> <span class="o">=</span> <span class="mi">0</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="code"><pre><span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">CShort</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="k">var</span> <span class="nv">textColor</span><span class="p">:</span> <span class="kt">CShort</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">backgroundColor</span><span class="p">:</span> <span class="kt">CShort</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="kt">Cncurses</span><span class="o">.</span><span class="nf">pair_content</span><span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">textColor</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">backgroundColor</span><span class="p">)</span></code></pre></figure>
+<span class="kt">Cncurses</span><span class="o">.</span><span class="nf">pair_content</span><span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">textColor</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">backgroundColor</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>We could wrap this in a Swift-friendly, re-usable function. That way we can hide all the C details, like so:</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">func</span> <span class="nf">getColors</span><span class="p">(</span><span class="k">for</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nv">textColor</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">backgroundColor</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="code"><pre><span class="kd">func</span> <span class="nf">getColors</span><span class="p">(</span><span class="k">for</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nv">textColor</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">backgroundColor</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">var</span> <span class="nv">rawForegroundColor</span><span class="p">:</span> <span class="kt">CShort</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">var</span> <span class="nv">rawBackgroundColor</span><span class="p">:</span> <span class="kt">CShort</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">pair_content</span><span class="p">(</span>
@@ -106,14 +127,13 @@
         <span class="kt">Int</span><span class="p">(</span><span class="n">rawForegroundColor</span><span class="p">),</span>
         <span class="kt">Int</span><span class="p">(</span><span class="n">rawBackgroundColor</span><span class="p">)</span>
     <span class="p">)</span>
-<span class="p">}</span></code></pre></figure>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>To make it even more Swift friendly, we would define an <code class="language-plaintext highlighter-rouge">enum</code> or <code class="language-plaintext highlighter-rouge">struct</code> to hold constants for all of the available colors, but I leave that as an exercise to the reader.</p>
 
-<aside class="info">
-<h1>Info</h1>
+<aside class="info "><h1>Info </h1>
 <p>Note the use of the <code class="language-plaintext highlighter-rouge">CShort</code> type. It is a <code class="language-plaintext highlighter-rouge">typealias</code> that maps to <code class="language-plaintext highlighter-rouge">Int16</code>. It is from a collection of types that map to C primitives. We could have used <code class="language-plaintext highlighter-rouge">Int16</code> directly, but I find this conveys my intent a little better. If you want to learn more, you can find a full list of mapped C types <a href="https://developer.apple.com/documentation/swift/c-interoperability">here</a> (there’s no header linking in Apple docs, so you’ll have to scroll down a bit).</p>
-
 </aside>
 
 <h3 id="strings">Strings</h3>
@@ -122,12 +142,19 @@
 
 <p>Things get interesting when a C function return a string value, by assigning it a passed in pointer. In that case you must appropriate allocate some data, call the function passing it in, and then transform that data into a Swift string. There are a number of ways to accomplish this, but the most sane one I found is as follows.</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="c1">// 1</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="c1">// 1</span>
 <span class="k">var</span> <span class="nv">buffer</span> <span class="o">=</span> <span class="p">[</span><span class="kt">CChar</span><span class="p">](</span><span class="nv">repeating</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">count</span><span class="p">:</span> <span class="mi">80</span><span class="p">)</span>
 <span class="c1">// 2</span>
 <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">getstr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">)</span>
 <span class="c1">// 3</span>
-<span class="k">let</span> <span class="nv">str</span> <span class="o">=</span> <span class="kt">String</span><span class="p">(</span><span class="nv">cString</span><span class="p">:</span> <span class="n">buffer</span><span class="p">)</span></code></pre></figure>
+<span class="k">let</span> <span class="nv">str</span> <span class="o">=</span> <span class="kt">String</span><span class="p">(</span><span class="nv">cString</span><span class="p">:</span> <span class="n">buffer</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>Here we are calling the <code class="language-plaintext highlighter-rouge">getstr</code> string. This function will read a user input from the console, until it reads a newline feed. It will then take what it has read, and place it in the passed it pointer.</p>
 
@@ -143,18 +170,22 @@
 
 <p>If we were to wrap this in a Swifty function, I would do it like so.</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getString</span><span class="p">(</span><span class="nv">maxLength</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getString</span><span class="p">(</span><span class="nv">maxLength</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span>
     <span class="k">var</span> <span class="nv">buffer</span> <span class="o">=</span> <span class="p">[</span><span class="kt">CChar</span><span class="p">](</span><span class="nv">repeating</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">count</span><span class="p">:</span> <span class="n">maxLength</span><span class="p">)</span>
     <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">getstr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">)</span>
     <span class="k">return</span> <span class="kt">String</span><span class="p">(</span><span class="nv">cString</span><span class="p">:</span> <span class="n">buffer</span><span class="p">)</span>
-<span class="p">}</span></code></pre></figure>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>This gives us the ability to override the max string length, if we anticipate a longer string, while also keeping a default of 80, which is common on a lot of other platforms.</p>
 
-<aside class="info">
-<h1>Info</h1>
+<aside class="info "><h1>Info </h1>
 <p>Apple has a <a href="https://developer.apple.com/documentation/swift/calling-functions-with-pointer-parameters">whole page</a> dedicated to the implicit casting rules between Swift types and C pointer types. Be sure to check it out, if your work involves C pointers.</p>
-
 </aside>
 
 <h3 id="status-codes">Status Codes</h3>
@@ -163,20 +194,33 @@
 
 <p>Rather than checking for the value of the status code every time you call the function in Swift, I would recommend declaring a throwing wrapper function. Let’s continue our <code class="language-plaintext highlighter-rouge">getstr</code> function example from the previous section. First I declare an error type so I have something to <code class="language-plaintext highlighter-rouge">throw</code> in case of an error.</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">CursesError</span><span class="p">:</span> <span class="kt">Error</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="code"><pre><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">CursesError</span><span class="p">:</span> <span class="kt">Error</span> <span class="p">{</span>
     <span class="k">case</span> <span class="n">unknown</span>
-<span class="p">}</span></code></pre></figure>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>Next I modify my Swift <code class="language-plaintext highlighter-rouge">getString</code> function such that it throws an error if the status code of the C function is equal to <code class="language-plaintext highlighter-rouge">ERR</code>. I use the… in this case rather counter-intuitive, <code class="language-plaintext highlighter-rouge">guard</code> clause to perform the logic check.</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getString</span><span class="p">(</span><span class="nv">maxLength</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getString</span><span class="p">(</span><span class="nv">maxLength</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span>
     <span class="k">var</span> <span class="nv">buffer</span> <span class="o">=</span> <span class="p">[</span><span class="kt">CChar</span><span class="p">](</span><span class="nv">repeating</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">count</span><span class="p">:</span> <span class="n">maxLength</span><span class="p">)</span>
     <span class="k">let</span> <span class="nv">status</span> <span class="o">=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">getstr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">)</span>
     <span class="k">guard</span> <span class="n">status</span> <span class="o">!=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="kt">ERR</span> <span class="k">else</span> <span class="p">{</span>
         <span class="k">throw</span> <span class="kt">CursesError</span><span class="o">.</span><span class="n">unknown</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="kt">String</span><span class="p">(</span><span class="nv">cString</span><span class="p">:</span> <span class="n">buffer</span><span class="p">)</span>
-<span class="p">}</span></code></pre></figure>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>This is much better. Now I actually take the error into account, and provide a very Swifty way of handling it. The client can choose to ignore it if they are confident, but are otherwise forced to handle it.</p>
 
@@ -190,15 +234,39 @@
 
 <p>Let’s begin. I will create a new class called <code class="language-plaintext highlighter-rouge">Window</code>.</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="kt">Cncurses</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="kd">import</span> <span class="kt">Cncurses</span>
 
 <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Window</span> <span class="p">{</span>
     <span class="c1">// More code to follow</span>
-<span class="p">}</span></code></pre></figure>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>It will have a single constant property called <code class="language-plaintext highlighter-rouge">windowPointer</code>. This will be the C pointer to the window struct. I will create this pointer in the initializer, exposing the window creation arguments. I will also make sure to properly destroy the window pointer once my class is de-allocated.</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="kt">Cncurses</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre></td><td class="code"><pre><span class="kd">import</span> <span class="kt">Cncurses</span>
 
 <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Window</span> <span class="p">{</span>
     <span class="kd">private</span> <span class="k">let</span> <span class="nv">windowPointer</span><span class="p">:</span> <span class="kt">OpaquePointer</span>
@@ -215,22 +283,28 @@
     <span class="kd">deinit</span> <span class="p">{</span>
         <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">delwin</span><span class="p">(</span><span class="n">windowPointer</span><span class="p">)</span>
     <span class="p">}</span>
-<span class="p">}</span></code></pre></figure>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
-<aside class="info">
-<h1>Info</h1>
+<aside class="info "><h1>Info </h1>
 <p><code class="language-plaintext highlighter-rouge">numericCast</code> is a neat little <a href="https://developer.apple.com/documentation/swift/numericcast(_:)">built-in Swift function</a>, which will take in whatever numeric type you give it, and cast it to whatever numeric type is expected on the other end.</p>
-
 </aside>
 
 <p>Now, with my wrapper class set up, I can start adding all of those window modifying functions as methods of the class. For example, this is how I would declare a <code class="language-plaintext highlighter-rouge">getCharacter</code> function. This function reads a single character the is passed to the input stream of my window and returns it.</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">extension</span> <span class="kt">Window</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="kd">extension</span> <span class="kt">Window</span> <span class="p">{</span>
     <span class="kd">public</span> <span class="kd">func</span> <span class="nf">getCharacter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
         <span class="k">let</span> <span class="nv">c</span> <span class="o">=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">wgetch</span><span class="p">(</span><span class="n">windowPointer</span><span class="p">)</span>
         <span class="k">return</span> <span class="nf">numericCast</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
     <span class="p">}</span>
-<span class="p">}</span></code></pre></figure>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>Notice how the C pointer remains hidden the whole time. Instead I simply work with my class instance. The client of my class does not even need to know that there are C pointers being passed around behind the scenes. This is much more Swifty in my opinion.</p>
 
@@ -242,18 +316,27 @@
 
 <p>An example of one such macro is <code class="language-plaintext highlighter-rouge">A_UNDERLINE</code>. In <code class="language-plaintext highlighter-rouge">ncurses</code> you use this to make your output text underlined. It is a macro that does not accept parameters, but depends on the <code class="language-plaintext highlighter-rouge">NCURSES_BITS(mask, shift)</code> macro. If you try to access it in your Swift code you will get a compile-time error, saying it is not defined:</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">underline</span> <span class="o">=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="kt">A_UNDERLINE</span>
-<span class="c1">// Error: Module 'Cncurses' has no member named 'A_UNDERLINE'</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="code"><pre><span class="k">let</span> <span class="nv">underline</span> <span class="o">=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="kt">A_UNDERLINE</span>
+<span class="c1">// Error: Module 'Cncurses' has no member named 'A_UNDERLINE'</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>The only way around this, that I found to work is to go back to my bridging header and declare a wrapper function that accesses the unavailable member.</p>
 
 <p>In <code class="language-plaintext highlighter-rouge">bridging-header.h</code></p>
 
-<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;ncurses.h&gt;</span><span class="cp">
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="cp">#include</span> <span class="cpf">&lt;ncurses.h&gt;</span><span class="cp">
 </span>
 <span class="kt">int</span> <span class="nf">getUnderlineAttribute</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="n">A_UNDERLINE</span><span class="p">;</span>
-<span class="p">}</span></code></pre></figure>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>I would do this for any unavailable member that I need access to.</p>
 
@@ -263,10 +346,8 @@
 
 <p>This works for most unavailable members.</p>
 
-<aside class="note">
-<h1>Note</h1>
+<aside class="note "><h1>Note </h1>
 <p>It irks me to put implementation in the header file, but with the current configuration, the modulemap seems to ignore any <code class="language-plaintext highlighter-rouge">.c</code> source files the I add to the module. I was not able to figure out how to make it work. If you know of a way, please <a href="mailto:hello@inal.dev">do let me know</a>.</p>
-
 </aside>
 
 <h2 id="conclusion">Conclusion</h2>

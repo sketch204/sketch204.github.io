@@ -84,9 +84,7 @@
 
 <figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;ncurses.h&gt;</span></code></pre></figure>
 
-<aside class="info">
-<h1>Info</h1>
-
+<aside class="info "><h1>Info </h1>
 <p>If you are unfamiliar with C there is one thing that is good to know. C and Swift work a little different in terms of how they share code between source files.</p>
 
 <p>In swift we are used to having access to all the code that is within the same module. For code outside of our module, we can simply import the whole module and we get access to all public members. For example, if you are working on an app, all code that belongs to the app can freely reference each other (so long as it has an access level of <code class="language-plaintext highlighter-rouge">internal</code> of higher). However for code defined outside of our app, such as in the <code class="language-plaintext highlighter-rouge">UIKit</code>, <code class="language-plaintext highlighter-rouge">SwiftUI</code> and <code class="language-plaintext highlighter-rouge">Foundation</code> frameworks or some third-party library such as <code class="language-plaintext highlighter-rouge">Firebase</code> or <code class="language-plaintext highlighter-rouge">Realm</code>, we must first import those modules, before we can use their code.</p>
@@ -94,18 +92,23 @@
 <p>C works a little different. Everything declared in a <code class="language-plaintext highlighter-rouge">.c</code> source code file is private by default. You make it public by also including forward declarations of its members in an accompanying header file. A forward declaration is similar to how a protocol declaration looks (though that’s where the similarities end, C does not have objects or protocols). Other source code can then import whatever headers they need, to use code from other source code files. With this difference in mind it is easy to see that these two systems are not really compatible out of the box.</p>
 
 <p>This is why we must use a bridging header to <strong>bridge</strong> the gap between the two systems. We define one or more headers that import all the code that our Swift module needs to use. Swift will then treat that bridging header as one module, that you can import. If you have a mixed Swift/Objective-C codebase, you will have a bridging header generated for you by Xcode that performs the same function. That bridging header will imported implicitly. In our case we will need to import it manually.</p>
-
 </aside>
 
 <p>Next, we define a <code class="language-plaintext highlighter-rouge">modulemap</code> file.</p>
 
 <p>Create a new file called <code class="language-plaintext highlighter-rouge">module.modulemap</code>. This file is responsible for telling SwiftPM what your package consists of. The file name is important. Place the following inside of the file.</p>
 
-<figure class="highlight"><pre><code class="language-modulemap" data-lang="modulemap">module SwiftLibraryName {
+<figure class="highlight"><pre><code class="language-modulemap" data-lang="modulemap"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>module SwiftLibraryName {
     header "bridgingHeaderName"
     link "CLibraryName"
     export *
-}</code></pre></figure>
+}
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>Make sure to replace the following:</p>
 
@@ -117,11 +120,17 @@
 
 <p>After the replacements my <code class="language-plaintext highlighter-rouge">modulemap</code> file looks something like this:</p>
 
-<figure class="highlight"><pre><code class="language-modulemap" data-lang="modulemap">module Cncurses {
+<figure class="highlight"><pre><code class="language-modulemap" data-lang="modulemap"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>module Cncurses {
     header "bridging-header.h"
     link "ncurses"
     export *
-}</code></pre></figure>
+}
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>We’ve defined what our system library must look like. Now we must make it visible to SwiftPM.</p>
 
@@ -131,7 +140,16 @@
 
 <p>With all of that in mind, my target definition will look like <code class="language-plaintext highlighter-rouge">.systemLibrary(name: "Cncurses", path: "Sources/Cncurses")</code>. We can now insert this definition in the <code class="language-plaintext highlighter-rouge">targets</code> array of the package definition. This is what my <code class="language-plaintext highlighter-rouge">Package.swift</code> file looks like, after the additions (unrelated code removed for brevity).</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
     <span class="nv">name</span><span class="p">:</span> <span class="s">"Curses"</span><span class="p">,</span>
     <span class="nv">products</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>
     <span class="nv">targets</span><span class="p">:</span> <span class="p">[</span>
@@ -139,7 +157,8 @@
         <span class="c1">// New target</span>
         <span class="o">.</span><span class="nf">systemLibrary</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"Cncurses"</span><span class="p">,</span> <span class="nv">path</span><span class="p">:</span> <span class="s">"Sources/Cncurses"</span><span class="p">),</span>
     <span class="p">]</span>
-<span class="p">)</span></code></pre></figure>
+<span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>If you are using Xcode, save the file and it will attempt to resolve the packages.</p>
 
@@ -147,14 +166,23 @@
 
 <p>The next and last step is to add it as a dependency to some other target where we wish to use the library. In my case I only want to use it in the main <code class="language-plaintext highlighter-rouge">Curses</code> target so I will modify my <code class="language-plaintext highlighter-rouge">Package.swift</code> file to add a <code class="language-plaintext highlighter-rouge">Cncurses</code> dependency on the <code class="language-plaintext highlighter-rouge">Curses</code> target:</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
     <span class="nv">name</span><span class="p">:</span> <span class="s">"Curses"</span><span class="p">,</span>
     <span class="nv">products</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>
     <span class="nv">targets</span><span class="p">:</span> <span class="p">[</span>
     <span class="o">.</span><span class="nf">target</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"Curses"</span><span class="p">,</span> <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span><span class="s">"Cncurses"</span><span class="p">]),</span>  <span class="c1">// Add dependency here</span>
         <span class="o">.</span><span class="nf">systemLibrary</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"Cncurses"</span><span class="p">,</span> <span class="nv">path</span><span class="p">:</span> <span class="s">"Sources/Cncurses"</span><span class="p">),</span>
     <span class="p">]</span>
-<span class="p">)</span></code></pre></figure>
+<span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <p>With all that in place, I can now use the C library in the main <code class="language-plaintext highlighter-rouge">Curses</code> target. I can test this by simply importing the library and checking that the target compiles successfully.</p>
 

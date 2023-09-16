@@ -49,7 +49,22 @@
 
 <p>Throughout this article I will assume the following structure is available.</p>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">struct</span> <span class="kt">User</span><span class="p">:</span> <span class="kt">Identifiable</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="code"><pre><span class="kd">struct</span> <span class="kt">User</span><span class="p">:</span> <span class="kt">Identifiable</span> <span class="p">{</span>
     <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">UUID</span>
     
     <span class="k">let</span> <span class="nv">firstName</span><span class="p">:</span> <span class="kt">String</span>
@@ -63,7 +78,8 @@
 
 <span class="kd">enum</span> <span class="kt">Color</span> <span class="p">{</span>
     <span class="k">case</span> <span class="n">red</span><span class="p">,</span> <span class="n">orange</span><span class="p">,</span> <span class="n">yellow</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">,</span> <span class="n">purple</span>
-<span class="p">}</span></code></pre></figure>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <h1 id="creating-tables">Creating Tables</h1>
 
@@ -82,28 +98,51 @@
   <li>You are limited to 10 columns per table, however in iOS 16/macOS 12 we got the ability to compose more of them using <code class="language-plaintext highlighter-rouge">Group</code>s.</li>
 </ul>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kt">Table</span><span class="p">(</span><span class="n">users</span><span class="p">)</span> <span class="p">{</span>
-	<span class="kt">TableColumn</span><span class="p">(</span><span class="s">"First Name"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">firstName</span><span class="p">)</span>
-	<span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Last Name"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">lastName</span><span class="p">)</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre></td><td class="code"><pre><span class="kt">Table</span><span class="p">(</span><span class="n">users</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"First Name"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">firstName</span><span class="p">)</span>
+  <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Last Name"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">lastName</span><span class="p">)</span>
 
-	<span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Age"</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
-		<span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">age</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
-	<span class="p">}</span>
-	<span class="o">.</span><span class="nf">width</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
-	
-	<span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Color"</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
-		<span class="kt">ColorView</span><span class="p">(</span><span class="nv">color</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">favoriteColor</span><span class="p">)</span>
-	<span class="p">}</span>
-	<span class="o">.</span><span class="nf">width</span><span class="p">(</span><span class="nv">min</span><span class="p">:</span> <span class="mi">55</span><span class="p">)</span>
-	
-	<span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Created"</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
-		<span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">createdAt</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
-	<span class="p">}</span>
+  <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Age"</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+    <span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">age</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
+  <span class="p">}</span>
+  <span class="o">.</span><span class="nf">width</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+  
+  <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Color"</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+    <span class="kt">ColorView</span><span class="p">(</span><span class="nv">color</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">favoriteColor</span><span class="p">)</span>
+  <span class="p">}</span>
+  <span class="o">.</span><span class="nf">width</span><span class="p">(</span><span class="nv">min</span><span class="p">:</span> <span class="mi">55</span><span class="p">)</span>
+  
+  <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Created"</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+    <span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">createdAt</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
+  <span class="p">}</span>
 
-	<span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Updated"</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
-		<span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">updatedAt</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
-	<span class="p">}</span>
-<span class="p">}</span></code></pre></figure>
+  <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Updated"</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+    <span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">updatedAt</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <h1 id="row-control">Row Control</h1>
 
@@ -116,13 +155,21 @@
   <li>One benefit of doing this is the ability or provide a custom context menu for each row.</li>
 </ul>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kt">Table</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="kt">User</span><span class="o">.</span><span class="k">self</span><span class="p">)</span> <span class="p">{</span>
-	<span class="c1">//...Columns...</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre><span class="kt">Table</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="kt">User</span><span class="o">.</span><span class="k">self</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">//...Columns...</span>
 <span class="p">}</span> <span class="nv">rows</span><span class="p">:</span> <span class="p">{</span>
-	<span class="kt">ForEach</span><span class="p">(</span><span class="n">users</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
-		<span class="kt">TableRow</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-	<span class="p">}</span>
-<span class="p">}</span></code></pre></figure>
+  <span class="kt">ForEach</span><span class="p">(</span><span class="n">users</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+    <span class="kt">TableRow</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <h1 id="selection">Selection</h1>
 
@@ -130,14 +177,23 @@
   <li>Selection works the same as it does in <code class="language-plaintext highlighter-rouge">List</code>s. You can provide a binding to a nullable property of the same type as the item’s ID. This will enable selection in the table. To enable multiple selection provide a binding to a set IDs instead</li>
 </ul>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">users</span><span class="p">:</span> <span class="p">[</span><span class="kt">User</span><span class="p">]</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="k">let</span> <span class="nv">users</span><span class="p">:</span> <span class="p">[</span><span class="kt">User</span><span class="p">]</span>
 <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">selection</span><span class="p">:</span> <span class="kt">User</span><span class="o">.</span><span class="kt">ID</span><span class="p">?</span>
 
 <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
-	<span class="kt">Table</span><span class="p">(</span><span class="n">users</span><span class="p">,</span> <span class="nv">selection</span><span class="p">:</span> <span class="n">$selection</span><span class="p">)</span> <span class="p">{</span>
-		<span class="c1">//...Columns...</span>
-	<span class="p">}</span>
-<span class="p">}</span></code></pre></figure>
+  <span class="kt">Table</span><span class="p">(</span><span class="n">users</span><span class="p">,</span> <span class="nv">selection</span><span class="p">:</span> <span class="n">$selection</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//...Columns...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 <h1 id="sorting">Sorting</h1>
 
@@ -148,52 +204,91 @@
     <ul>
       <li>If you are creating the table using the <code class="language-plaintext highlighter-rouge">KeyPath</code> initializer and the property is comparable then this happens automatically.</li>
       <li>If the property that this column should be sorted by is comparable, but you want to customize its presentation, you can provide an additional <code class="language-plaintext highlighter-rouge">value</code> argument, of type <code class="language-plaintext highlighter-rouge">KeyPath</code> to the initializer.</li>
-      <li>If the property is not comparable (or if you want to customize the default sorting behaviour) you must provide a custom sort comparator parameter.
- 	- If neither of these are given, the column is not sortable.</li>
+      <li>If the property is not comparable (or if you want to customize the default sorting behaviour) you must provide a custom sort comparator parameter.</li>
+      <li>If neither of these are given, the column is not sortable.</li>
     </ul>
   </li>
   <li>With all this in place the table view will modify the sort order array based on user input. It will not however sort the actual data. That is your responsibility. For most cases, especially where the data is local, you can do this quite trivially with <code class="language-plaintext highlighter-rouge">Array</code>’s <code class="language-plaintext highlighter-rouge">sorted(using:)</code> method.</li>
   <li>Keep in mind that all types related to sorting must be uniform across all of the table.This includes things passed/declared on the table, as well as the columns.</li>
 </ul>
 
-<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">users</span><span class="p">:</span> <span class="p">[</span><span class="kt">User</span><span class="p">]</span>
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+</pre></td><td class="code"><pre><span class="k">let</span> <span class="nv">users</span><span class="p">:</span> <span class="p">[</span><span class="kt">User</span><span class="p">]</span>
 <span class="kd">private</span> <span class="k">var</span> <span class="nv">presentedUsers</span><span class="p">:</span> <span class="p">[</span><span class="kt">User</span><span class="p">]</span> <span class="p">{</span>
-	<span class="n">users</span><span class="o">.</span><span class="nf">sorted</span><span class="p">(</span><span class="nv">using</span><span class="p">:</span> <span class="n">sortOrder</span><span class="p">)</span>
+  <span class="n">users</span><span class="o">.</span><span class="nf">sorted</span><span class="p">(</span><span class="nv">using</span><span class="p">:</span> <span class="n">sortOrder</span><span class="p">)</span>
 <span class="p">}</span>
 
 <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">sortOrder</span><span class="p">:</span> <span class="p">[</span><span class="kt">KeyPathComparator</span><span class="o">&lt;</span><span class="kt">User</span><span class="o">&gt;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-	<span class="kt">KeyPathComparator</span><span class="p">(\</span><span class="o">.</span><span class="n">firstName</span><span class="p">),</span>
-	<span class="kt">KeyPathComparator</span><span class="p">(\</span><span class="o">.</span><span class="n">lastName</span><span class="p">),</span>
+  <span class="kt">KeyPathComparator</span><span class="p">(\</span><span class="o">.</span><span class="n">firstName</span><span class="p">),</span>
+  <span class="kt">KeyPathComparator</span><span class="p">(\</span><span class="o">.</span><span class="n">lastName</span><span class="p">),</span>
 <span class="p">]</span>
 
 <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
-	<span class="kt">Table</span><span class="p">(</span><span class="n">presentedUsers</span><span class="p">)</span> <span class="p">{</span>
-		<span class="kt">TableColumn</span><span class="p">(</span><span class="s">"First Name"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">firstName</span><span class="p">)</span>
-		<span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Last Name"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">lastName</span><span class="p">)</span>
-	
-		<span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Age"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">age</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
-			<span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">age</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
-		<span class="p">}</span>
-		<span class="o">.</span><span class="nf">width</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
-	
-		<span class="k">let</span> <span class="nv">colorComparator</span> <span class="o">=</span> <span class="kt">KeyPathComparator</span><span class="p">(</span>
-			<span class="p">\</span><span class="kt">User</span><span class="o">.</span><span class="n">favoriteColor</span><span class="p">,</span> 
-			<span class="nv">comparator</span><span class="p">:</span> <span class="kt">Color</span><span class="o">.</span><span class="kt">Comparator</span><span class="p">()</span>
-		<span class="p">)</span>
-		<span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Color"</span><span class="p">,</span> <span class="nv">sortUsing</span><span class="p">:</span> <span class="n">colorComparator</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
-			<span class="kt">ColorView</span><span class="p">(</span><span class="nv">color</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">favoriteColor</span><span class="p">)</span>
-		<span class="p">}</span>
-		<span class="o">.</span><span class="nf">width</span><span class="p">(</span><span class="nv">min</span><span class="p">:</span> <span class="mi">55</span><span class="p">)</span>
-		
-		<span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Created"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">createdAt</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
-			<span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">createdAt</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
-		<span class="p">}</span>
-	
-		<span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Updated"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">updatedAt</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
-			<span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">updatedAt</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
-		<span class="p">}</span>
-	<span class="p">}</span>
-<span class="p">}</span></code></pre></figure>
+  <span class="kt">Table</span><span class="p">(</span><span class="n">presentedUsers</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"First Name"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">firstName</span><span class="p">)</span>
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Last Name"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">lastName</span><span class="p">)</span>
+  
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Age"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">age</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+      <span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">age</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
+    <span class="p">}</span>
+    <span class="o">.</span><span class="nf">width</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+  
+    <span class="k">let</span> <span class="nv">colorComparator</span> <span class="o">=</span> <span class="kt">KeyPathComparator</span><span class="p">(</span>
+      <span class="p">\</span><span class="kt">User</span><span class="o">.</span><span class="n">favoriteColor</span><span class="p">,</span> 
+      <span class="nv">comparator</span><span class="p">:</span> <span class="kt">Color</span><span class="o">.</span><span class="kt">Comparator</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Color"</span><span class="p">,</span> <span class="nv">sortUsing</span><span class="p">:</span> <span class="n">colorComparator</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+      <span class="kt">ColorView</span><span class="p">(</span><span class="nv">color</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">favoriteColor</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="o">.</span><span class="nf">width</span><span class="p">(</span><span class="nv">min</span><span class="p">:</span> <span class="mi">55</span><span class="p">)</span>
+    
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Created"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">createdAt</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+      <span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">createdAt</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
+    <span class="p">}</span>
+  
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Updated"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">updatedAt</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+      <span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">updatedAt</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
 
 </article>
 
