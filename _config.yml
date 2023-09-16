@@ -7,7 +7,6 @@ url: https://inalgotov.com
 contact_email: hello@inalgotov.com
 author: Inal Gotov
 lsi: false
-safe: true
 incremental: false
 highlighter: rouge
 gist:

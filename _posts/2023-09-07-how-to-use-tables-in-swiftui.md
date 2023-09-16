@@ -10,7 +10,7 @@ In this article we're going to take a quick look at how tables are setup and use
 
 Throughout the article I will be using the following structures as sample data for the tables.
 
-{% highlight swift %}
+{% highlight swift linenos %}
 struct User: Identifiable {
     let id: UUID
 
@@ -34,7 +34,7 @@ Just like a `List` you can create a table by passing in an array of `Identifiabl
 
 Below is an example of a simple table.
 
-{% highlight swift %}
+{% highlight swift linenos %}
 Table(users) {
     TableColumn("First Name", value: \.firstName)
 
@@ -54,7 +54,7 @@ Here's how that looks when running on macOS.
 
 Let's add a few more columns.
 
-{% highlight swift %}
+{% highlight swift linenos %}
 Table(users) {
     TableColumn("First Name", value: \.firstName)
     TableColumn("Last Name", value: \.lastName)
@@ -91,7 +91,9 @@ Overriding the width to a fixed value, such as how we did it with the *Age* colu
 
 In terms of height, in my experience, the table will adjust the row height to accommodate what is presented in the cell, with a default minimum. The default is similar to what you would find in the Finder app.
 
-{% include aside.html type="info" content="Before iOS 16/macOS 13, you were limited to 10 columns per table. This limit was due to how the column builder was implemented. In iOS 16/macOS 13 and later, Apple expanded `Group` to be composable with columns, allowing us to have more than 10 columns in a table." %}
+{% aside info %}
+Before iOS 16/macOS 13, you were limited to 10 columns per table. This limit was due to how the column builder was implemented. In iOS 16/macOS 13 and later, Apple expanded `Group` to be composable with columns, allowing us to have more than 10 columns in a table.
+{% endaside %}
 
 ## Row Control
 
@@ -101,7 +103,7 @@ For this we can use an alternative initializer, where we tell the table what the
 
 Assuming we have a `UserSection` struct like below, we could present a sectioned table like so.
 
-{% highlight swift %}
+{% highlight swift linenos %}
 struct UserSection: Identifiable {
     let name: String
     let users: [User]
@@ -131,7 +133,7 @@ The above code renders to this.
 
 Selection works pretty much the same way to how it works in `List`s. The type of items that you present in the table must conform to the `Identifiable` protocol. To enable selection, you must have an optional, bindable property of the `ID` type of your presented item. With that in place, simply pass the bindable property to the `selection` argument when creating your `Table` and selection should just work.
 
-{% highlight swift %}
+{% highlight swift linenos %}
 let users: [User]
 @State private var selectedId: User.ID?
 
@@ -146,7 +148,7 @@ Whenever a user taps on a row within the table, the row will be highlighted, and
 
 To enable multiple selection simply change the optional property to a `Set` of `ID`s.
 
-{% highlight swift %}
+{% highlight swift linenos %}
 let users: [User]
 @State private var selectedIds: Set<User.ID> = []
 
@@ -173,7 +175,7 @@ If the data is paginated and fetched from a backend, then you may need to rely o
 
 Following the above steps, here's how we would update our table to support sorting.
 
-{% highlight swift %}
+{% highlight swift linenos %}
 let users: [User]
 private var presentedUsers: [User] {
     users.sorted(using: sortOrder)
@@ -218,11 +220,13 @@ Notice how my `sortOrder` property starts with a default value, sorting the tabl
 
 Most properties on the `User` type are simple foundational types that conform to the `Comparable` protocol out of the box. This is why for most of them we simply specify our sorting using the `value` argument. However, since the color property is a custom type that does not conform to `Comparable`, we must take special care here. To make this work we provide a custom comparator that knows how to compare `Color` values.
 
-{% include aside.html type="note" content="We could of course make the `Color` type conform to `Comparable` quite trivially. However I specifically avoid this here, so that I have an example of a custom comparator to show you. If `Color` conformed to `Comparable` we could have simply passed in a key path to `value`, like we did with the other columns." %}
+{% aside note %}
+We could of course make the `Color` type conform to `Comparable` quite trivially. However I specifically avoid this here, so that I have an example of a custom comparator to show you. If `Color` conformed to `Comparable` we could have simply passed in a key path to `value`, like we did with the other columns.
+{% endaside %}
 
 Implementing a custom comparator type is outside the scope of this argument, so I leave this as an exercise for the reader. To make usee of the comparator we must jump through a couple of hoops. Let's isolate the piece of code that I'm interested in. This is an excerpt from the code snippet above.
 
-{% highlight swift %}
+{% highlight swift linenos %}
 let colorComparator = KeyPathComparator(
     \User.favoriteColor,
     comparator: Color.Comparator()

@@ -48,7 +48,7 @@ In my case I am trying to import the `ncurses` library, so I will do it like so:
 #include <ncurses.h>
 {% endhighlight %}
 
-{% capture info_box_1 %}
+{% aside info %}
 If you are unfamiliar with C there is one thing that is good to know. C and Swift work a little different in terms of how they share code between source files.
 
 In swift we are used to having access to all the code that is within the same module. For code outside of our module, we can simply import the whole module and we get access to all public members. For example, if you are working on an app, all code that belongs to the app can freely reference each other (so long as it has an access level of `internal` of higher). However for code defined outside of our app, such as in the `UIKit`, `SwiftUI` and `Foundation` frameworks or some third-party library such as `Firebase` or `Realm`, we must first import those modules, before we can use their code.
@@ -56,15 +56,13 @@ In swift we are used to having access to all the code that is within the same mo
 C works a little different. Everything declared in a `.c` source code file is private by default. You make it public by also including forward declarations of its members in an accompanying header file. A forward declaration is similar to how a protocol declaration looks (though that's where the similarities end, C does not have objects or protocols). Other source code can then import whatever headers they need, to use code from other source code files. With this difference in mind it is easy to see that these two systems are not really compatible out of the box.
 
 This is why we must use a bridging header to **bridge** the gap between the two systems. We define one or more headers that import all the code that our Swift module needs to use. Swift will then treat that bridging header as one module, that you can import. If you have a mixed Swift/Objective-C codebase, you will have a bridging header generated for you by Xcode that performs the same function. That bridging header will imported implicitly. In our case we will need to import it manually.
-{% endcapture %}
-
-{% include aside.html type="info" content=info_box_1 %}
+{% endaside %}
 
 Next, we define a `modulemap` file.
 
 Create a new file called `module.modulemap`. This file is responsible for telling SwiftPM what your package consists of. The file name is important. Place the following inside of the file.
 
-{% highlight modulemap %}
+{% highlight modulemap linenos %}
 module SwiftLibraryName {
     header "bridgingHeaderName"
     link "CLibraryName"
@@ -80,7 +78,7 @@ Make sure to replace the following:
 
 After the replacements my `modulemap` file looks something like this:
 
-{% highlight modulemap %}
+{% highlight modulemap linenos %}
 module Cncurses {
     header "bridging-header.h"
     link "ncurses"
@@ -96,7 +94,7 @@ Open the `Package.swift` file. We will be adding a system library target here. T
 
 With all of that in mind, my target definition will look like `.systemLibrary(name: "Cncurses", path: "Sources/Cncurses")`. We can now insert this definition in the `targets` array of the package definition. This is what my `Package.swift` file looks like, after the additions (unrelated code removed for brevity).
 
-{% highlight swift %}
+{% highlight swift linenos %}
 let package = Package(
     name: "Curses",
     products: [...],
@@ -114,7 +112,7 @@ All the names here look confusing, so let me just clear it up a little. `Cncurse
 
 The next and last step is to add it as a dependency to some other target where we wish to use the library. In my case I only want to use it in the main `Curses` target so I will modify my `Package.swift` file to add a `Cncurses` dependency on the `Curses` target:
 
-{% highlight swift %}
+{% highlight swift linenos %}
 let package = Package(
     name: "Curses",
     products: [...],
