@@ -2,4 +2,7 @@
 layout: post
 ---
 
+{% assign post_path = '_posts/' | append: page.name %}
+<p class="tldr-prompt">This is the TLDR version of the article. <a href="{% link {{ post_path }} %}">View the full version here</a></p>
+
 {{ content }}

@@ -5,8 +5,6 @@ date: "2023-09-07"
 tags: SwiftUI
 ---
 
-This is the TLDR version of the article. [View the full version here]({% post_url 2023-09-07-how-to-use-tables-in-swiftui %})
-
 Throughout this article I will assume the following structure is available.
 
 {% highlight swift %}

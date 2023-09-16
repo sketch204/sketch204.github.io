@@ -3,9 +3,8 @@ title: How to use Tables in SwiftUI
 description: An in-depth look at how Tables are implemented in SwiftUI
 excerpt: In this article we're going to take a quick look at how tables are setup and used in SwiftUI.
 tags: SwiftUI
+tldr: True
 ---
-
-Short on time? [View the TLDR version here]({% link tldr/2023-09-07-how-to-use-tables-in-swiftui.md %})
 
 In this article we're going to take a quick look at how tables are setup and used in SwiftUI.
 

@@ -66,6 +66,11 @@ article .date {
   font-size: small;
 }
 
+article .tldr-prompt {
+  color: var(--secondary-text-color);
+  font-size: small;
+}
+
 article aside {
   padding: 0 10px;
   margin: 2em 0;
