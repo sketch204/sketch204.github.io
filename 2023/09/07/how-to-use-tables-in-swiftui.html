@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>How to use Tables in SwiftUI</title>
+  
+  <meta name="description" content="An in-depth look at how Tables are implemented in SwiftUI">
+  
+  <meta name="author" content="Inal Gotov">
+
+  <link rel="stylesheet" href="/assets/css/styles.css?v=1.0">
+
+  <link type="application/atom+xml" rel="alternate" href="https://inalgotov.com/feed.xml" title="Inal&apos;s Gotov" />
+  <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to use Tables in SwiftUI | Inal’s Gotov</title>
+<meta name="generator" content="Jekyll v4.3.2" />
+<meta property="og:title" content="How to use Tables in SwiftUI" />
+<meta name="author" content="Inal Gotov" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="An in-depth look at how Tables are implemented in SwiftUI" />
+<meta property="og:description" content="An in-depth look at how Tables are implemented in SwiftUI" />
+<link rel="canonical" href="https://inalgotov.com/2023/09/07/how-to-use-tables-in-swiftui.html" />
+<meta property="og:url" content="https://inalgotov.com/2023/09/07/how-to-use-tables-in-swiftui.html" />
+<meta property="og:site_name" content="Inal’s Gotov" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-09-07T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to use Tables in SwiftUI" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Inal Gotov"},"dateModified":"2023-09-07T00:00:00+00:00","datePublished":"2023-09-07T00:00:00+00:00","description":"An in-depth look at how Tables are implemented in SwiftUI","headline":"How to use Tables in SwiftUI","mainEntityOfPage":{"@type":"WebPage","@id":"https://inalgotov.com/2023/09/07/how-to-use-tables-in-swiftui.html"},"url":"https://inalgotov.com/2023/09/07/how-to-use-tables-in-swiftui.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+</head>
+
+<body>
+
+  <article class="readingMargins">
+  <h1>How to use Tables in SwiftUI</h1>
+
+  <span class="date">Written on Sep  7, 2023</span>
+
+  <p>Short on time? <a href="/tldr/2023-09-07-how-to-use-tables-in-swiftui.html">View the TLDR version here</a></p>
+
+<p>In this article we’re going to take a quick look at how tables are setup and used in SwiftUI.</p>
+
+<p>Throughout the article I will be using the following structures as sample data for the tables.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">struct</span> <span class="kt">User</span><span class="p">:</span> <span class="kt">Identifiable</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">UUID</span>
+
+    <span class="k">let</span> <span class="nv">firstName</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">lastName</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">age</span><span class="p">:</span> <span class="kt">Int</span>
+    <span class="k">let</span> <span class="nv">favoriteColor</span><span class="p">:</span> <span class="kt">Color</span>
+    
+    <span class="k">let</span> <span class="nv">createdAt</span><span class="p">:</span> <span class="kt">Date</span>
+    <span class="k">let</span> <span class="nv">updatedAt</span><span class="p">:</span> <span class="kt">Date</span>
+<span class="p">}</span>
+
+<span class="kd">enum</span> <span class="kt">Color</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">red</span><span class="p">,</span> <span class="n">orange</span><span class="p">,</span> <span class="n">yellow</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">,</span> <span class="n">purple</span>
+<span class="p">}</span></code></pre></figure>
+
+<h2 id="creating-tables">Creating Tables</h2>
+
+<p>Just like a <code class="language-plaintext highlighter-rouge">List</code> you can create a table by passing in an array of <code class="language-plaintext highlighter-rouge">Identifiable</code> items inside a <code class="language-plaintext highlighter-rouge">Table</code> view. In a <code class="language-plaintext highlighter-rouge">List</code> this array would be followed by a row builder. That is, a view builder which defines what a row looks like in the list. However for <code class="language-plaintext highlighter-rouge">Table</code>s we must instead define the columns of the table.</p>
+
+<p>Below is an example of a simple table.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kt">Table</span><span class="p">(</span><span class="n">users</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"First Name"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">firstName</span><span class="p">)</span>
+
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Last Name"</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+        <span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">lastName</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>This table has two columns, the first shows the first name of the user, while the second shows the last name. Notice how the <code class="language-plaintext highlighter-rouge">Table</code> is comprised of <code class="language-plaintext highlighter-rouge">TableColumn</code>s. Each <code class="language-plaintext highlighter-rouge">TableColumn</code> has a view builder which defines how a cell in the column will look. The builder gets a single item from the array of items given to the <code class="language-plaintext highlighter-rouge">Table</code>.</p>
+
+<p>Notice the two different ways of how the columns are created. The first way is a nice shortcut you can use if you want to display a simple <code class="language-plaintext highlighter-rouge">String</code>. The latter offers more fine-grained control over the view inside the table cell. You can pass as complex a view here as you want, including interactive views like <code class="language-plaintext highlighter-rouge">Button</code>s. Though I would avoid anything that does scrolling.</p>
+
+<p>Here’s how that looks when running on macOS.</p>
+
+<p><img src="/assets/img/2023-09-07-how-to-use-tables-in-swiftui/two_column_table.png" alt="A screenshot of the table with two columns, the first showing the first names of users, the second showing the last names." /></p>
+
+<p>Let’s add a few more columns.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kt">Table</span><span class="p">(</span><span class="n">users</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"First Name"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">firstName</span><span class="p">)</span>
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Last Name"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">lastName</span><span class="p">)</span>
+
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Age"</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+        <span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">age</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
+    <span class="p">}</span>
+    <span class="o">.</span><span class="nf">width</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Color"</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+        <span class="kt">ColorView</span><span class="p">(</span><span class="nv">color</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">favoriteColor</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="o">.</span><span class="nf">width</span><span class="p">(</span><span class="nv">min</span><span class="p">:</span> <span class="mi">55</span><span class="p">)</span>
+
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Created"</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+        <span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">createdAt</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
+    <span class="p">}</span>
+
+    <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Updated"</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+        <span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">updatedAt</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Here I’ve added some more columns to display more of the user’s properties. I’ve also adjusted the last name column to use the key path initializers. With the other columns I was forced to provide a custom view, since the property that I was presenting there was not a <code class="language-plaintext highlighter-rouge">String</code>. You can also see that for the color column, I’ve provided a completely custom <code class="language-plaintext highlighter-rouge">ColorView</code>.</p>
+
+<p>Here is how this table looks on macOS.</p>
+
+<p><img src="/assets/img/2023-09-07-how-to-use-tables-in-swiftui/full_table.png" alt="A screenshot of the table with all of its columns, showing various user properties" /></p>
+
+<p>Take note of the <code class="language-plaintext highlighter-rouge">.width(...)</code> modifier on some of the columns. This is how the column width is controlled. By default, if there is no width specified on the column, the table will make all the columns have an equal width. While making sure that they fill the whole width of the table. All the column widths can still be dragged and changed by the user.</p>
+
+<p>Overriding the width to a fixed value, such as how we did it with the <em>Age</em> column will, unsurprisingly, make that column’s width fixed to that value. However, it will also make the width unchangeable by the user. If we instead specify the width with any combination of a <code class="language-plaintext highlighter-rouge">min</code>, <code class="language-plaintext highlighter-rouge">max</code> or <code class="language-plaintext highlighter-rouge">ideal</code>, it will keep the cell resizable but make sure that it fits into those constraints.</p>
+
+<p>In terms of height, in my experience, the table will adjust the row height to accommodate what is presented in the cell, with a default minimum. The default is similar to what you would find in the Finder app.</p>
+
+<aside class="info">
+<h1>Info</h1>
+<p>Before iOS 16/macOS 13, you were limited to 10 columns per table. This limit was due to how the column builder was implemented. In iOS 16/macOS 13 and later, Apple expanded <code class="language-plaintext highlighter-rouge">Group</code> to be composable with columns, allowing us to have more than 10 columns in a table.</p>
+
+</aside>
+
+<h2 id="row-control">Row Control</h2>
+
+<p>Passing an array of items directly to the <code class="language-plaintext highlighter-rouge">Table</code> should be sufficient for most use-cases. However sometimes it could be beneficial to have a more fine-grained control over how the rows are presented in the table. For example you may want to show a hard-coded set of rows without creating having to store them elsewhere. Or perhaps you want to breakup your rows into sections.</p>
+
+<p>For this we can use an alternative initializer, where we tell the table what the type of our presented item is, and then provide an additional builder that builds a list of <code class="language-plaintext highlighter-rouge">TableRow</code>s.</p>
+
+<p>Assuming we have a <code class="language-plaintext highlighter-rouge">UserSection</code> struct like below, we could present a sectioned table like so.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">struct</span> <span class="kt">UserSection</span><span class="p">:</span> <span class="kt">Identifiable</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
+    <span class="k">let</span> <span class="nv">users</span><span class="p">:</span> <span class="p">[</span><span class="kt">User</span><span class="p">]</span>
+    <span class="k">var</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="n">name</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kt">Table</span><span class="p">(</span><span class="nv">of</span><span class="p">:</span> <span class="kt">User</span><span class="o">.</span><span class="k">self</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//...Columns...</span>
+    <span class="p">}</span> <span class="nv">rows</span><span class="p">:</span> <span class="p">{</span>
+        <span class="kt">ForEach</span><span class="p">(</span><span class="n">sectionedUsers</span><span class="p">)</span> <span class="p">{</span> <span class="n">section</span> <span class="k">in</span>
+            <span class="kt">Section</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kt">ForEach</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">users</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+                    <span class="kt">TableRow</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>The above code renders to this.</p>
+
+<p><img src="/assets/img/2023-09-07-how-to-use-tables-in-swiftui/table_with_sections.png" alt="A screenshot of a table with sections" /></p>
+
+<h2 id="selection">Selection</h2>
+
+<p>Selection works pretty much the same way to how it works in <code class="language-plaintext highlighter-rouge">List</code>s. The type of items that you present in the table must conform to the <code class="language-plaintext highlighter-rouge">Identifiable</code> protocol. To enable selection, you must have an optional, bindable property of the <code class="language-plaintext highlighter-rouge">ID</code> type of your presented item. With that in place, simply pass the bindable property to the <code class="language-plaintext highlighter-rouge">selection</code> argument when creating your <code class="language-plaintext highlighter-rouge">Table</code> and selection should just work.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">users</span><span class="p">:</span> <span class="p">[</span><span class="kt">User</span><span class="p">]</span>
+<span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">selectedId</span><span class="p">:</span> <span class="kt">User</span><span class="o">.</span><span class="kt">ID</span><span class="p">?</span>
+
+<span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kt">Table</span><span class="p">(</span><span class="n">users</span><span class="p">,</span> <span class="nv">selection</span><span class="p">:</span> <span class="n">$selectedId</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//...Columns...</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Whenever a user taps on a row within the table, the row will be highlighted, and the <code class="language-plaintext highlighter-rouge">selectedId</code> property will be populated with the row’s <code class="language-plaintext highlighter-rouge">id</code> value. Clicking on an empty area in the table will set the <code class="language-plaintext highlighter-rouge">selectedId</code> to <code class="language-plaintext highlighter-rouge">nil</code>. The binding works both ways, so if you were to change <code class="language-plaintext highlighter-rouge">selectedId</code> programmatically, the table would update to reflect the change.</p>
+
+<p>To enable multiple selection simply change the optional property to a <code class="language-plaintext highlighter-rouge">Set</code> of <code class="language-plaintext highlighter-rouge">ID</code>s.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">users</span><span class="p">:</span> <span class="p">[</span><span class="kt">User</span><span class="p">]</span>
+<span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">selectedIds</span><span class="p">:</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt">User</span><span class="o">.</span><span class="kt">ID</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kt">Table</span><span class="p">(</span><span class="n">users</span><span class="p">,</span> <span class="nv">selection</span><span class="p">:</span> <span class="n">$selectedIds</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//...Columns...</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h2 id="sorting">Sorting</h2>
+
+<p>Enabling sorting in the table is a bit of a delicate process and is comprised of a number of steps.</p>
+
+<ol>
+  <li>First, You must have a bindable array property that contains a type conforming to the <code class="language-plaintext highlighter-rouge">SortComparator</code> protocol. For most intents and purposes, you can simply use an array of <code class="language-plaintext highlighter-rouge">KeyPathComparator</code>s for this. You pass this array to the <code class="language-plaintext highlighter-rouge">sortOrder</code> argument of the <code class="language-plaintext highlighter-rouge">Table</code> initializer.</li>
+  <li>For each column in your table that you want to be sortable, you must specify how that column is to be sorted. This can be done in a couple ways.
+    <ul>
+      <li>Typically every column will tied to a single property that is <code class="language-plaintext highlighter-rouge">Comparable</code>. In those cases you can pass a key path to the <code class="language-plaintext highlighter-rouge">value</code> argument of the column.</li>
+      <li>If the property backing the column is not <code class="language-plaintext highlighter-rouge">Comparable</code> or the data is backing the column is more complex you can make the column sortable by providing a custom <code class="language-plaintext highlighter-rouge">SortComparator</code> instance to the <code class="language-plaintext highlighter-rouge">sortUsing</code> argument. The type of the sort comparator must be the same as the comparators stored in your array from step 1. So if you were using <code class="language-plaintext highlighter-rouge">KeyPathComparator&lt;User&gt;</code>, then this must be the same type.</li>
+    </ul>
+  </li>
+  <li>Lastly, the table having pretty much all the necessary information about how to sort the array of items, you must still sort the array yourself.</li>
+</ol>
+
+<p>If you have access to the entire array of data in the table then you can simply use the <code class="language-plaintext highlighter-rouge">.sorted(using:)</code> function, available on <code class="language-plaintext highlighter-rouge">Array</code>. This functions accepts a single <code class="language-plaintext highlighter-rouge">SortComparator</code> or a list of them, so you can simply pass in your sort comparator array from step 1.</p>
+
+<p>If the data is paginated and fetched from a backend, then you may need to rely on custom sort comparators, to be able to translate that into a compatible sorting specification.</p>
+
+<p>Following the above steps, here’s how we would update our table to support sorting.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">users</span><span class="p">:</span> <span class="p">[</span><span class="kt">User</span><span class="p">]</span>
+<span class="kd">private</span> <span class="k">var</span> <span class="nv">presentedUsers</span><span class="p">:</span> <span class="p">[</span><span class="kt">User</span><span class="p">]</span> <span class="p">{</span>
+    <span class="n">users</span><span class="o">.</span><span class="nf">sorted</span><span class="p">(</span><span class="nv">using</span><span class="p">:</span> <span class="n">sortOrder</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">sortOrder</span><span class="p">:</span> <span class="p">[</span><span class="kt">KeyPathComparator</span><span class="o">&lt;</span><span class="kt">User</span><span class="o">&gt;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="kt">KeyPathComparator</span><span class="p">(\</span><span class="o">.</span><span class="n">firstName</span><span class="p">),</span>
+    <span class="kt">KeyPathComparator</span><span class="p">(\</span><span class="o">.</span><span class="n">lastName</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kt">Table</span><span class="p">(</span><span class="n">presentedUsers</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"First Name"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">firstName</span><span class="p">)</span>
+        <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Last Name"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">lastName</span><span class="p">)</span>
+
+        <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Age"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">age</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">age</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
+        <span class="p">}</span>
+        <span class="o">.</span><span class="nf">width</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+
+        <span class="k">let</span> <span class="nv">colorComparator</span> <span class="o">=</span> <span class="kt">KeyPathComparator</span><span class="p">(</span>
+            <span class="p">\</span><span class="kt">User</span><span class="o">.</span><span class="n">favoriteColor</span><span class="p">,</span> 
+            <span class="nv">comparator</span><span class="p">:</span> <span class="kt">Color</span><span class="o">.</span><span class="kt">Comparator</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Color"</span><span class="p">,</span> <span class="nv">sortUsing</span><span class="p">:</span> <span class="n">colorComparator</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+            <span class="kt">ColorView</span><span class="p">(</span><span class="nv">color</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">favoriteColor</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="o">.</span><span class="nf">width</span><span class="p">(</span><span class="nv">min</span><span class="p">:</span> <span class="mi">55</span><span class="p">)</span>
+
+        <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Created"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">createdAt</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">createdAt</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
+        <span class="p">}</span>
+
+        <span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Updated"</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="n">updatedAt</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="k">in</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">updatedAt</span><span class="o">.</span><span class="nf">formatted</span><span class="p">())</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Notice how my <code class="language-plaintext highlighter-rouge">sortOrder</code> property starts with a default value, sorting the table first by <code class="language-plaintext highlighter-rouge">firstName</code>, then by <code class="language-plaintext highlighter-rouge">lastName</code>. This ensures that the table is sorted when it is first presented. The sorting arrows will also be pointing in the right directions when the table is first presented.</p>
+
+<p>Most properties on the <code class="language-plaintext highlighter-rouge">User</code> type are simple foundational types that conform to the <code class="language-plaintext highlighter-rouge">Comparable</code> protocol out of the box. This is why for most of them we simply specify our sorting using the <code class="language-plaintext highlighter-rouge">value</code> argument. However, since the color property is a custom type that does not conform to <code class="language-plaintext highlighter-rouge">Comparable</code>, we must take special care here. To make this work we provide a custom comparator that knows how to compare <code class="language-plaintext highlighter-rouge">Color</code> values.</p>
+
+<aside class="note">
+<h1>Note</h1>
+<p>We could of course make the <code class="language-plaintext highlighter-rouge">Color</code> type conform to <code class="language-plaintext highlighter-rouge">Comparable</code> quite trivially. However I specifically avoid this here, so that I have an example of a custom comparator to show you. If <code class="language-plaintext highlighter-rouge">Color</code> conformed to <code class="language-plaintext highlighter-rouge">Comparable</code> we could have simply passed in a key path to <code class="language-plaintext highlighter-rouge">value</code>, like we did with the other columns.</p>
+
+</aside>
+
+<p>Implementing a custom comparator type is outside the scope of this argument, so I leave this as an exercise for the reader. To make usee of the comparator we must jump through a couple of hoops. Let’s isolate the piece of code that I’m interested in. This is an excerpt from the code snippet above.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">colorComparator</span> <span class="o">=</span> <span class="kt">KeyPathComparator</span><span class="p">(</span>
+    <span class="p">\</span><span class="kt">User</span><span class="o">.</span><span class="n">favoriteColor</span><span class="p">,</span>
+    <span class="nv">comparator</span><span class="p">:</span> <span class="kt">Color</span><span class="o">.</span><span class="kt">Comparator</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="kt">TableColumn</span><span class="p">(</span><span class="s">"Color"</span><span class="p">,</span> <span class="nv">sortUsing</span><span class="p">:</span> <span class="n">colorComparator</span><span class="p">)</span> <span class="p">{</span> <span class="o">...</span> <span class="p">}</span></code></pre></figure>
+
+<p>Let’s walk through this. First we define a <code class="language-plaintext highlighter-rouge">KeyPathComparator</code> that points to the <code class="language-plaintext highlighter-rouge">favoriteColor</code> property, on <code class="language-plaintext highlighter-rouge">User</code>. By default, with no other arguments, the <code class="language-plaintext highlighter-rouge">KeyPathComparator</code> will simply compare by that property using the <code class="language-plaintext highlighter-rouge">Comparable</code> implementation supplied by the type of the property. Since the <code class="language-plaintext highlighter-rouge">Color</code> type is not <code class="language-plaintext highlighter-rouge">Comparable</code> this would not work. There is a work around.</p>
+
+<p>For types that do not conform to <code class="language-plaintext highlighter-rouge">Comparable</code> we must tell the <code class="language-plaintext highlighter-rouge">KeyPathComparator</code> how items should be compared. This is done by passing a custom comparator to the <code class="language-plaintext highlighter-rouge">comparator</code> argument of the <code class="language-plaintext highlighter-rouge">KeyPathComparator</code> initializer.</p>
+
+<p>With the <code class="language-plaintext highlighter-rouge">KeyPathComparator</code> created and assigned to<code class="language-plaintext highlighter-rouge">colorComparator</code> we pass that to the column’s <code class="language-plaintext highlighter-rouge">sortUsing</code> argument. I’ve split this into two declaration for readability, but you can inline it in your own code if you wish.</p>
+
+<p>You might be asking yourself, how does the table tell us how we should sort the data? Notice that <code class="language-plaintext highlighter-rouge">sortOrder</code> is a bindable property. This means that the table modifies the sort order array, whenever the user changes the sorting in the table. Let’s take another look at the bigger code sample above.</p>
+
+<p>Initially the sort order contains two comparators, first sorting by the first name, second by the last name. No direction is provided, so the default of <code class="language-plaintext highlighter-rouge">forward</code> (ascending) is used. Now let’s assume that the user clicks on the <em>Age</em> column. This makes the table sorted by the <code class="language-plaintext highlighter-rouge">age</code> property, in ascending (<code class="language-plaintext highlighter-rouge">.forward</code>) order. What the table does is it looks through the current sort order to find an existing comparator for <code class="language-plaintext highlighter-rouge">age</code>. Not finding one it creates a new comparator, starting with the <code class="language-plaintext highlighter-rouge">.forward</code> (ascending) direction and inserts that to the beginning of the <code class="language-plaintext highlighter-rouge">sortOrder</code> array.</p>
+
+<p>This works in tandem with how <code class="language-plaintext highlighter-rouge">Array</code>’s <code class="language-plaintext highlighter-rouge">sorted(using:)</code> function works. Since that will always look at the first comparator in the list and sort by that. If it so happens that a set of items are equivalent according to the first comparator, it will ask the second comparator to compare. If they are equivalent according to the second as well, it will ask the third, and so on. This is also a neat and straightforward way of achieving “tiered” sorting, even outside of SwiftUI tables. However this behavior is assumed to be supported in tables on macOS, so if you are rolling your own sorting algorithm, make sure you take the “tiering” into account.</p>
+
+<p>Now let’s assume that having sorted the table by age, the user clicks on the <em>First Name</em> column again. This time the table will go through the sort order again. However since there is an existing comparator for <code class="language-plaintext highlighter-rouge">firstName</code> it will simply move it to the top. This causes the array to re-sort itself according to the new sorting rules. If the user were to click on the <em>First Name</em> column one more time, the table would replace the <code class="language-plaintext highlighter-rouge">firstName</code> comparator with the same one, except sorting in the other direction, causing the table to reverse.</p>
+
+<p>Here’s the table sorting in action.</p>
+
+<p><img src="/assets/img/2023-09-07-how-to-use-tables-in-swiftui/table_sorting_demo.gif" alt="A demonstration of sorting the table" /></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>There’s still more to tables such as styling and column composition that I’m hoping to cover later. Hopefully this article shed some light on how tables work in SwiftUI and how best to use them. I remember when I first started using them I found it very daunting to figure out how all of these features worked. Something like this article is something that I really could’ve used back then.</p>
+
+</article>
+
+  <footer>
+  © 2023 Inal Gotov
+  <br>
+  <a href="/index.html">Home</a> | <a href="/articles.html">Articles</a> | <a href="/feed.xml">RSS</a>
+  <br>
+  <a href="/privacy.html">Privacy Policy</a> | <a href="/assets/Inal_Gotov.pdf">Résumé</a>
+</footer>
+
+</body>
+</html>

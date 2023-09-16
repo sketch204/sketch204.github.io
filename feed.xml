@@ -1,0 +1,1083 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://inalgotov.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://inalgotov.com/" rel="alternate" type="text/html" /><updated>2023-09-16T22:12:53+00:00</updated><id>https://inalgotov.com/feed.xml</id><title type="html">Inal’s Gotov</title><subtitle>Inal&apos;s personal webpage</subtitle><author><name>Inal Gotov</name></author><entry><title type="html">How to use Tables in SwiftUI</title><link href="https://inalgotov.com/2023/09/07/how-to-use-tables-in-swiftui.html" rel="alternate" type="text/html" title="How to use Tables in SwiftUI" /><published>2023-09-07T00:00:00+00:00</published><updated>2023-09-07T00:00:00+00:00</updated><id>https://inalgotov.com/2023/09/07/how-to-use-tables-in-swiftui</id><content type="html" xml:base="https://inalgotov.com/2023/09/07/how-to-use-tables-in-swiftui.html">&lt;p&gt;Short on time? &lt;a href=&quot;/tldr/2023-09-07-how-to-use-tables-in-swiftui.html&quot;&gt;View the TLDR version here&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;In this article we’re going to take a quick look at how tables are setup and used in SwiftUI.&lt;/p&gt;
+
+&lt;p&gt;Throughout the article I will be using the following structures as sample data for the tables.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kd&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Identifiable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;UUID&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;favoriteColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Color&lt;/span&gt;
+    
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;createdAt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Date&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;updatedAt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Date&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;enum&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Color&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;red&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;orange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;yellow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;green&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;blue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;purple&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;creating-tables&quot;&gt;Creating Tables&lt;/h2&gt;
+
+&lt;p&gt;Just like a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;List&lt;/code&gt; you can create a table by passing in an array of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Identifiable&lt;/code&gt; items inside a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Table&lt;/code&gt; view. In a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;List&lt;/code&gt; this array would be followed by a row builder. That is, a view builder which defines what a row looks like in the list. However for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Table&lt;/code&gt;s we must instead define the columns of the table.&lt;/p&gt;
+
+&lt;p&gt;Below is an example of a simple table.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kt&quot;&gt;Table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;First Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Last Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;Text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This table has two columns, the first shows the first name of the user, while the second shows the last name. Notice how the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Table&lt;/code&gt; is comprised of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TableColumn&lt;/code&gt;s. Each &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TableColumn&lt;/code&gt; has a view builder which defines how a cell in the column will look. The builder gets a single item from the array of items given to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Table&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Notice the two different ways of how the columns are created. The first way is a nice shortcut you can use if you want to display a simple &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;String&lt;/code&gt;. The latter offers more fine-grained control over the view inside the table cell. You can pass as complex a view here as you want, including interactive views like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Button&lt;/code&gt;s. Though I would avoid anything that does scrolling.&lt;/p&gt;
+
+&lt;p&gt;Here’s how that looks when running on macOS.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-09-07-how-to-use-tables-in-swiftui/two_column_table.png&quot; alt=&quot;A screenshot of the table with two columns, the first showing the first names of users, the second showing the last names.&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s add a few more columns.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kt&quot;&gt;Table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;First Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Last Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Age&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;Text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;formatted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Color&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;ColorView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;favoriteColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;55&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Created&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;Text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;createdAt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;formatted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Updated&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;Text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;updatedAt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;formatted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here I’ve added some more columns to display more of the user’s properties. I’ve also adjusted the last name column to use the key path initializers. With the other columns I was forced to provide a custom view, since the property that I was presenting there was not a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;String&lt;/code&gt;. You can also see that for the color column, I’ve provided a completely custom &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ColorView&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Here is how this table looks on macOS.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-09-07-how-to-use-tables-in-swiftui/full_table.png&quot; alt=&quot;A screenshot of the table with all of its columns, showing various user properties&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Take note of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.width(...)&lt;/code&gt; modifier on some of the columns. This is how the column width is controlled. By default, if there is no width specified on the column, the table will make all the columns have an equal width. While making sure that they fill the whole width of the table. All the column widths can still be dragged and changed by the user.&lt;/p&gt;
+
+&lt;p&gt;Overriding the width to a fixed value, such as how we did it with the &lt;em&gt;Age&lt;/em&gt; column will, unsurprisingly, make that column’s width fixed to that value. However, it will also make the width unchangeable by the user. If we instead specify the width with any combination of a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;min&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;max&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ideal&lt;/code&gt;, it will keep the cell resizable but make sure that it fits into those constraints.&lt;/p&gt;
+
+&lt;p&gt;In terms of height, in my experience, the table will adjust the row height to accommodate what is presented in the cell, with a default minimum. The default is similar to what you would find in the Finder app.&lt;/p&gt;
+
+&lt;aside class=&quot;info&quot;&gt;
+&lt;h1&gt;Info&lt;/h1&gt;
+&lt;p&gt;Before iOS 16/macOS 13, you were limited to 10 columns per table. This limit was due to how the column builder was implemented. In iOS 16/macOS 13 and later, Apple expanded &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Group&lt;/code&gt; to be composable with columns, allowing us to have more than 10 columns in a table.&lt;/p&gt;
+
+&lt;/aside&gt;
+
+&lt;h2 id=&quot;row-control&quot;&gt;Row Control&lt;/h2&gt;
+
+&lt;p&gt;Passing an array of items directly to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Table&lt;/code&gt; should be sufficient for most use-cases. However sometimes it could be beneficial to have a more fine-grained control over how the rows are presented in the table. For example you may want to show a hard-coded set of rows without creating having to store them elsewhere. Or perhaps you want to breakup your rows into sections.&lt;/p&gt;
+
+&lt;p&gt;For this we can use an alternative initializer, where we tell the table what the type of our presented item is, and then provide an additional builder that builds a list of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TableRow&lt;/code&gt;s.&lt;/p&gt;
+
+&lt;p&gt;Assuming we have a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UserSection&lt;/code&gt; struct like below, we could present a sectioned table like so.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kd&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;UserSection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Identifiable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;some&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;View&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;Table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;//...Columns...&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;rows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;ForEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sectionedUsers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;section&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;
+            &lt;span class=&quot;kt&quot;&gt;Section&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;section&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;kt&quot;&gt;ForEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;section&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;
+                    &lt;span class=&quot;kt&quot;&gt;TableRow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The above code renders to this.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-09-07-how-to-use-tables-in-swiftui/table_with_sections.png&quot; alt=&quot;A screenshot of a table with sections&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;selection&quot;&gt;Selection&lt;/h2&gt;
+
+&lt;p&gt;Selection works pretty much the same way to how it works in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;List&lt;/code&gt;s. The type of items that you present in the table must conform to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Identifiable&lt;/code&gt; protocol. To enable selection, you must have an optional, bindable property of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ID&lt;/code&gt; type of your presented item. With that in place, simply pass the bindable property to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;selection&lt;/code&gt; argument when creating your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Table&lt;/code&gt; and selection should just work.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;@State&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;selectedId&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;ID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;some&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;View&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;Table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;selection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;$selectedId&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;//...Columns...&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Whenever a user taps on a row within the table, the row will be highlighted, and the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;selectedId&lt;/code&gt; property will be populated with the row’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;id&lt;/code&gt; value. Clicking on an empty area in the table will set the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;selectedId&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nil&lt;/code&gt;. The binding works both ways, so if you were to change &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;selectedId&lt;/code&gt; programmatically, the table would update to reflect the change.&lt;/p&gt;
+
+&lt;p&gt;To enable multiple selection simply change the optional property to a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Set&lt;/code&gt; of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ID&lt;/code&gt;s.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;@State&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;selectedIds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Set&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;ID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;some&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;View&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;Table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;selection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;$selectedIds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;//...Columns...&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;sorting&quot;&gt;Sorting&lt;/h2&gt;
+
+&lt;p&gt;Enabling sorting in the table is a bit of a delicate process and is comprised of a number of steps.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;First, You must have a bindable array property that contains a type conforming to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SortComparator&lt;/code&gt; protocol. For most intents and purposes, you can simply use an array of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;KeyPathComparator&lt;/code&gt;s for this. You pass this array to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sortOrder&lt;/code&gt; argument of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Table&lt;/code&gt; initializer.&lt;/li&gt;
+  &lt;li&gt;For each column in your table that you want to be sortable, you must specify how that column is to be sorted. This can be done in a couple ways.
+    &lt;ul&gt;
+      &lt;li&gt;Typically every column will tied to a single property that is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Comparable&lt;/code&gt;. In those cases you can pass a key path to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt; argument of the column.&lt;/li&gt;
+      &lt;li&gt;If the property backing the column is not &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Comparable&lt;/code&gt; or the data is backing the column is more complex you can make the column sortable by providing a custom &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SortComparator&lt;/code&gt; instance to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sortUsing&lt;/code&gt; argument. The type of the sort comparator must be the same as the comparators stored in your array from step 1. So if you were using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;KeyPathComparator&amp;lt;User&amp;gt;&lt;/code&gt;, then this must be the same type.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Lastly, the table having pretty much all the necessary information about how to sort the array of items, you must still sort the array yourself.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;If you have access to the entire array of data in the table then you can simply use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.sorted(using:)&lt;/code&gt; function, available on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Array&lt;/code&gt;. This functions accepts a single &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SortComparator&lt;/code&gt; or a list of them, so you can simply pass in your sort comparator array from step 1.&lt;/p&gt;
+
+&lt;p&gt;If the data is paginated and fetched from a backend, then you may need to rely on custom sort comparators, to be able to translate that into a compatible sorting specification.&lt;/p&gt;
+
+&lt;p&gt;Following the above steps, here’s how we would update our table to support sorting.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;presentedUsers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sorted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;using&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sortOrder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;@State&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;sortOrder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;KeyPathComparator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;KeyPathComparator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(\&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;KeyPathComparator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(\&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;some&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;View&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;Table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;presentedUsers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;First Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Last Name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Age&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;
+            &lt;span class=&quot;kt&quot;&gt;Text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;formatted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;colorComparator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;KeyPathComparator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;favoriteColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+            &lt;span class=&quot;nv&quot;&gt;comparator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Comparator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Color&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;sortUsing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;colorComparator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;
+            &lt;span class=&quot;kt&quot;&gt;ColorView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;favoriteColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;55&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+        &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Created&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;createdAt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;
+            &lt;span class=&quot;kt&quot;&gt;Text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;createdAt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;formatted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+        &lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Updated&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;updatedAt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;
+            &lt;span class=&quot;kt&quot;&gt;Text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;updatedAt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;formatted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Notice how my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sortOrder&lt;/code&gt; property starts with a default value, sorting the table first by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;firstName&lt;/code&gt;, then by &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;lastName&lt;/code&gt;. This ensures that the table is sorted when it is first presented. The sorting arrows will also be pointing in the right directions when the table is first presented.&lt;/p&gt;
+
+&lt;p&gt;Most properties on the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt; type are simple foundational types that conform to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Comparable&lt;/code&gt; protocol out of the box. This is why for most of them we simply specify our sorting using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt; argument. However, since the color property is a custom type that does not conform to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Comparable&lt;/code&gt;, we must take special care here. To make this work we provide a custom comparator that knows how to compare &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Color&lt;/code&gt; values.&lt;/p&gt;
+
+&lt;aside class=&quot;note&quot;&gt;
+&lt;h1&gt;Note&lt;/h1&gt;
+&lt;p&gt;We could of course make the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Color&lt;/code&gt; type conform to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Comparable&lt;/code&gt; quite trivially. However I specifically avoid this here, so that I have an example of a custom comparator to show you. If &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Color&lt;/code&gt; conformed to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Comparable&lt;/code&gt; we could have simply passed in a key path to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;value&lt;/code&gt;, like we did with the other columns.&lt;/p&gt;
+
+&lt;/aside&gt;
+
+&lt;p&gt;Implementing a custom comparator type is outside the scope of this argument, so I leave this as an exercise for the reader. To make usee of the comparator we must jump through a couple of hoops. Let’s isolate the piece of code that I’m interested in. This is an excerpt from the code snippet above.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;colorComparator&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;KeyPathComparator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;favoriteColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;comparator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Comparator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;TableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Color&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;sortUsing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;colorComparator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let’s walk through this. First we define a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;KeyPathComparator&lt;/code&gt; that points to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;favoriteColor&lt;/code&gt; property, on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;User&lt;/code&gt;. By default, with no other arguments, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;KeyPathComparator&lt;/code&gt; will simply compare by that property using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Comparable&lt;/code&gt; implementation supplied by the type of the property. Since the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Color&lt;/code&gt; type is not &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Comparable&lt;/code&gt; this would not work. There is a work around.&lt;/p&gt;
+
+&lt;p&gt;For types that do not conform to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Comparable&lt;/code&gt; we must tell the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;KeyPathComparator&lt;/code&gt; how items should be compared. This is done by passing a custom comparator to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;comparator&lt;/code&gt; argument of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;KeyPathComparator&lt;/code&gt; initializer.&lt;/p&gt;
+
+&lt;p&gt;With the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;KeyPathComparator&lt;/code&gt; created and assigned to&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;colorComparator&lt;/code&gt; we pass that to the column’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sortUsing&lt;/code&gt; argument. I’ve split this into two declaration for readability, but you can inline it in your own code if you wish.&lt;/p&gt;
+
+&lt;p&gt;You might be asking yourself, how does the table tell us how we should sort the data? Notice that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sortOrder&lt;/code&gt; is a bindable property. This means that the table modifies the sort order array, whenever the user changes the sorting in the table. Let’s take another look at the bigger code sample above.&lt;/p&gt;
+
+&lt;p&gt;Initially the sort order contains two comparators, first sorting by the first name, second by the last name. No direction is provided, so the default of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;forward&lt;/code&gt; (ascending) is used. Now let’s assume that the user clicks on the &lt;em&gt;Age&lt;/em&gt; column. This makes the table sorted by the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;age&lt;/code&gt; property, in ascending (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.forward&lt;/code&gt;) order. What the table does is it looks through the current sort order to find an existing comparator for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;age&lt;/code&gt;. Not finding one it creates a new comparator, starting with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.forward&lt;/code&gt; (ascending) direction and inserts that to the beginning of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sortOrder&lt;/code&gt; array.&lt;/p&gt;
+
+&lt;p&gt;This works in tandem with how &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Array&lt;/code&gt;’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sorted(using:)&lt;/code&gt; function works. Since that will always look at the first comparator in the list and sort by that. If it so happens that a set of items are equivalent according to the first comparator, it will ask the second comparator to compare. If they are equivalent according to the second as well, it will ask the third, and so on. This is also a neat and straightforward way of achieving “tiered” sorting, even outside of SwiftUI tables. However this behavior is assumed to be supported in tables on macOS, so if you are rolling your own sorting algorithm, make sure you take the “tiering” into account.&lt;/p&gt;
+
+&lt;p&gt;Now let’s assume that having sorted the table by age, the user clicks on the &lt;em&gt;First Name&lt;/em&gt; column again. This time the table will go through the sort order again. However since there is an existing comparator for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;firstName&lt;/code&gt; it will simply move it to the top. This causes the array to re-sort itself according to the new sorting rules. If the user were to click on the &lt;em&gt;First Name&lt;/em&gt; column one more time, the table would replace the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;firstName&lt;/code&gt; comparator with the same one, except sorting in the other direction, causing the table to reverse.&lt;/p&gt;
+
+&lt;p&gt;Here’s the table sorting in action.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-09-07-how-to-use-tables-in-swiftui/table_sorting_demo.gif&quot; alt=&quot;A demonstration of sorting the table&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;There’s still more to tables such as styling and column composition that I’m hoping to cover later. Hopefully this article shed some light on how tables work in SwiftUI and how best to use them. I remember when I first started using them I found it very daunting to figure out how all of these features worked. Something like this article is something that I really could’ve used back then.&lt;/p&gt;</content><author><name>Inal Gotov</name></author><category term="SwiftUI" /><summary type="html">In this article we&apos;re going to take a quick look at how tables are setup and used in SwiftUI.</summary></entry><entry><title type="html">From C to Swift - Part 1</title><link href="https://inalgotov.com/2023/07/15/from-c-to-swift-pt1.html" rel="alternate" type="text/html" title="From C to Swift - Part 1" /><published>2023-07-15T00:00:00+00:00</published><updated>2023-07-15T00:00:00+00:00</updated><id>https://inalgotov.com/2023/07/15/from-c-to-swift-pt1</id><content type="html" xml:base="https://inalgotov.com/2023/07/15/from-c-to-swift-pt1.html">&lt;p&gt;In this article I will walk you through the steps required to set up a C library as a SwiftPM package. This will allow you to use C code within a Swift project. I will then also show you how to use said C code from Swift, as well as how to make it more Swift-friendly.&lt;/p&gt;
+
+&lt;p&gt;Throughout this article I will be showing you various examples, using the &lt;a href=&quot;https://en.wikipedia.org/wiki/Ncurses&quot;&gt;ncurses&lt;/a&gt; library. This is a library that is used for more advanced cases of putting text on the terminal screen. I had the pleasure of playing around with it in one of my recent side projects. It should come pre-installed on most *nix systems, including macOS (though not necessarily on iOS). If you wish to follow along with me using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses&lt;/code&gt;, I recommend building for macOS.&lt;/p&gt;
+
+&lt;h2 id=&quot;setup-swiftpm-package&quot;&gt;Setup SwiftPM package&lt;/h2&gt;
+
+&lt;p&gt;You can create the package through whatever means work best for you. One way to do it is through the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Swift Package&lt;/code&gt; Xcode template, found in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Multiplatform&lt;/code&gt; tab, when creating a new project. Another way is to use the terminal to navigate to the directory where you want your package to be stored and running the command:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;swift package init &lt;span class=&quot;nt&quot;&gt;--type&lt;/span&gt; library&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This will initialize a new SwiftPM package in the current working directory. It will name the package the same as the name of the current directory. In my case I initialized it in a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Curses&lt;/code&gt; directory, so that will be the name of the package. It will be a library, so it can be imported into other packages.&lt;/p&gt;
+
+&lt;p&gt;Once the package is created, we can open it in Xcode for editing, by double clicking the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Package.swift&lt;/code&gt; file or running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;open Package.swift&lt;/code&gt; in the terminal.&lt;/p&gt;
+
+&lt;h2 id=&quot;importing-ncurses&quot;&gt;Importing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;Importing a C library consists of a number of steps.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Create a library source directory with a bridging header and a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modulemap&lt;/code&gt; file.&lt;/li&gt;
+  &lt;li&gt;Define a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;systemLibrary&lt;/code&gt; target in the SwiftPM manifest file.&lt;/li&gt;
+  &lt;li&gt;Add the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;systemLibrary&lt;/code&gt; target as a dependency to the target where we wish to use the library.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;After that you simply import the library and use it as you would.&lt;/p&gt;
+
+&lt;h3 id=&quot;create-source-directory&quot;&gt;Create source directory&lt;/h3&gt;
+
+&lt;p&gt;Let’s get started, first we create a directory to hold the “sources” of our library. This directory can by anywhere really, but keep in mind that we will need to reference in the next step, relative to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Package&lt;/code&gt; file’s location. I will put mine in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Sources&lt;/code&gt; directory. The library I am using is called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses&lt;/code&gt;. Swift conventions recommend you prepend a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C&lt;/code&gt; to the names of C libraries to make it clear that they are not Swift libraries. Therefore I will call my directory &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Cncurses&lt;/code&gt;. You can call it something else if you wish, but take note of the name as we will reference it later.&lt;/p&gt;
+
+&lt;p&gt;Next we will create two files in this directory. The first is a bridging header. It will be a C header file. That is, a plain-text file ending with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.h&lt;/code&gt; extension. The name of the file doesn’t really matter. I will call mine &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bridging-header.h&lt;/code&gt;, since it technically acts as a bridge between the C and Swift interfaces. In this bridging header we must import any C code that we wish to be a part of this Swift Package. These imports are done in C syntax and look as follows:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include&lt;/span&gt; &lt;span class=&quot;cpf&quot;&gt;&amp;lt;libraryHeader&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;You can import individual C files here if you wish, however for most libraries there will be what’s called an “umbrella” header, which will import all the public headers that are part of the library. Most things that you import here will have the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.h&lt;/code&gt; extension, same as our own header file.&lt;/p&gt;
+
+&lt;p&gt;In my case I am trying to import the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses&lt;/code&gt; library, so I will do it like so:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include&lt;/span&gt; &lt;span class=&quot;cpf&quot;&gt;&amp;lt;ncurses.h&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;aside class=&quot;info&quot;&gt;
+&lt;h1&gt;Info&lt;/h1&gt;
+
+&lt;p&gt;If you are unfamiliar with C there is one thing that is good to know. C and Swift work a little different in terms of how they share code between source files.&lt;/p&gt;
+
+&lt;p&gt;In swift we are used to having access to all the code that is within the same module. For code outside of our module, we can simply import the whole module and we get access to all public members. For example, if you are working on an app, all code that belongs to the app can freely reference each other (so long as it has an access level of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;internal&lt;/code&gt; of higher). However for code defined outside of our app, such as in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UIKit&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SwiftUI&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Foundation&lt;/code&gt; frameworks or some third-party library such as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Firebase&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Realm&lt;/code&gt;, we must first import those modules, before we can use their code.&lt;/p&gt;
+
+&lt;p&gt;C works a little different. Everything declared in a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.c&lt;/code&gt; source code file is private by default. You make it public by also including forward declarations of its members in an accompanying header file. A forward declaration is similar to how a protocol declaration looks (though that’s where the similarities end, C does not have objects or protocols). Other source code can then import whatever headers they need, to use code from other source code files. With this difference in mind it is easy to see that these two systems are not really compatible out of the box.&lt;/p&gt;
+
+&lt;p&gt;This is why we must use a bridging header to &lt;strong&gt;bridge&lt;/strong&gt; the gap between the two systems. We define one or more headers that import all the code that our Swift module needs to use. Swift will then treat that bridging header as one module, that you can import. If you have a mixed Swift/Objective-C codebase, you will have a bridging header generated for you by Xcode that performs the same function. That bridging header will imported implicitly. In our case we will need to import it manually.&lt;/p&gt;
+
+&lt;/aside&gt;
+
+&lt;p&gt;Next, we define a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modulemap&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;p&gt;Create a new file called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;module.modulemap&lt;/code&gt;. This file is responsible for telling SwiftPM what your package consists of. The file name is important. Place the following inside of the file.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-modulemap&quot; data-lang=&quot;modulemap&quot;&gt;module SwiftLibraryName {
+    header &quot;bridgingHeaderName&quot;
+    link &quot;CLibraryName&quot;
+    export *
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Make sure to replace the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Replace &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SwiftLibraryName&lt;/code&gt; with the Swift facing name for your library. Remember that Swift conventions recommend C library names to be prepended with a “C”. In my case I will name the library &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Cncurses&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Replace &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bridgingHeaderName&lt;/code&gt; with the file name that you used for the bridging header, including the file extension. In my case that is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bridging-header.h&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Replace &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CLibraryName&lt;/code&gt; with the name of the library, as it appears in C, typically that will be the name of the umbrella header without the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.h&lt;/code&gt; extension. In my case that is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;After the replacements my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modulemap&lt;/code&gt; file looks something like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-modulemap&quot; data-lang=&quot;modulemap&quot;&gt;module Cncurses {
+    header &quot;bridging-header.h&quot;
+    link &quot;ncurses&quot;
+    export *
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We’ve defined what our system library must look like. Now we must make it visible to SwiftPM.&lt;/p&gt;
+
+&lt;h3 id=&quot;define-swiftpm-systemlibrary-target&quot;&gt;Define SwiftPM &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;systemLibrary&lt;/code&gt; target&lt;/h3&gt;
+
+&lt;p&gt;Open the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Package.swift&lt;/code&gt; file. We will be adding a system library target here. This can be done with the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.systemLibrary(...)&lt;/code&gt; static initializer. This initializer can take a number of arguments, but we will only be use two: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;name&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path&lt;/code&gt;. For the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;name&lt;/code&gt; argument, make sure that it matches the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SwiftLibraryName&lt;/code&gt; name that you used in your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;modulemap&lt;/code&gt; file. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path&lt;/code&gt; argument specifies a path to the folder that contains your source code, in our case the bridging header and the module map file. This path is relative to the location of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Package.swift&lt;/code&gt; file. You may be able to omit the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path&lt;/code&gt; argument and have SwiftPM automatically resolve it, but I find specifying it manually works a little better.&lt;/p&gt;
+
+&lt;p&gt;With all of that in mind, my target definition will look like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.systemLibrary(name: &quot;Cncurses&quot;, path: &quot;Sources/Cncurses&quot;)&lt;/code&gt;. We can now insert this definition in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;targets&lt;/code&gt; array of the package definition. This is what my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Package.swift&lt;/code&gt; file looks like, after the additions (unrelated code removed for brevity).&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Package&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Curses&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;products&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;targets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Curses&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// New target&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;systemLibrary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Cncurses&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Sources/Cncurses&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If you are using Xcode, save the file and it will attempt to resolve the packages.&lt;/p&gt;
+
+&lt;p&gt;All the names here look confusing, so let me just clear it up a little. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Cncurses&lt;/code&gt; is the name of my raw C library that I am exposing to Swift code through a SwiftPM package. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Curses&lt;/code&gt; is the name of my Swift package that will internally be using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Cncurses&lt;/code&gt; (the raw C library).&lt;/p&gt;
+
+&lt;p&gt;The next and last step is to add it as a dependency to some other target where we wish to use the library. In my case I only want to use it in the main &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Curses&lt;/code&gt; target so I will modify my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Package.swift&lt;/code&gt; file to add a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Cncurses&lt;/code&gt; dependency on the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Curses&lt;/code&gt; target:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Package&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Curses&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;products&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;targets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Curses&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;dependencies&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Cncurses&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// Add dependency here&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;systemLibrary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Cncurses&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Sources/Cncurses&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;With all that in place, I can now use the C library in the main &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Curses&lt;/code&gt; target. I can test this by simply importing the library and checking that the target compiles successfully.&lt;/p&gt;
+
+&lt;p&gt;In &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;main.swift&lt;/code&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If you are using Xcode, try to build the project and see if that succeeds. If you are using the terminal to build the project, you can use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;swift build&lt;/code&gt;. Your output should look similar to this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt; % swift build
+Building &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;debugging...
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;2/2] Compiling Curses Curses.swift
+Build &lt;span class=&quot;nb&quot;&gt;complete&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1.55s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ %&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now the C library is imported and you can use all of its compatible member. This is the end of part 1. In &lt;a href=&quot;/2023/07/15/from-c-to-swift-pt2.html&quot;&gt;part 2&lt;/a&gt;, we will go through what using this library is actually like, as well as some tips on how to wrap the C API behind a more Swift-friendly interface.&lt;/p&gt;
+
+&lt;h2 id=&quot;sources&quot;&gt;Sources&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://rderik.com/blog/making-a-c-library-available-in-swift-using-the-swift-package/&quot;&gt;Making a C library available in Swift using the Swift Package Manager | rderik&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://rderik.com/blog/building-a-text-based-application-using-swift-and-ncurses/&quot;&gt;Building a text-based application using Swift and ncurses | rderik&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rderik/SwiftCursesTerm&quot;&gt;rderik/SwiftCursesTerm | GitHub&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/TheCoderMerlin/Curses/&quot;&gt;TheCoderMerlin/Curses | GitHub&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Inal Gotov</name></author><category term="swift" /><category term="swiftpm" /><category term="c" /><summary type="html">In this article I will walk you through the steps required to set up a C library as a SwiftPM package. This will allow you to use C code within a Swift project. I will then also show you how to use said C code from Swift, as well as how to make it more Swift-friendly.</summary></entry><entry><title type="html">From C to Swift - Part 2</title><link href="https://inalgotov.com/2023/07/15/from-c-to-swift-pt2.html" rel="alternate" type="text/html" title="From C to Swift - Part 2" /><published>2023-07-15T00:00:00+00:00</published><updated>2023-07-15T00:00:00+00:00</updated><id>https://inalgotov.com/2023/07/15/from-c-to-swift-pt2</id><content type="html" xml:base="https://inalgotov.com/2023/07/15/from-c-to-swift-pt2.html">&lt;p&gt;In &lt;a href=&quot;/2023/07/15/from-c-to-swift-pt1.html&quot;&gt;part 1&lt;/a&gt; of this series we looked at how we can integrate a C library with SwiftPM such that we can import it into our code. In this article, we will be taking a look at how to actually use the C code, and what the edge cases of using C code in Swift are. If you missed the first part, I highly recommend you give it a read.&lt;/p&gt;
+
+&lt;h2 id=&quot;using-ncurses&quot;&gt;Using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;First, most basic constants and functions that are defined in C, will be available in Swift as their global constant and function Swift counterparts. You can call them without any name-spacing from any context. For example, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses&lt;/code&gt; library has a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getch&lt;/code&gt; function which reads a characters from the input stream. It returns an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;int&lt;/code&gt; and takes no arguments. In my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;main.swift&lt;/code&gt;, after importing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Cnurses&lt;/code&gt;, I can very easily call this function.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;However, to make things clear for myself and help me keep my sanity, I try not to access the C library members directly as top-level members. Instead I prepend their module name to the member names. So given the above example, I prefer to make the call like so:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;getch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This makes it very explicit when I am working with C code.&lt;/p&gt;
+
+&lt;aside class=&quot;note&quot;&gt;
+&lt;h1&gt;Note&lt;/h1&gt;
+&lt;p&gt;In part 1 we defined the main &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Curses&lt;/code&gt; target as a library. This means it cannot have top-level executable code. If you wish to test if some code compiles, you can declare a top level testing function, and place your executable code there. However if you wish to execute that code, the easiest way would be to either call it from a test, or write the code in the test directly. New SwiftPM packages are typically created with tests, so looks for a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Tests&lt;/code&gt; folder.&lt;/p&gt;
+
+&lt;/aside&gt;
+
+&lt;h3 id=&quot;structs&quot;&gt;Structs&lt;/h3&gt;
+
+&lt;p&gt;Most C structs will be interpreted by the Swift compiler and coerced into Swift structs. However they may be difficult to work with, so. I would still recommend wrapping them with a Swift type, if they are something you have to work with often. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses&lt;/code&gt; does not offer that many structs so I cannot provide an example for you.&lt;/p&gt;
+
+&lt;h3 id=&quot;pointers&quot;&gt;Pointers&lt;/h3&gt;
+
+&lt;p&gt;C uses pointers a lot. This is what gives it most of its power. Swift however has no notion of a pointer, instead it has reference and value types. Luckily, the Swift compiler does a lot of the heavy lifting for us.&lt;/p&gt;
+
+&lt;p&gt;When you call a function that accepts a pointer, there are a number of ways you can pass your pointer to it.&lt;/p&gt;
+
+&lt;p&gt;If the pointer is constant, that is, it is only read and never changed, then you should be able to just pass in the value as usual and the swift compiler will implicitly cast it to the right type. However, for functions that also need to change the value of the pointer, you can use Swift’s in-out syntax. When you pass the variable in, you prepend its name with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt;. Make sure the variable is mutable.&lt;/p&gt;
+
+&lt;p&gt;For example, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses&lt;/code&gt; has a function called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pair_content&lt;/code&gt;, which given an int identifier, will return a pair of colors associated with said identifier. One for the text and one for the background. The C signature of this function is as follows.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;k&quot;&gt;extern&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;pair_content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;short&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;short&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;short&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Note the last two arguments, they are pointer types. In my case, the Swift compiler interpreted this declaration like so:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;pair_content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;UnsafeMutablePointer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Int16&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;UnsafeMutablePointer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Int16&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int32&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Notice that the two C &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;short&lt;/code&gt; pointers were transformed into &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UnsafeMutablePointer&amp;lt;Int16&amp;gt;&lt;/code&gt;. The way to use these functions in Swift would be to simply pass two in-out references to it.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CShort&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;textColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CShort&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;backgroundColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CShort&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;pair_content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;textColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;backgroundColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We could wrap this in a Swift-friendly, re-usable function. That way we can hide all the C details, like so:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getColors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;textColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;backgroundColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;rawForegroundColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CShort&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;rawBackgroundColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CShort&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;pair_content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;CShort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rawForegroundColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rawBackgroundColor&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;nf&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rawForegroundColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rawBackgroundColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To make it even more Swift friendly, we would define an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enum&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;struct&lt;/code&gt; to hold constants for all of the available colors, but I leave that as an exercise to the reader.&lt;/p&gt;
+
+&lt;aside class=&quot;info&quot;&gt;
+&lt;h1&gt;Info&lt;/h1&gt;
+&lt;p&gt;Note the use of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CShort&lt;/code&gt; type. It is a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;typealias&lt;/code&gt; that maps to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Int16&lt;/code&gt;. It is from a collection of types that map to C primitives. We could have used &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Int16&lt;/code&gt; directly, but I find this conveys my intent a little better. If you want to learn more, you can find a full list of mapped C types &lt;a href=&quot;https://developer.apple.com/documentation/swift/c-interoperability&quot;&gt;here&lt;/a&gt; (there’s no header linking in Apple docs, so you’ll have to scroll down a bit).&lt;/p&gt;
+
+&lt;/aside&gt;
+
+&lt;h3 id=&quot;strings&quot;&gt;Strings&lt;/h3&gt;
+
+&lt;p&gt;Strings in C are simple arrays of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;char&lt;/code&gt;s. With that in mind, the only real way to make that work with Swift is to mimic this behaviour. If a C function accepts or returns a string, the Swift compiler will simply coerce it to and from a Swift string.&lt;/p&gt;
+
+&lt;p&gt;Things get interesting when a C function return a string value, by assigning it a passed in pointer. In that case you must appropriate allocate some data, call the function passing it in, and then transform that data into a Swift string. There are a number of ways to accomplish this, but the most sane one I found is as follows.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// 1&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;buffer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;CChar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;](&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;repeating&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// 2&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;getstr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// 3&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;cString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here we are calling the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getstr&lt;/code&gt; string. This function will read a user input from the console, until it reads a newline feed. It will then take what it has read, and place it in the passed it pointer.&lt;/p&gt;
+
+&lt;p&gt;Now let’s look at what is happening in the code.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;We allocate some data for our string, by initializing a buffer. This is essentially an array of zeroes. The length of the array will determine how many characters will fit into the string, minus 1 for the end delimiter. Be mindful of this amount, because if you set it too low and the function tries to put in a bigger string, then you will get a crash. Notice also, that we are declaring an array of type &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CChar&lt;/code&gt;. This is to mimic the behaviour that we would do, if were we writing C code.&lt;/li&gt;
+  &lt;li&gt;Next we call our function, passing in our buffer using in-out semantics. The function will set a value to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;buffer&lt;/code&gt; array. I would also handle the status code that the function returns here, however we will talk about that in the next section.&lt;/li&gt;
+  &lt;li&gt;Next I take my buffer and create a Swift string out of it, using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;init(cString: [CChar])&lt;/code&gt; string initializer. This gives us a proper Swift &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;String&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This looks cumbersome and annoying, but again, this is the most sane way I found to make this work. Believe me I’ve tried quite a few. Setting the maximum string length is quite annoying, but that is a side effect of using C.&lt;/p&gt;
+
+&lt;p&gt;If we were to wrap this in a Swifty function, I would do it like so.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;maxLength&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;buffer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;CChar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;](&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;repeating&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;maxLength&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;getstr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;cString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This gives us the ability to override the max string length, if we anticipate a longer string, while also keeping a default of 80, which is common on a lot of other platforms.&lt;/p&gt;
+
+&lt;aside class=&quot;info&quot;&gt;
+&lt;h1&gt;Info&lt;/h1&gt;
+&lt;p&gt;Apple has a &lt;a href=&quot;https://developer.apple.com/documentation/swift/calling-functions-with-pointer-parameters&quot;&gt;whole page&lt;/a&gt; dedicated to the implicit casting rules between Swift types and C pointer types. Be sure to check it out, if your work involves C pointers.&lt;/p&gt;
+
+&lt;/aside&gt;
+
+&lt;h3 id=&quot;status-codes&quot;&gt;Status Codes&lt;/h3&gt;
+
+&lt;p&gt;It is common in C to pass values back to the caller through pointers, rather than simply returning them. This is usually done if more than one value needs to be returned, or if the function may throw an error. In those cases, often times what is actually returned by the functions is an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;int&lt;/code&gt; status code for whether the function executed successfully or not. You will need to check the documentation of your library to see what exactly constitutes a failure vs. a success. For &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses&lt;/code&gt;, in case of a failure it will return the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ERR&lt;/code&gt; constant, and something else in case of success. I was not able to find documentation for how to check the reason of failure, but I’ve seen other libraries provide various mechanisms for that. You’ll have to refer to your library’s documentation to see if they offer anything like that.&lt;/p&gt;
+
+&lt;p&gt;Rather than checking for the value of the status code every time you call the function in Swift, I would recommend declaring a throwing wrapper function. Let’s continue our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getstr&lt;/code&gt; function example from the previous section. First I declare an error type so I have something to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;throw&lt;/code&gt; in case of an error.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;enum&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CursesError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Error&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;unknown&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Next I modify my Swift &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getString&lt;/code&gt; function such that it throws an error if the status code of the C function is equal to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ERR&lt;/code&gt;. I use the… in this case rather counter-intuitive, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;guard&lt;/code&gt; clause to perform the logic check.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;maxLength&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;buffer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;CChar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;](&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;repeating&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;maxLength&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;getstr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;guard&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;ERR&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;throw&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CursesError&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unknown&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;cString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This is much better. Now I actually take the error into account, and provide a very Swifty way of handling it. The client can choose to ignore it if they are confident, but are otherwise forced to handle it.&lt;/p&gt;
+
+&lt;p&gt;If you’re sure that the function you are calling will never fail, you can choose to ignore these error codes. However keep in mind that if it does fail, then you may get some unexpected behaviour and have a very difficult bug on your hands. Therefore I would recommend to still account for the error, but rather than throwing, perform a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fatalError&lt;/code&gt;. This way, if the impossible error does occur, you’ll at least be aware of it quickly.&lt;/p&gt;
+
+&lt;h3 id=&quot;pointers-to-struct&quot;&gt;Pointers to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;struct&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses&lt;/code&gt; exposes a window object, that lets you isolate and work with a section of the terminal screen. This window object is represented as a C struct. When creating a window with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;newwin&lt;/code&gt;, you receive a pointer to this struct, and you must retain and pass around this pointer to various functions in order to manipulate the window. When you’re done with it, you pass it to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;delwin&lt;/code&gt; to release its memory appropriately.&lt;/p&gt;
+
+&lt;p&gt;While you could manually create the pointer, hold a reference to it and pass it around, basically treating it as you would in C, I find this not very Swifty. Instead, I see this as a perfect use case to create a wrapper class. Classes are reference types so they have very similar semantics to pointers. Classes have a clear place of creation and destruction and they have an implicit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;self&lt;/code&gt; object that is passed as a hidden argument to all of their member functions. Releasing us from the burden of passing implicit data around. I hope you see how well this maps to our use case.&lt;/p&gt;
+
+&lt;p&gt;Let’s begin. I will create a new class called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Window&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Window&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// More code to follow&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It will have a single constant property called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;windowPointer&lt;/code&gt;. This will be the C pointer to the window struct. I will create this pointer in the initializer, exposing the window creation arguments. I will also make sure to properly destroy the window pointer once my class is de-allocated.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Window&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;windowPointer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;OpaquePointer&lt;/span&gt;
+
+    &lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;column&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;windowPointer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;newwin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+            &lt;span class=&quot;nf&quot;&gt;numericCast&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+            &lt;span class=&quot;nf&quot;&gt;numericCast&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;column&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+            &lt;span class=&quot;nf&quot;&gt;numericCast&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+            &lt;span class=&quot;nf&quot;&gt;numericCast&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;deinit&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;delwin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;windowPointer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;aside class=&quot;info&quot;&gt;
+&lt;h1&gt;Info&lt;/h1&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;numericCast&lt;/code&gt; is a neat little &lt;a href=&quot;https://developer.apple.com/documentation/swift/numericcast(_:)&quot;&gt;built-in Swift function&lt;/a&gt;, which will take in whatever numeric type you give it, and cast it to whatever numeric type is expected on the other end.&lt;/p&gt;
+
+&lt;/aside&gt;
+
+&lt;p&gt;Now, with my wrapper class set up, I can start adding all of those window modifying functions as methods of the class. For example, this is how I would declare a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getCharacter&lt;/code&gt; function. This function reads a single character the is passed to the input stream of my window and returns it.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;kd&quot;&gt;extension&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Window&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getCharacter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;wgetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;windowPointer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;numericCast&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Notice how the C pointer remains hidden the whole time. Instead I simply work with my class instance. The client of my class does not even need to know that there are C pointers being passed around behind the scenes. This is much more Swifty in my opinion.&lt;/p&gt;
+
+&lt;h3 id=&quot;constants&quot;&gt;Constants&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses&lt;/code&gt; does not export any constant properties that I can show you as examples. At least not in the traditional sense. It defines most of its constants through the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#define&lt;/code&gt; directive (If you are unfamiliar with C, &lt;a href=&quot;https://www.freecodecamp.org/news/constants-in-c-explained-how-to-use-define-and-const-keyword/&quot;&gt;this article&lt;/a&gt; explains what the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#define&lt;/code&gt; directive does).&lt;/p&gt;
+
+&lt;p&gt;Preprocessor directives do not translate to Swift well. By default, if it is a macro that maps directly to literal values it will try to coerce it as a top-level constant. If it also accepts parameters it will be coerced into a function. However if the macro maps to another macro then it will not be translated to the Swift interface at all.&lt;/p&gt;
+
+&lt;p&gt;An example of one such macro is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A_UNDERLINE&lt;/code&gt;. In &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ncurses&lt;/code&gt; you use this to make your output text underlined. It is a macro that does not accept parameters, but depends on the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NCURSES_BITS(mask, shift)&lt;/code&gt; macro. If you try to access it in your Swift code you will get a compile-time error, saying it is not defined:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;underline&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;A_UNDERLINE&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// Error: Module &apos;Cncurses&apos; has no member named &apos;A_UNDERLINE&apos;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The only way around this, that I found to work is to go back to my bridging header and declare a wrapper function that accesses the unavailable member.&lt;/p&gt;
+
+&lt;p&gt;In &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bridging-header.h&lt;/code&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include&lt;/span&gt; &lt;span class=&quot;cpf&quot;&gt;&amp;lt;ncurses.h&amp;gt;&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getUnderlineAttribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;A_UNDERLINE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I would do this for any unavailable member that I need access to.&lt;/p&gt;
+
+&lt;p&gt;With that, back in my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;main.swift&lt;/code&gt; file I should be able to access the new wrapper function.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;underline&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cncurses&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;getUnderlineAttribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This works for most unavailable members.&lt;/p&gt;
+
+&lt;aside class=&quot;note&quot;&gt;
+&lt;h1&gt;Note&lt;/h1&gt;
+&lt;p&gt;It irks me to put implementation in the header file, but with the current configuration, the modulemap seems to ignore any &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.c&lt;/code&gt; source files the I add to the module. I was not able to figure out how to make it work. If you know of a way, please &lt;a href=&quot;mailto:hello@inal.dev&quot;&gt;do let me know&lt;/a&gt;.&lt;/p&gt;
+
+&lt;/aside&gt;
+
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;While it is definitely possible to work with C directly from Swift, in many cases it is rather cumbersome. Therefore, if your library is rather small, like a handful of functions and symbols, then you may get away with just using it directly. However if it is a library that you will be using heavily, throughout your codebase, or a library that is big and/or opinionated, I would highly recommend creating a Swift wrapper around it. Handle all the C logic in one centralized place, and keep the rest of the code base Swifty.&lt;/p&gt;
+
+&lt;h2 id=&quot;sources&quot;&gt;Sources&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/documentation/swift/calling-functions-with-pointer-parameters&quot;&gt;Calling Functions With Pointer Parameters | Apple Developer Documentation&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://rderik.com/blog/building-a-text-based-application-using-swift-and-ncurses/&quot;&gt;Building a text-based application using Swift and ncurses | rderik&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/rderik/SwiftCursesTerm&quot;&gt;rderik/SwiftCursesTerm | GitHub&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/TheCoderMerlin/Curses/&quot;&gt;TheCoderMerlin/Curses | GitHub&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://keith.github.io/xcode-man-pages/ncurses.3x.html&quot;&gt;Xcode man pages | keith.github.io&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/index.html&quot;&gt;NCURSES Programming HOWTO | The Linux Documentation Project&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Inal Gotov</name></author><category term="swift" /><category term="swiftpm" /><category term="c" /><summary type="html">In part 1 of this series we looked at how we can integrate a C library with SwiftPM such that we can import it into our code. In this article, we will be taking a look at how to actually use the C code, and what the edge cases of using C code in Swift are. If you missed the first part, I highly recommend you give it a read.</summary></entry><entry><title type="html">Big bag of Xcode tips &amp;amp; tricks</title><link href="https://inalgotov.com/2023/05/01/xcode-bag-of-trick.html" rel="alternate" type="text/html" title="Big bag of Xcode tips &amp;amp; tricks" /><published>2023-05-01T00:00:00+00:00</published><updated>2023-05-01T00:00:00+00:00</updated><id>https://inalgotov.com/2023/05/01/xcode-bag-of-trick</id><content type="html" xml:base="https://inalgotov.com/2023/05/01/xcode-bag-of-trick.html">&lt;p&gt;I’ve been a developer for a number of years now. Primarily iOS. Over the years I’ve learned to use Xcode quite efficiently. I won’t claim to now all the ins and outs of it but I do consider myself to know more than most. Below is a list of my learnings. Perhaps you’ll find them useful.&lt;/p&gt;
+
+&lt;p&gt;They are grouped into categories by what they are most closely related to, however they are listed in no particular order. If you wish to integrate them into your daily workflow, I recommend choosing a few at a time and honing them in, rather than trying to jump into all of them at once.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Word of caution: this is a rather long list :D&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;editor&quot;&gt;Editor&lt;/h2&gt;
+
+&lt;h3 id=&quot;code-snippets&quot;&gt;Code snippets&lt;/h3&gt;
+
+&lt;p&gt;Code snippets are something that you will build over time. Notice a pattern of code that you keep writing over and over again? Make it into a code snippet!&lt;/p&gt;
+
+&lt;p&gt;To create a code snippet, simply select a piece of code in the editor, right click it and choose &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Create Code Snippet...&lt;/code&gt;. That should open the library popup where you can configure your code snippet further. For each code snippet you can configure the language, platform, completion and availability scope. The language should be populated by default and I expect it to be right most of the time. Platform let’s you choose which platform your code snippet should trigger on. If you’re making something for iOS only, for example something using UIKit, you can choose to make it iOS only. Completion is the actual string that will trigger your code snippet to show up in the auto-complete results. Finally, availability is the scopes in which the completion string should be recognized. You can change all of these parameters later.&lt;/p&gt;
+
+&lt;p&gt;When creating your code snippets don’t forget to use placeholders! You create a placeholder by surrounding a piece of text with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;#&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;#&amp;gt;&lt;/code&gt;. The Xcode editor will automatically recognize and render it as a placeholder. You can either add your place holder by editing the code snippets in the library popup, or by setting them up before creating the code snippet.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/placeholder_demo.gif&quot; alt=&quot;A demonstration of how to make a placeholder in Xcode&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can find existing code snippets in Xcode’s library. Access it by either clicking the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;+&lt;/code&gt; button in the top right corner or using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;L&lt;/code&gt; shortcut. Once there open the first tab. These should be all of the code snippets available to you, many of which are built into Xcode. Keep in mind that the tab might not show up if you don’t have a source code editor open.&lt;/p&gt;
+
+&lt;h3 id=&quot;spell-checker&quot;&gt;Spell checker&lt;/h3&gt;
+
+&lt;p&gt;Would you believe me if I told you that Xcode has a built in spell-checker? It’s off by default too for some odd reason. To turn it on go to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Edit&lt;/code&gt; -&amp;gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Format&lt;/code&gt; -&amp;gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Spelling and Grammar&lt;/code&gt; and turn on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Check Spelling While Typing&lt;/code&gt;. Now whenever you make a typo in your source code, Xcode will highlight it and give you suggestions to fix it when you right click on it.&lt;/p&gt;
+
+&lt;p&gt;It even works with combined words like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;thisIsSoneVariable&lt;/code&gt;. The fix suggestions won’t show up for these though.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/spell_checker_demo.png&quot; alt=&quot;A demonstration of Xcode&apos;s spell checker&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;autocomplete-window-size&quot;&gt;Autocomplete window size&lt;/h3&gt;
+
+&lt;p&gt;If you’re working on a project with long symbol names, you can actually resize the auto-complete window so that you can see more of the suggestions. Simply drag the window from it’s trailing edge. Unfortunately it doesn’t remember the size that you set so as soon as the window disappears, it’ll be back to the default size the next time it pops up.&lt;/p&gt;
+
+&lt;h3 id=&quot;multi-cursor-editing&quot;&gt;Multi-Cursor editing&lt;/h3&gt;
+
+&lt;p&gt;Starting in Xcode 10, you can have multiple cursors in your editor. This allows you to edit multiple spots in your source code at once.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/multi_cursor_demo.gif&quot; alt=&quot;A demonstration of multiple cursors in Xcode&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;There are a number of ways to invoke this.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Hold &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt; and click somewhere in the editor to add a cursor at that place.&lt;/li&gt;
+  &lt;li&gt;Hold &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt; and use the up/down arrow keys to add cursors above or below the current line along the same column. Note that if the line you are moving to does not extend to the column where you are trying to add a cursor, then it will not add one there.&lt;/li&gt;
+  &lt;li&gt;Hold &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Option&lt;/code&gt; and drag vertically with your mouse to create multiple cursors in a vertical line. Dragging horizontally also makes a selection with those cursors. In this case, same line length rules apply as when adding cursors with the arrow keys.&lt;/li&gt;
+  &lt;li&gt;Select a bit of text and press &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E&lt;/code&gt;. This will select the next occurrence of the text you currently have selected. By definition this places a cursor there too. Keep pressing the shortcut to select more occurrences. You can then press either left or right arrow keys to dismiss selection while preserving the cursors.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;With multiple cursors, you can press escape to dismiss them. The last cursor that was created will be the one that you are left with.&lt;/p&gt;
+
+&lt;h3 id=&quot;rename&quot;&gt;Rename&lt;/h3&gt;
+
+&lt;p&gt;If you are not familiar with Xcode’s rename functionality, it allows you to rename a symbol, such as a class, function or variable, throughout your codebase, making sure that all other references are updated. You can rename in one of two ways.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Hold &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt; and click on the symbol. Choose &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rename&lt;/code&gt; in the menu that appears.&lt;/li&gt;
+  &lt;li&gt;Right click on the symbol name then open the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Refactor&lt;/code&gt; submenu and choose &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rename&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In both cases your editor should start looking for all references to the symbol. Once all references are found, the one that you invoked the rename from will become editable. For each found occurrence you can click it to toggle whether or not that one should be renamed. Comments by are off by default. When renaming type names, matching file names are also picked up for renaming.&lt;/p&gt;
+
+&lt;p&gt;When renaming functions you also have the ability to rename its external argument labels. When all results have been loaded, simply click on them and start typing.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/rename_demo.gif&quot; alt=&quot;Demonstration of renaming a function&apos;s external argument label&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Cancel a rename at any point by pressing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Escape&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;There isn’t a shortcut for this by default, but you can make on by opening Xcode’s preferences and going to the Key Bindings tab. There, search for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rename&lt;/code&gt; and bind it to a shortcut. Personally I use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Option&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;N&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Personal note: I often find this feature failing, especially in larger codebases. It also does not play nice with mixed codebases where you have both Swift and Objective-C code. Often times renaming an Objective-C method may not find all of its Swift usages and vice versa. Be mindful of that.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;rename-in-scope&quot;&gt;Rename in scope&lt;/h3&gt;
+
+&lt;p&gt;Similar to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rename&lt;/code&gt;, there is also &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rename in scope&lt;/code&gt;. You can think of this as a light weight &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rename&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Rename in scope allows you to rename a symbol within the current scope, whether that is within the current for-loop, function, class or file. The important thing is that it cannot go further than the current file.&lt;/p&gt;
+
+&lt;p&gt;This it a lot more limiting than &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rename&lt;/code&gt; however it is also &lt;strong&gt;a lot faster&lt;/strong&gt;. In my experience, most of the time it’s instantaneous. It is very useful, for renaming internal function argument labels, private class/struct properties, or for anything else that you know for sure is limited to the current file.&lt;/p&gt;
+
+&lt;h3 id=&quot;vim-mode&quot;&gt;Vim mode&lt;/h3&gt;
+
+&lt;p&gt;If you are an avid Vim user you may find Xcode 13’s new Vim mode quite useful. You can turn it on by enabling &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Vim Mode&lt;/code&gt; in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Editor&lt;/code&gt; menu. I’m no Vim expert. I only really know the basics. However, I have heard that Xcode’s vim support is quite limited.&lt;/p&gt;
+
+&lt;h3 id=&quot;editor-shortcuts&quot;&gt;Editor shortcuts&lt;/h3&gt;
+
+&lt;p&gt;Below are a few editor shortcuts that I use quite often.&lt;/p&gt;
+
+&lt;h4 id=&quot;auto-generate-documentation-template&quot;&gt;Auto-generate documentation template&lt;/h4&gt;
+
+&lt;p&gt;While editing a function, property, class or struct, use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Option&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/&lt;/code&gt; to generate a documentation comment template above its definition.&lt;/p&gt;
+
+&lt;h4 id=&quot;re-indent-selection&quot;&gt;Re-Indent selection&lt;/h4&gt;
+
+&lt;p&gt;Select a piece of code and automatically indent it by using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;I&lt;/code&gt; shortcut. Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A&lt;/code&gt; before hand to select the whole file. Keep in mind that with particularly large files this can freeze up Xcode for a few seconds (or more).&lt;/p&gt;
+
+&lt;p&gt;If it is not indenting correctly, either you didn’t select enough code, or there is a syntax error somewhere.&lt;/p&gt;
+
+&lt;h4 id=&quot;move-line-up-or-down&quot;&gt;Move line up or down&lt;/h4&gt;
+
+&lt;p&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;]&lt;/code&gt; to move the current line up or down.&lt;/p&gt;
+
+&lt;h4 id=&quot;move-cursor-by-line-token-or-word&quot;&gt;Move cursor by line, token or word&lt;/h4&gt;
+
+&lt;p&gt;If you hold down &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt; and use the left or right arrow keys, the cursor will jump to the beginning or end of the current line. Using the up and down arrow keys will take you to the beginning or end of the file.&lt;/p&gt;
+
+&lt;p&gt;Holding &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Option&lt;/code&gt; instead of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt; while using the left/right arrow keys will move you to the beginning or end of the current token or the previous/next tokens, depending on where the cursor was. Token in this case refers to any word separated by whitespace or a punctuation symbol (brackets included). Up and down arrow keys move the cursor to the beginning or end of the current line.&lt;/p&gt;
+
+&lt;p&gt;These macros actually work almost everywhere in MacOS. I highly recommend you make use of them as they speed up your editing skills tremendously. Inside and outside Xcode.&lt;/p&gt;
+
+&lt;p&gt;One thing that you will be surprised to find in Xcode though, is the ability to move the cursor by word. Here is what I mean.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/move_cursor_by_word.gif&quot; alt=&quot;A gif demonstrating moving the cursor by word through a function name called sendDataToServerAsynchronously&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The key combination for this is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt; and left/right arrow keys. If you go and try that you’ll find that it won’t work. If you use multiple macOS desktops, you’ll also find that it actually jumped to a different desktop.&lt;/p&gt;
+
+&lt;p&gt;That’s because that is a macOS shortcut for switching between desktops. The trick to making it work is to also hold down &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;. This will cause the text to be selected as you move the cursor. A small drawback is that once the cursor is in the right position you have to press the arrow key again to deselect it. This is the only way that I have found to make it work. However it’s fairly easy to get used to and I find it invaluable when writing code.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Note: Holding down &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt; to select also works with just the arrow keys as well as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Option&lt;/code&gt;. I recommend you make a habit of using that, it’s very handy.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;workflow&quot;&gt;Workflow&lt;/h2&gt;
+
+&lt;h3 id=&quot;behavior-sounds&quot;&gt;Behavior sounds&lt;/h3&gt;
+
+&lt;p&gt;One neat feature of Xcode that a lot of people don’t know about is that you can customize its behavior when certain things happen. This is done in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Behaviors&lt;/code&gt; tab in Preferences. Select the event from the sidebar, that you want to configure, and then choose what you want to have happen when that event occurs. For me, I set it up to play one sound when a build or test fails, and a different sound when they succeed.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/behaviors_demo.png&quot; alt=&quot;A screenshot of Xcode Preferences&apos; Behavior tab&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;clear-all-issues&quot;&gt;Clear-All Issues&lt;/h3&gt;
+
+&lt;p&gt;Unfortunately Xcode has been getting quite buggy recently with its pre-compiler. Often times it’ll show inline errors and warnings that have long been resolved. These errors and warnings also show up in the issues tab, clogging up the output there.&lt;/p&gt;
+
+&lt;p&gt;It has gotten better in Xcode 14, but it’s still not fixed completely. Which is why Xcode 14 comes with a “nuke all” option in the form of a menu button that clears the list of issues. It is located in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Product&lt;/code&gt;-&amp;gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Clear All Issues&lt;/code&gt;. This is very useful for quickly validating your code. Just &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Clear All Issues&lt;/code&gt; and build again. Any new issues that pop up after that are going to be legitimate.&lt;/p&gt;
+
+&lt;p&gt;There is no default shortcut to it, but you can set one through &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Key Bindings&lt;/code&gt; in Preference if you want. I personally just press &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/&lt;/code&gt; to bring up the Help menu, then type in “Clear”. It’s usually the second result.&lt;/p&gt;
+
+&lt;h3 id=&quot;display-build-durations&quot;&gt;Display build durations&lt;/h3&gt;
+
+&lt;p&gt;If you’re curious how long each build takes, Xcode can actually display that for you. It is disabled by default, and unfortunately you won’t find a GUI toggle to turn it on anywhere in Preferences. Instead you have to manually modify the preferences file, using this command:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;defaults write com.apple.dt.Xcode ShowBuildOperationDuration -bool YES&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;After running this command, Xcode should start displaying the build time in the trailing side of the top “build status” strip. It is handy if you’re trying to optimize build times in your project.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/build_duration_demo.png&quot; alt=&quot;A screenshot of the build duration in Xcode&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To turn it off, run the same command but replace the last &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;YES&lt;/code&gt; with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NO&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;sf-symbol-gallery&quot;&gt;SF Symbol Gallery&lt;/h3&gt;
+
+&lt;p&gt;Before Xcode 14, if you wanted to browse through SF Symbols you had to download Apple’s &lt;a href=&quot;https://developer.apple.com/sf-symbols/&quot;&gt;SF Symbols app&lt;/a&gt;. You can still do that. In fact, you most likely will have to, if you want to make your own SF Symbols. However if you just need to browse, Xcode 14 has that built in now.&lt;/p&gt;
+
+&lt;p&gt;The feature is located in the Library, which again you can access by either clicking the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;+&lt;/code&gt; button in the top right, or using the shortcut &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;L&lt;/code&gt;. The last tab should present you with a list of SF Symbols. You have the option of viewing them in a grid or list. You can also start typing the name of the symbol that you’re looking for. Use the mouse or arrow keys to navigate. Press enter, or double click on a result to insert its name wherever your cursor was in the editor.&lt;/p&gt;
+
+&lt;p&gt;This feature only seems to work in the source editor as far as I’ve tested. Also keep in mind that the tab might not show up if you don’t have a source code editor open.&lt;/p&gt;
+
+&lt;h3 id=&quot;console-output-of-previous-runs&quot;&gt;Console output of previous runs&lt;/h3&gt;
+
+&lt;p&gt;The last tab in the left sidebar contains a log of the operations that you’ve run in the current project. Typically it lists out all the times you’ve run tests, built the project or ran it. This will be sorted and organized by target, date and time. If you click on any of the rows, you will be taken to a log of what happened for each of those operations.&lt;/p&gt;
+
+&lt;p&gt;If you have an obscure build error, this is usually a good place to check that out, as it will give you a full view of what happened.&lt;/p&gt;
+
+&lt;p&gt;Additionally, if you want to see the log output of previous runs, simply expand the appropriate &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Run&lt;/code&gt; row and you should have a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Console&lt;/code&gt; item in there. Clicking that should show you what was printed to the console during that run.&lt;/p&gt;
+
+&lt;h3 id=&quot;workflow-shortcuts&quot;&gt;Workflow shortcuts&lt;/h3&gt;
+
+&lt;p&gt;Below is a short list of workflow related shortcuts that I use often.&lt;/p&gt;
+
+&lt;h4 id=&quot;toggle-swiftui-previews&quot;&gt;Toggle SwiftUI previews&lt;/h4&gt;
+
+&lt;p&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Option&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Enter&lt;/code&gt; to quickly open and close SwiftUI previews. This is particularly useful to me when I know I’m about to make a lot of changes to my view and I don’t need them all rendered. I just dismiss the preview and go to town.&lt;/p&gt;
+
+&lt;h4 id=&quot;restart-swiftui-previews&quot;&gt;Restart SwiftUI previews&lt;/h4&gt;
+
+&lt;p&gt;If ever your previews crash as a result of bad code, you can quickly restart them with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Option&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;P&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;authors&quot;&gt;Authors&lt;/h4&gt;
+
+&lt;p&gt;You can quickly see who authored which part of the file by enabling the authors overlay. Open the editor menu in the top right and click on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Authors&lt;/code&gt;. Alternatively use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A&lt;/code&gt; shortcut to quickly toggle it.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/authors_demo.png&quot; alt=&quot;A screenshot of the editor options menu with Authors highlighted&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Enabling it should give you a line by line breakdown of who touched which line of code last, along with a date and the commit message that they did it with. Essentially this is an inline Git blame.&lt;/p&gt;
+
+&lt;h2 id=&quot;navigation&quot;&gt;Navigation&lt;/h2&gt;
+
+&lt;h3 id=&quot;open-quickly&quot;&gt;Open Quickly&lt;/h3&gt;
+
+&lt;p&gt;If there is one thing that I wish you learn first, it is Open Quickly. You can think of it as Spotlight but for your codebase. Open it with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;O&lt;/code&gt;. This should present you with a small search bar in the middle of the screen. Start typing the name of any symbol in your codebase and results will start loading below. Use arrow keys to navigate through them, then press &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Enter&lt;/code&gt; to open one. You will immediately be taken to wherever that symbol is located.&lt;/p&gt;
+
+&lt;p&gt;Notice how I say symbol and not file or class name. That is because this works not just for searching files but for searching code. Quickly jump to a specific function, class, variable or any other code symbol.&lt;/p&gt;
+
+&lt;p&gt;It will search through the standard library too, though it will prioritize code in your codebase first. However if you wanted to see the header of some standard library file, you can find it through there too.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/open_quickly_demo.png&quot; alt=&quot;A screenshot of the Open Quickly window&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;jump-bar&quot;&gt;Jump bar&lt;/h3&gt;
+
+&lt;p&gt;One thing that I see almost no-one use is the Jump Bar. I don’t quite understand why, because I find it amazing for in-file navigation, especially if you have a rather large file.&lt;/p&gt;
+
+&lt;p&gt;The jump bar is located in the last part of the breadcrumbs, right above the source code editor. It goes right after the file name section and usually displays the name of the symbol that you currently have your cursor on. If you’re inside a long function or class and not sure what it is called, it will show it to you there. However that’s just the breadcrumbs, not the Jump Bar.&lt;/p&gt;
+
+&lt;p&gt;You can invoke the Jump Bar by either clicking on the last part of the breadcrumbs (the symbol name) or pressing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;6&lt;/code&gt;. This will open a popup with a list of all the symbols in the current file, as well as all the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MARK:&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TODO:&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FIXME:&lt;/code&gt; markers in the file. You can use your mouse to scroll through it and select a symbol to jump to. However, a much faster approach is to simply start typing the name of the symbol you want to jump to. Then use your arrow keys and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Enter&lt;/code&gt; to jump to it. This is absolutely the fastest way to navigate through a file for me.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/jump_bar_demo.gif&quot; alt=&quot;A demonstration of the jump bar in action&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;navigation-stack&quot;&gt;Navigation Stack&lt;/h3&gt;
+
+&lt;p&gt;The navigation stack in Xcode works very similar to the back and forth buttons in most web browsers and is actually quite helpful. Basically, each file that you open or go to in an Xcode window will be put on a stack. You can go back and forth through the stack using the left and right chevrons in the top left of the editor, right where the file tabs start.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/navigation_stack_buttons.png&quot; alt=&quot;A screenshot of the back and forth navigation buttons in Xcode&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;However a much faster approach is to use the shortcuts &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Left Arrow&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Right Arrow&lt;/code&gt; to go back and forth. Imagine you were following some very convoluted code logic, jumping through dozens of classes and call sites, to end up somewhere deep in the codebase. You’re so deep in fact, that you’re not even sure where you started. Well you can use the navigation stack to trace your steps back to where you were. Simply use the chevron buttons (or the shortcuts) to trace your steps back to where you were.&lt;/p&gt;
+
+&lt;p&gt;One thing to be aware of is that a lot of other IDEs and editors will place cursor position changes on the stack. What I mean is, anytime you click somewhere in the editor, that position is placed on the stack. Xcode doesn’t behave like that. Instead it only puts explicit navigation actions on the stack. This includes things like opening a file from the Project Navigator or jumping to a symbol using Open Quickly or the Jump Bar.&lt;/p&gt;
+
+&lt;p&gt;That last part is particularly useful when working on two or more functions that are in the same file, but are far apart. Rather than scrolling back and forth between them, you can instead navigate to them all in succession using the jump bar. Then quickly switch between them using the back and forth navigation shortcuts.&lt;/p&gt;
+
+&lt;p&gt;Some other useful things to keep in mind is that once you go back a few times and go somewhere else, that trunk on the navigation stack is lost. So if you need to preserve your path, be mindful of that. Another useful thing to know is that each window tab in Xcode will have its own navigation stack.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;By window tab I don’t mean the small file tabs that you get by opening files. I mean the big tabs that you create by pressing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;T&lt;/code&gt;&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Personally, the navigation stack is an integral part of my workflow. So much so, that I bound it to the side buttons on my mouse. It allows me to move between files with barely a thought.&lt;/p&gt;
+
+&lt;h3 id=&quot;counterpart-files&quot;&gt;Counterpart files&lt;/h3&gt;
+
+&lt;p&gt;This feature is more useful for Objective-C or if you thoroughly test test your code. Though you can make it work for you if you fiddle with some config files within Xcode.&lt;/p&gt;
+
+&lt;p&gt;Similar to the back and forth navigation shortcuts, you can use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Up Arrow&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Down Arrow&lt;/code&gt; to view related files. Xcode calls these “counterparts”. For most Swift code, by default that will be the auto-generated headers. I don’t often have a lot of use for this, unless I’m working on a library and want to make sure I expose what I meant to expose. It is very useful in Objective-C however, since the headers there are not auto-generated and have to be written by hand.&lt;/p&gt;
+
+&lt;p&gt;If the source code file that you’re working on has an associated test file then it will also be considered a counterpart. So long as it uses the same name with a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Tests&lt;/code&gt; suffix. For example if you’re working on a file called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Model.swift&lt;/code&gt; and your test file is called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ModelTests.swift&lt;/code&gt;, Xcode will consider them counterparts of each other.&lt;/p&gt;
+
+&lt;p&gt;You can customize this behavior by specifying more suffixes that should be considered counterparts. You do this with the following command.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;defaults write com.apple.dt.Xcode IDEAdditionalCounterpartSuffixes -array-add &quot;ViewController&quot; &quot;ViewModel&quot;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Here I added two suffixes: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ViewController&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ViewModel&lt;/code&gt;, but you can add as many as you’d like. You may need to restart Xcode for these changes to take effect. To check which suffixes are currently set, use:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;defaults read com.apple.dt.Xcode IDEAdditionalCounterpartSuffixes&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;To reset use:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;defaults delete com.apple.dt.Xcode IDEAdditionalCounterpartSuffixes&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;minimap&quot;&gt;Minimap&lt;/h3&gt;
+
+&lt;p&gt;I wouldn’t call the minimap the most useful feature added to Xcode, but I do enjoy it quite a bit. You can toggle the minimap by enabling it from the Editor Options menu, similar to the Authors overlay. You can also the shortcut &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;M&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;The biggest help that I find from it is that it prominently shows all your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MARK:&lt;/code&gt;s, along with the current scroll position. This can be useful in quickly finding certain parts in the current file.&lt;/p&gt;
+
+&lt;p&gt;Hovering over it with the mouse will highlight different parts of the file. Clicking on the will take you to them. Holding down &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt; while hovering will show a list of all other symbols, similar to the jump bar. Personally I don’t find these two features as useful, and much prefer the Jump Bar, as it is much more keyboard friendly.&lt;/p&gt;
+
+&lt;h3 id=&quot;navigation-shortcuts&quot;&gt;Navigation Shortcuts&lt;/h3&gt;
+
+&lt;p&gt;Below are a few navigation shortcuts that I use quite often.&lt;/p&gt;
+
+&lt;h4 id=&quot;file-explorer&quot;&gt;File explorer&lt;/h4&gt;
+
+&lt;p&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1&lt;/code&gt; to quickly open the Project Navigator. You can also use the other numbers, 1 through 9, to open any of the other nine tabs in the left sidebar.&lt;/p&gt;
+
+&lt;h4 id=&quot;reveal-file-in-project-navigator&quot;&gt;Reveal file in Project Navigator&lt;/h4&gt;
+
+&lt;p&gt;If you want to see where the currently open file is in the Project Navigator, the action for that is located in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Navigate&lt;/code&gt;-&amp;gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Reveal in Project Navigator&lt;/code&gt;. The shortcut for that is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;J&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;tab-navigation&quot;&gt;Tab navigation&lt;/h4&gt;
+
+&lt;p&gt;You can move back and forth through &lt;strong&gt;window&lt;/strong&gt; tabs using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Tab&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Tab&lt;/code&gt;. This will also work in almost any other macOS application. However in Xcode, you can also move through &lt;strong&gt;file&lt;/strong&gt; tabs using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;]&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;search&quot;&gt;Search&lt;/h2&gt;
+
+&lt;h3 id=&quot;find-symbolfind-call-hierarchy&quot;&gt;Find Symbol/Find Call Hierarchy&lt;/h3&gt;
+
+&lt;p&gt;The default project search functionality within Xcode works well enough. At least when what you’re looking for is fairly unique, like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ScoreBoardQueryResultsViewController&lt;/code&gt;. However when you need to find all usages of a public property called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;title&lt;/code&gt;, you might run into some trouble. Since the default search in Xcode only does simple string matching, you’ll often get very cluttered results. There is a better way (and it’s not RegEx).&lt;/p&gt;
+
+&lt;p&gt;If you right click on the symbol that you are trying to search for, then go to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Find&lt;/code&gt; submenu, you’ll see three options in there.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/find_menu_demo.png&quot; alt=&quot;A screenshot of the find submenu&quot; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;First there is the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Find Selected Text in Workspace&lt;/code&gt;. This will do a normal &lt;strong&gt;text&lt;/strong&gt; search like the one that we’re used to. Doing it this way may be faster than copying the text, going to the global search and pasting it there.&lt;/li&gt;
+  &lt;li&gt;Second we have the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Find Selected Symbol in Workspace&lt;/code&gt;. This will perform a &lt;strong&gt;symbol&lt;/strong&gt; search. Going back to our example, if you were to perform this kind of search on our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;title&lt;/code&gt; property, defined on some &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SpecialViewController&lt;/code&gt; class, it won’t just find any text that matches &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;title&lt;/code&gt;. It will actually search for instances of that specific &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;title&lt;/code&gt; property, when it belongs to an instance of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SpecialViewController&lt;/code&gt; class. The search results will consist of all usages of the symbol, plus a declaration. Usages are defined as follows;
+    &lt;ul&gt;
+      &lt;li&gt;For properties it will find you all places where it is read or written&lt;/li&gt;
+      &lt;li&gt;For functions it will find you all places where the function is called, or is passed as data&lt;/li&gt;
+      &lt;li&gt;For types it will find all references to said type, whether that is instantiation, a constraint or subclassing.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Lastly there is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Find Call Hierarchy&lt;/code&gt;. This is typically used with function and it works a little different from the other two options. When you use this on a function your results will form a tree. Typically you will start at one or more roots. These are all the immediate call sites of your function. If you expand any of those, this will in turn show you the call sites of the second level of branches. If you expand the third, you’ll see a forth, and so on until you reach a leaf of some sort. This is typically a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;viewDidLoad&lt;/code&gt;, a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;viewWillAppear&lt;/code&gt; or some kind of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;main&lt;/code&gt;. This is better explained with an example.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/find_call_hierarchy_demo.png&quot; alt=&quot;A screenshot of an example search of a function called shuffledLabel(accidentals:)&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In the screenshot above we see a Call Hierarchy search of an instance function called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;shuffledLabel(accidentals:)&lt;/code&gt; defined a type called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Note&lt;/code&gt;. Looking at the first level we see that it is used in the same type in two static functions called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;random(in:accidentals:)&lt;/code&gt; (These are overrides, they have different types of parameters). We can see that the first one has no more branches so it is a leaf. However the second does have branches, and it is itself used in two more places. First in a function called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;createRound&lt;/code&gt; on a type called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ChordGuessingGame&lt;/code&gt; and then in a function of the same name on a type called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;IntervalGuessingGame&lt;/code&gt;. I think this should be enough to show you the power of this search.&lt;/p&gt;
+
+&lt;p&gt;One thing to keep in mind is that these alternate searches will change your search settings and you’ll either need to use these right-click options or change them manually next time you need to search. Below is a demonstration of how to change it manually.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/reset_search_demo.gif&quot; alt=&quot;A demonstration of how to reset your search back to a text search&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Note: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Find Selected Symbol in Workspace&lt;/code&gt; may often not find all usages of a symbol in mixed code codebases. I think this is due to the differences in selector syntax between Swift and Objective-C. Keep that in mind when using it.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;breakpoints-as-bookmarks&quot;&gt;Breakpoints as bookmarks&lt;/h3&gt;
+
+&lt;p&gt;This is a trick I often use when I start working on an already established codebase and I’m still getting my bearings. If you have a place in your codebase that you want to bookmark, you can set a disabled breakpoint on it. To disabled a breakpoint simply click on it after creating it. Now navigate to the breakpoints tab (2nd from the right, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;8&lt;/code&gt;) in the left sidebar and you should see it there, along with any other breakpoints you’ve set.&lt;/p&gt;
+
+&lt;p&gt;You can take this further by double clicking on the breakpoint and giving it a name. Unfortunately this name will not show up in the list, so I usually use the name field to provide some context to the breakpoint if needed.&lt;/p&gt;
+
+&lt;h3 id=&quot;search-shortcuts&quot;&gt;Search Shortcuts&lt;/h3&gt;
+
+&lt;h4 id=&quot;file-vs-project-search--replace&quot;&gt;File vs. Project search &amp;amp; replace&lt;/h4&gt;
+
+&lt;p&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;F&lt;/code&gt; to trigger a search in the current file. Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;F&lt;/code&gt; to trigger a search in the workspace. Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Option&lt;/code&gt; with either of those shortcuts to do a find &amp;amp; replace instead of just a search.&lt;/p&gt;
+
+&lt;h4 id=&quot;next-result&quot;&gt;Next Result&lt;/h4&gt;
+
+&lt;p&gt;When performing a file search use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G&lt;/code&gt; to quickly have your cursor jump to the next result.&lt;/p&gt;
+
+&lt;h2 id=&quot;interface-builder&quot;&gt;Interface Builder&lt;/h2&gt;
+
+&lt;h3 id=&quot;select-layer&quot;&gt;Select layer&lt;/h3&gt;
+
+&lt;p&gt;When you’re working with a scene that has a very complicated view structure, it can be difficult to select just the right view. However Interface Builder has a very nifty trick for us. Hold down &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Control&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt; and click on the area containing the view that you want to select. This should open a popup of all the layers that appear under your mouse. Scrolling through that should highlight the views inside the scene. Then simply click the view that you want from the list and it will be selected.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/storyboard_layer_select_demo.gif&quot; alt=&quot;A demonstration of the layer popup in Interface Builder&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;distance-to-view&quot;&gt;Distance to view&lt;/h3&gt;
+
+&lt;p&gt;Similarly, if you’re working on a design and need to verify that all numbers are correct, in terms of spacing, Interface Builder has a very useful trick for us. Select one of the views and hover your mouse over the other, while holding down &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Option&lt;/code&gt;. You should see distances along all axes between the two views.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/storyboard_distance_demo.png&quot; alt=&quot;A screenshot showcasing the distance to view feature of Interface Builder&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here I have selected the yellow view and I’m hovering over the red view while holding down &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Option&lt;/code&gt;. We can see that the distance from the edges of the yellow view to the edges of the red view is 20 points along the vertical axis, and 56 points along the horizontal axis. In this example I’m measuring distances between a parent and child, however this works across view branches too.&lt;/p&gt;
+
+&lt;h2 id=&quot;debugging&quot;&gt;Debugging&lt;/h2&gt;
+
+&lt;h3 id=&quot;lldb-console&quot;&gt;LLDB Console&lt;/h3&gt;
+
+&lt;p&gt;One of the best debugging skills you can learn for iOS is how to use the LLDB console. There are a lot of other articles that explain it better than I could. I personally learned about it through &lt;a href=&quot;https://www.objc.io/issues/19-debugging/lldb-debugging/&quot;&gt;this one&lt;/a&gt;, from &lt;a href=&quot;https://www.objc.io&quot;&gt;objc.io&lt;/a&gt;. It goes over the LLDB console as well as a few other tricks which I will talk about briefly here. I strongly encourage you to give it a read. It’s quite long and it goes in-depth, but I highly recommend it. I guarantee that you’ll learn a few valuable skills.&lt;/p&gt;
+
+&lt;p&gt;The LLDB console is activated by hitting a breakpoint. Once activated you are given a console that you can put commands into, to prompt the current state of your application. The console is signified by the green &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;(lldb)&lt;/code&gt; prompt in your output console.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/lldb_console_demo.png&quot; alt=&quot;A screenshot of the lldb console&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now you might say, “I can already do that in the debugger panel, it show me all my variables and everything! This just seems like more typing”. To this I’ll say two things.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;That panel is just a wrapper around the LLDB console. It is useful if you want to use a mouse and quickly glance at some thing. However for a keyboard workflow, direct access to the LLDB console is much faster. Additionally it is much easier to drill down into data through the text console, rather than using the drill down controls in the debug panel. By drill down I mean accessing things like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;viewModel.service.items[0].id&lt;/code&gt; for example.&lt;/li&gt;
+  &lt;li&gt;In my experience, the debugging panel has a habit of showing wrong values. Especially if you’re on a more complicated codebase, or you’re doing something that is not very straightforward, when it comes to data storage. I can tell you for a fact that if you use &lt;a href=&quot;https://realm.io&quot;&gt;Realm&lt;/a&gt; in your project, the database objects will almost never have the right values showing up in their properties.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The console has many commands that you can use. Each one usually has a full version, for example &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;print&lt;/code&gt; but most of the time you use its shorthand variant, in this case just &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;I mostly find myself using these commands:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;e&lt;/code&gt; for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;expression&lt;/code&gt;. This command is used to execute a statement. Any statement in the language of the current breakpoint context is valid. You can try to print something using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;print&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NSLog&lt;/code&gt;. You can try to call a function or even set some variables to change the state of your program mid-run. Keep in mind that if your breakpoint stopped in Swift code, then the console will expect to see Swift code after the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;e&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;expression&lt;/code&gt; prompt. If it stopped in Objective-C code then you’ll have to write Objective-C statements.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p&lt;/code&gt; for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;print&lt;/code&gt;. This is actually just an alias to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;e --&lt;/code&gt;. So in essence it is a variation of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;expression&lt;/code&gt; command, fine tuned for printing its output. That means that you can still give this command expressions to run, even if they modify state like setting variables. The difference is that you will not be able to pass in any extra flags or arguments that you can pass to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;expression&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;po&lt;/code&gt; for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;print object&lt;/code&gt;. This is also just an alias but this time to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;e --O --&lt;/code&gt;. This makes it behave pretty much the same as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;print&lt;/code&gt;, except right before printing the result, it will check if that result is an Objective-C object (subclass of NSObject) and if it is, it will print print the result of its &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;description&lt;/code&gt; method instead of trying to read into the object. This is handy for when you’re working with complex objects like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NSArray&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;c&lt;/code&gt; for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;continue&lt;/code&gt; will release the current breakpoint. This is equivalent to pressing the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Resume&lt;/code&gt; button (1 from the screenshot below) in the debugger actions strip.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;n&lt;/code&gt; for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;next&lt;/code&gt; will move to the next executable statement. This is equivalent to pressing the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Next&lt;/code&gt; button (1 from the screenshot below) in the debugger action strip.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/debugger_actions_demo.png&quot; alt=&quot;A screenshot of the debugger strip, with the resume and next buttons labeled 1 and 2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The beauty of these commands is that they work with any expression. You can access some deeply nested property or call a function and print out the results. You can’t get that from the debugger panel.&lt;/p&gt;
+
+&lt;h3 id=&quot;conditional-breakpoints&quot;&gt;Conditional breakpoints&lt;/h3&gt;
+
+&lt;p&gt;When creating a breakpoint, you can double click on it to open its options. Inside of the options popup, you can use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Condition&lt;/code&gt; field to control when this breakpoint should trigger. Provide a boolean expression which should control whether or not this breakpoint should trigger. This is very useful in places where your code executes more than once, but you only care about a very specific case. If you can provide a meaningful condition then the debugger will automatically filter out the other triggers.&lt;/p&gt;
+
+&lt;h3 id=&quot;breakpoint-actions&quot;&gt;Breakpoint actions&lt;/h3&gt;
+
+&lt;p&gt;Breakpoint actions are lldb commands that you can attach to breakpoints and have them run as soon as the breakpoint is hit. This can tremendously speed up debugging. They’re covered in more detail in &lt;a href=&quot;https://www.objc.io/issues/19-debugging/lldb-debugging/&quot;&gt;this article&lt;/a&gt;, but I’ll go over them here very quickly. In essence you can double click on any breakpoint, and in the popup that opens, press the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Add Action&lt;/code&gt; button to create an action. By default the action is configured to be a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Log Message&lt;/code&gt;, so you can put a code expression in there, and the result of that expression will be printed to the console. Alternatively, you can change the action using the dropdown to a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Debugger Command&lt;/code&gt;, and now you can execute an LLDB debugger command. Every time the breakpoint is hit that command will automatically be executed. You can create ad-hoc automations, by checking the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Automatically continue after evaluation actions&lt;/code&gt; checkmark to have your breakpoint execute the actions and resume automatically.&lt;/p&gt;
+
+&lt;h3 id=&quot;output-console&quot;&gt;Output console&lt;/h3&gt;
+
+&lt;p&gt;If you’re doing print statement debugging (which has its places), you can save yourself a lot of time and work by knowing how to filter the console. I’m sure you know that you can search the console output by focusing it (click it), and using the usual &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;F&lt;/code&gt; shortcut.&lt;/p&gt;
+
+&lt;p&gt;You can also clear the current contents either by clicking the trash button in the bottom right or by using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;K&lt;/code&gt; shortcut. This is useful when what you’re debugging comes at a later point in the app’s life cycle. Get to a point right before your prints start and clear the console to reduce the amount of noise in there.&lt;/p&gt;
+
+&lt;p&gt;You can also remove a lot of noise from your console output by using the filter functionality. This works best when you give of your debug print statements a common prefix (or suffix).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/img/2023-05-01-xcode-bag-of-tricks/debugging_tools_demo.png&quot; alt=&quot;A screenshot of the debugging UI&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;debugging-shortcuts&quot;&gt;Debugging Shortcuts&lt;/h3&gt;
+
+&lt;h4 id=&quot;toggle-breakpoint-on-line&quot;&gt;Toggle breakpoint on line&lt;/h4&gt;
+
+&lt;p&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;\&lt;/code&gt; to quickly toggle a breakpoint on the current line.&lt;/p&gt;
+
+&lt;h4 id=&quot;toggle-debug-area&quot;&gt;Toggle debug area&lt;/h4&gt;
+
+&lt;p&gt;Use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Y&lt;/code&gt; to quickly hide and show the debug area. It usually pops up automatically when you’re running and the app starts printing something to the console (which you can configure in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Behaviors&lt;/code&gt; tab in Preferences btw). But it’s a good idea to hide it if you’re not running anything anymore and just need to code.&lt;/p&gt;
+
+&lt;h4 id=&quot;focus-on-output-console&quot;&gt;Focus on output console&lt;/h4&gt;
+
+&lt;p&gt;Using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Shift&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C&lt;/code&gt;, you can bring focus to the output console. From there you can either start typing LLDB commands or use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Command&lt;/code&gt;+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;F&lt;/code&gt; to start searching through the console output. Not the biggest shortcut, but good for a keyboard oriented workflow.&lt;/p&gt;
+
+&lt;h2 id=&quot;misc&quot;&gt;Misc&lt;/h2&gt;
+
+&lt;h3 id=&quot;uninstalling-xcode&quot;&gt;Uninstalling Xcode&lt;/h3&gt;
+
+&lt;p&gt;Assuming you put Xcode in the Applications folder, to remove all traces of Xcode from your machine, delete the following files/folders:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/Applications/Xcode.app&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/Library/Caches/com.apple.dt.Xcode&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/Library/Developer&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/Library/MobileDevice&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/Library/Preferences/com.apple.dt.Xcode.plist&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/Library/Preferences/com.apple.dt.Xcode.plist&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/System/Library/Receipts/com.apple.pkg.XcodeExtensionSupport.bom&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/System/Library/Receipts/com.apple.pkg.XcodeExtensionSupport.plist&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/System/Library/Receipts/com.apple.pkg.XcodeSystemResources.bom&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/System/Library/Receipts/com.apple.pkg.XcodeSystemResources.plist&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;preserve-xcode-customizations&quot;&gt;Preserve Xcode Customizations&lt;/h3&gt;
+
+&lt;p&gt;Files containing your Xcode customization are typically at the following paths:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/Library/Developer/Xcode/UserData/CodeSnippets&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;This contains your custom saved code snippets. There will be one file with a unique name, per code snippet. There is no easy way to tell which is which, except by opening it as a text file and looking at the contents.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/Library/Developer/Xcode/UserData/FontAndColorThemes&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;This contains your custom themes. One file per theme.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/Library/Developer/Xcode/UserData/KeyBindings&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;This is where you keybindings are. If you’ve never customized your key bindings there should be a single file called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Default.idekeybindings&lt;/code&gt;. If you have customized key binding but never saved them to a dedicated key bindings set, they will saved in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Default&lt;/code&gt; file. Otherwise if you did create a separate key bindings set, there should be a file for that.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/Library/Developer/Xcode/Templates&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;If you’ve created custom file templates, those will be stored here.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/Library/Preferences/com.apple.dt.Xcode.plist&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;This should contain settings that you’ve set through Xcode’s preferences pane. Keep in mind not all options might be stored in this file.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/Library/MobileDevice/Provisioning Profiles&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;This contains all the provisioning profiles you’ve created for any physical devices that you’ve deployed apps for. It’s a good idea to save these so you don’t have to regenerate them.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;It is a good idea to backup all the files that you care about from this list. Personally I save them to a GitHub repo along with config files for other applications that I use often. In case you loose your laptop, or have to set up a new one, it will greatly simplify the process for you. Just drop these files in their respective locations and you’re good to go!&lt;/p&gt;
+
+&lt;h2 id=&quot;sources&quot;&gt;Sources&lt;/h2&gt;
+
+&lt;p&gt;A lot of these were just written by me from memory. I also looked at some lists online to remind myself of what I know. Can’t always recall everything on the spot. I won’t claim to know everything though, I definitely learned some new things from these lists.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.hackingwithswift.com/articles/166/xcode-tips-and-tricks-part-one&quot;&gt;Xcode tips and tricks – part one | Hacking with Swift&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.hackingwithswift.com/articles/168/xcode-tips-and-tricks-part-two&quot;&gt;Xcode tips and tricks – part two | Hacking with Swift&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.hackingwithswift.com/articles/171/xcode-tips-and-tricks-part-three&quot;&gt;Xcode tips and tricks – part three | Hacking with Swift&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.hackingwithswift.com/articles/176/xcode-tips-and-tricks-part-four&quot;&gt;Xcode tips and tricks – part four | Hacking with Swift&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://snow.dog/blog/how-to-speed-up-your-daily-development-37-xcode-tips-and-shortcuts&quot;&gt;37 Xcode Tips and Shortcuts | Snowdog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://9to5tutorial.com/xcode-set-up-counterpartsuffixes-to-make-file-movement-a-bit-easier&quot;&gt;Set up Counterpart suffixes to make file movement a bit easier | 9to5Tutorials&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.objc.io/issues/19-debugging/lldb-debugging/&quot;&gt;Dancing in the Debugger — A Waltz with LLDB | objc.io&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/forums/thread/110227?answerId=341753022#341753022&quot;&gt;Uninstall xcode 10 | Apple Developer Forums&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Inal Gotov</name></author><category term="xcode" /><summary type="html">I’ve been a developer for a number of years now. Primarily iOS. Over the years I’ve learned to use Xcode quite efficiently. I won’t claim to now all the ins and outs of it but I do consider myself to know more than most. Below is a list of my learnings. Perhaps you’ll find them useful.</summary></entry></feed>

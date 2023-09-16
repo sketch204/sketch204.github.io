@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>From C to Swift - Part 2</title>
+  
+  <meta name="description" content="Learn to how to integrate C system libraries into your Swift code">
+  
+  <meta name="author" content="Inal Gotov">
+
+  <link rel="stylesheet" href="/assets/css/styles.css?v=1.0">
+
+  <link type="application/atom+xml" rel="alternate" href="https://inalgotov.com/feed.xml" title="Inal&apos;s Gotov" />
+  <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>From C to Swift - Part 2 | Inal’s Gotov</title>
+<meta name="generator" content="Jekyll v4.3.2" />
+<meta property="og:title" content="From C to Swift - Part 2" />
+<meta name="author" content="Inal Gotov" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Learn to how to integrate C system libraries into your Swift code" />
+<meta property="og:description" content="Learn to how to integrate C system libraries into your Swift code" />
+<link rel="canonical" href="https://inalgotov.com/2023/07/15/from-c-to-swift-pt2.html" />
+<meta property="og:url" content="https://inalgotov.com/2023/07/15/from-c-to-swift-pt2.html" />
+<meta property="og:site_name" content="Inal’s Gotov" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-07-15T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="From C to Swift - Part 2" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Inal Gotov"},"dateModified":"2023-07-15T00:00:00+00:00","datePublished":"2023-07-15T00:00:00+00:00","description":"Learn to how to integrate C system libraries into your Swift code","headline":"From C to Swift - Part 2","mainEntityOfPage":{"@type":"WebPage","@id":"https://inalgotov.com/2023/07/15/from-c-to-swift-pt2.html"},"url":"https://inalgotov.com/2023/07/15/from-c-to-swift-pt2.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+</head>
+
+<body>
+
+  <article class="readingMargins">
+  <h1>From C to Swift - Part 2</h1>
+
+  <span class="date">Written on Jul 15, 2023</span>
+
+  <p>In <a href="/2023/07/15/from-c-to-swift-pt1.html">part 1</a> of this series we looked at how we can integrate a C library with SwiftPM such that we can import it into our code. In this article, we will be taking a look at how to actually use the C code, and what the edge cases of using C code in Swift are. If you missed the first part, I highly recommend you give it a read.</p>
+
+<h2 id="using-ncurses">Using <code class="language-plaintext highlighter-rouge">ncurses</code></h2>
+
+<p>First, most basic constants and functions that are defined in C, will be available in Swift as their global constant and function Swift counterparts. You can call them without any name-spacing from any context. For example, the <code class="language-plaintext highlighter-rouge">ncurses</code> library has a <code class="language-plaintext highlighter-rouge">getch</code> function which reads a characters from the input stream. It returns an <code class="language-plaintext highlighter-rouge">int</code> and takes no arguments. In my <code class="language-plaintext highlighter-rouge">main.swift</code>, after importing <code class="language-plaintext highlighter-rouge">Cnurses</code>, I can very easily call this function.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="kt">Cncurses</span>
+<span class="k">let</span> <span class="nv">c</span> <span class="o">=</span> <span class="nf">getch</span><span class="p">()</span></code></pre></figure>
+
+<p>However, to make things clear for myself and help me keep my sanity, I try not to access the C library members directly as top-level members. Instead I prepend their module name to the member names. So given the above example, I prefer to make the call like so:</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="kt">Cncurses</span>
+<span class="k">let</span> <span class="nv">c</span> <span class="o">=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">getch</span><span class="p">()</span></code></pre></figure>
+
+<p>This makes it very explicit when I am working with C code.</p>
+
+<aside class="note">
+<h1>Note</h1>
+<p>In part 1 we defined the main <code class="language-plaintext highlighter-rouge">Curses</code> target as a library. This means it cannot have top-level executable code. If you wish to test if some code compiles, you can declare a top level testing function, and place your executable code there. However if you wish to execute that code, the easiest way would be to either call it from a test, or write the code in the test directly. New SwiftPM packages are typically created with tests, so looks for a <code class="language-plaintext highlighter-rouge">Tests</code> folder.</p>
+
+</aside>
+
+<h3 id="structs">Structs</h3>
+
+<p>Most C structs will be interpreted by the Swift compiler and coerced into Swift structs. However they may be difficult to work with, so. I would still recommend wrapping them with a Swift type, if they are something you have to work with often. <code class="language-plaintext highlighter-rouge">ncurses</code> does not offer that many structs so I cannot provide an example for you.</p>
+
+<h3 id="pointers">Pointers</h3>
+
+<p>C uses pointers a lot. This is what gives it most of its power. Swift however has no notion of a pointer, instead it has reference and value types. Luckily, the Swift compiler does a lot of the heavy lifting for us.</p>
+
+<p>When you call a function that accepts a pointer, there are a number of ways you can pass your pointer to it.</p>
+
+<p>If the pointer is constant, that is, it is only read and never changed, then you should be able to just pass in the value as usual and the swift compiler will implicitly cast it to the right type. However, for functions that also need to change the value of the pointer, you can use Swift’s in-out syntax. When you pass the variable in, you prepend its name with <code class="language-plaintext highlighter-rouge">&amp;</code>. Make sure the variable is mutable.</p>
+
+<p>For example, <code class="language-plaintext highlighter-rouge">ncurses</code> has a function called <code class="language-plaintext highlighter-rouge">pair_content</code>, which given an int identifier, will return a pair of colors associated with said identifier. One for the text and one for the background. The C signature of this function is as follows.</p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="k">extern</span> <span class="kt">int</span> <span class="nf">pair_content</span><span class="p">(</span><span class="kt">short</span><span class="p">,</span> <span class="kt">short</span><span class="o">*</span><span class="p">,</span> <span class="kt">short</span><span class="o">*</span><span class="p">);</span></code></pre></figure>
+
+<p>Note the last two arguments, they are pointer types. In my case, the Swift compiler interpreted this declaration like so:</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">func</span> <span class="nf">pair_content</span><span class="p">(</span><span class="nv">_</span><span class="p">:</span> <span class="kt">Int16</span><span class="p">,</span> <span class="nv">_</span><span class="p">:</span> <span class="kt">UnsafeMutablePointer</span><span class="o">&lt;</span><span class="kt">Int16</span><span class="o">&gt;!</span><span class="p">,</span> <span class="nv">_</span><span class="p">:</span> <span class="kt">UnsafeMutablePointer</span><span class="o">&lt;</span><span class="kt">Int16</span><span class="o">&gt;!</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int32</span></code></pre></figure>
+
+<p>Notice that the two C <code class="language-plaintext highlighter-rouge">short</code> pointers were transformed into <code class="language-plaintext highlighter-rouge">UnsafeMutablePointer&lt;Int16&gt;</code>. The way to use these functions in Swift would be to simply pass two in-out references to it.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">CShort</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">var</span> <span class="nv">textColor</span><span class="p">:</span> <span class="kt">CShort</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">backgroundColor</span><span class="p">:</span> <span class="kt">CShort</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="kt">Cncurses</span><span class="o">.</span><span class="nf">pair_content</span><span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">textColor</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">backgroundColor</span><span class="p">)</span></code></pre></figure>
+
+<p>We could wrap this in a Swift-friendly, re-usable function. That way we can hide all the C details, like so:</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">func</span> <span class="nf">getColors</span><span class="p">(</span><span class="k">for</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nv">textColor</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">backgroundColor</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">rawForegroundColor</span><span class="p">:</span> <span class="kt">CShort</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">var</span> <span class="nv">rawBackgroundColor</span><span class="p">:</span> <span class="kt">CShort</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">pair_content</span><span class="p">(</span>
+        <span class="kt">CShort</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
+        <span class="o">&amp;</span><span class="n">rawForegroundColor</span><span class="p">,</span>
+        <span class="o">&amp;</span><span class="n">rawBackgroundColor</span>
+    <span class="p">)</span>
+    <span class="nf">return</span> <span class="p">(</span>
+        <span class="kt">Int</span><span class="p">(</span><span class="n">rawForegroundColor</span><span class="p">),</span>
+        <span class="kt">Int</span><span class="p">(</span><span class="n">rawBackgroundColor</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>To make it even more Swift friendly, we would define an <code class="language-plaintext highlighter-rouge">enum</code> or <code class="language-plaintext highlighter-rouge">struct</code> to hold constants for all of the available colors, but I leave that as an exercise to the reader.</p>
+
+<aside class="info">
+<h1>Info</h1>
+<p>Note the use of the <code class="language-plaintext highlighter-rouge">CShort</code> type. It is a <code class="language-plaintext highlighter-rouge">typealias</code> that maps to <code class="language-plaintext highlighter-rouge">Int16</code>. It is from a collection of types that map to C primitives. We could have used <code class="language-plaintext highlighter-rouge">Int16</code> directly, but I find this conveys my intent a little better. If you want to learn more, you can find a full list of mapped C types <a href="https://developer.apple.com/documentation/swift/c-interoperability">here</a> (there’s no header linking in Apple docs, so you’ll have to scroll down a bit).</p>
+
+</aside>
+
+<h3 id="strings">Strings</h3>
+
+<p>Strings in C are simple arrays of <code class="language-plaintext highlighter-rouge">char</code>s. With that in mind, the only real way to make that work with Swift is to mimic this behaviour. If a C function accepts or returns a string, the Swift compiler will simply coerce it to and from a Swift string.</p>
+
+<p>Things get interesting when a C function return a string value, by assigning it a passed in pointer. In that case you must appropriate allocate some data, call the function passing it in, and then transform that data into a Swift string. There are a number of ways to accomplish this, but the most sane one I found is as follows.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="c1">// 1</span>
+<span class="k">var</span> <span class="nv">buffer</span> <span class="o">=</span> <span class="p">[</span><span class="kt">CChar</span><span class="p">](</span><span class="nv">repeating</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">count</span><span class="p">:</span> <span class="mi">80</span><span class="p">)</span>
+<span class="c1">// 2</span>
+<span class="kt">Cncurses</span><span class="o">.</span><span class="nf">getstr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">)</span>
+<span class="c1">// 3</span>
+<span class="k">let</span> <span class="nv">str</span> <span class="o">=</span> <span class="kt">String</span><span class="p">(</span><span class="nv">cString</span><span class="p">:</span> <span class="n">buffer</span><span class="p">)</span></code></pre></figure>
+
+<p>Here we are calling the <code class="language-plaintext highlighter-rouge">getstr</code> string. This function will read a user input from the console, until it reads a newline feed. It will then take what it has read, and place it in the passed it pointer.</p>
+
+<p>Now let’s look at what is happening in the code.</p>
+
+<ol>
+  <li>We allocate some data for our string, by initializing a buffer. This is essentially an array of zeroes. The length of the array will determine how many characters will fit into the string, minus 1 for the end delimiter. Be mindful of this amount, because if you set it too low and the function tries to put in a bigger string, then you will get a crash. Notice also, that we are declaring an array of type <code class="language-plaintext highlighter-rouge">CChar</code>. This is to mimic the behaviour that we would do, if were we writing C code.</li>
+  <li>Next we call our function, passing in our buffer using in-out semantics. The function will set a value to the <code class="language-plaintext highlighter-rouge">buffer</code> array. I would also handle the status code that the function returns here, however we will talk about that in the next section.</li>
+  <li>Next I take my buffer and create a Swift string out of it, using the <code class="language-plaintext highlighter-rouge">init(cString: [CChar])</code> string initializer. This gives us a proper Swift <code class="language-plaintext highlighter-rouge">String</code>.</li>
+</ol>
+
+<p>This looks cumbersome and annoying, but again, this is the most sane way I found to make this work. Believe me I’ve tried quite a few. Setting the maximum string length is quite annoying, but that is a side effect of using C.</p>
+
+<p>If we were to wrap this in a Swifty function, I would do it like so.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getString</span><span class="p">(</span><span class="nv">maxLength</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">buffer</span> <span class="o">=</span> <span class="p">[</span><span class="kt">CChar</span><span class="p">](</span><span class="nv">repeating</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">count</span><span class="p">:</span> <span class="n">maxLength</span><span class="p">)</span>
+    <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">getstr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kt">String</span><span class="p">(</span><span class="nv">cString</span><span class="p">:</span> <span class="n">buffer</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>This gives us the ability to override the max string length, if we anticipate a longer string, while also keeping a default of 80, which is common on a lot of other platforms.</p>
+
+<aside class="info">
+<h1>Info</h1>
+<p>Apple has a <a href="https://developer.apple.com/documentation/swift/calling-functions-with-pointer-parameters">whole page</a> dedicated to the implicit casting rules between Swift types and C pointer types. Be sure to check it out, if your work involves C pointers.</p>
+
+</aside>
+
+<h3 id="status-codes">Status Codes</h3>
+
+<p>It is common in C to pass values back to the caller through pointers, rather than simply returning them. This is usually done if more than one value needs to be returned, or if the function may throw an error. In those cases, often times what is actually returned by the functions is an <code class="language-plaintext highlighter-rouge">int</code> status code for whether the function executed successfully or not. You will need to check the documentation of your library to see what exactly constitutes a failure vs. a success. For <code class="language-plaintext highlighter-rouge">ncurses</code>, in case of a failure it will return the <code class="language-plaintext highlighter-rouge">ERR</code> constant, and something else in case of success. I was not able to find documentation for how to check the reason of failure, but I’ve seen other libraries provide various mechanisms for that. You’ll have to refer to your library’s documentation to see if they offer anything like that.</p>
+
+<p>Rather than checking for the value of the status code every time you call the function in Swift, I would recommend declaring a throwing wrapper function. Let’s continue our <code class="language-plaintext highlighter-rouge">getstr</code> function example from the previous section. First I declare an error type so I have something to <code class="language-plaintext highlighter-rouge">throw</code> in case of an error.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">CursesError</span><span class="p">:</span> <span class="kt">Error</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">unknown</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Next I modify my Swift <code class="language-plaintext highlighter-rouge">getString</code> function such that it throws an error if the status code of the C function is equal to <code class="language-plaintext highlighter-rouge">ERR</code>. I use the… in this case rather counter-intuitive, <code class="language-plaintext highlighter-rouge">guard</code> clause to perform the logic check.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getString</span><span class="p">(</span><span class="nv">maxLength</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">buffer</span> <span class="o">=</span> <span class="p">[</span><span class="kt">CChar</span><span class="p">](</span><span class="nv">repeating</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">count</span><span class="p">:</span> <span class="n">maxLength</span><span class="p">)</span>
+    <span class="k">let</span> <span class="nv">status</span> <span class="o">=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">getstr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">buffer</span><span class="p">)</span>
+    <span class="k">guard</span> <span class="n">status</span> <span class="o">!=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="kt">ERR</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="kt">CursesError</span><span class="o">.</span><span class="n">unknown</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="kt">String</span><span class="p">(</span><span class="nv">cString</span><span class="p">:</span> <span class="n">buffer</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>This is much better. Now I actually take the error into account, and provide a very Swifty way of handling it. The client can choose to ignore it if they are confident, but are otherwise forced to handle it.</p>
+
+<p>If you’re sure that the function you are calling will never fail, you can choose to ignore these error codes. However keep in mind that if it does fail, then you may get some unexpected behaviour and have a very difficult bug on your hands. Therefore I would recommend to still account for the error, but rather than throwing, perform a <code class="language-plaintext highlighter-rouge">fatalError</code>. This way, if the impossible error does occur, you’ll at least be aware of it quickly.</p>
+
+<h3 id="pointers-to-struct">Pointers to <code class="language-plaintext highlighter-rouge">struct</code></h3>
+
+<p><code class="language-plaintext highlighter-rouge">ncurses</code> exposes a window object, that lets you isolate and work with a section of the terminal screen. This window object is represented as a C struct. When creating a window with <code class="language-plaintext highlighter-rouge">newwin</code>, you receive a pointer to this struct, and you must retain and pass around this pointer to various functions in order to manipulate the window. When you’re done with it, you pass it to <code class="language-plaintext highlighter-rouge">delwin</code> to release its memory appropriately.</p>
+
+<p>While you could manually create the pointer, hold a reference to it and pass it around, basically treating it as you would in C, I find this not very Swifty. Instead, I see this as a perfect use case to create a wrapper class. Classes are reference types so they have very similar semantics to pointers. Classes have a clear place of creation and destruction and they have an implicit <code class="language-plaintext highlighter-rouge">self</code> object that is passed as a hidden argument to all of their member functions. Releasing us from the burden of passing implicit data around. I hope you see how well this maps to our use case.</p>
+
+<p>Let’s begin. I will create a new class called <code class="language-plaintext highlighter-rouge">Window</code>.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="kt">Cncurses</span>
+
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Window</span> <span class="p">{</span>
+    <span class="c1">// More code to follow</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>It will have a single constant property called <code class="language-plaintext highlighter-rouge">windowPointer</code>. This will be the C pointer to the window struct. I will create this pointer in the initializer, exposing the window creation arguments. I will also make sure to properly destroy the window pointer once my class is de-allocated.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">import</span> <span class="kt">Cncurses</span>
+
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Window</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="k">let</span> <span class="nv">windowPointer</span><span class="p">:</span> <span class="kt">OpaquePointer</span>
+
+    <span class="nf">init</span><span class="p">(</span><span class="nv">row</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">column</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">width</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">self</span><span class="o">.</span><span class="n">windowPointer</span> <span class="o">=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">newwin</span><span class="p">(</span>
+            <span class="nf">numericCast</span><span class="p">(</span><span class="n">row</span><span class="p">),</span>
+            <span class="nf">numericCast</span><span class="p">(</span><span class="n">column</span><span class="p">),</span>
+            <span class="nf">numericCast</span><span class="p">(</span><span class="n">width</span><span class="p">),</span>
+            <span class="nf">numericCast</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">deinit</span> <span class="p">{</span>
+        <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">delwin</span><span class="p">(</span><span class="n">windowPointer</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<aside class="info">
+<h1>Info</h1>
+<p><code class="language-plaintext highlighter-rouge">numericCast</code> is a neat little <a href="https://developer.apple.com/documentation/swift/numericcast(_:)">built-in Swift function</a>, which will take in whatever numeric type you give it, and cast it to whatever numeric type is expected on the other end.</p>
+
+</aside>
+
+<p>Now, with my wrapper class set up, I can start adding all of those window modifying functions as methods of the class. For example, this is how I would declare a <code class="language-plaintext highlighter-rouge">getCharacter</code> function. This function reads a single character the is passed to the input stream of my window and returns it.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">extension</span> <span class="kt">Window</span> <span class="p">{</span>
+    <span class="kd">public</span> <span class="kd">func</span> <span class="nf">getCharacter</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Int</span> <span class="p">{</span>
+        <span class="k">let</span> <span class="nv">c</span> <span class="o">=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">wgetch</span><span class="p">(</span><span class="n">windowPointer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nf">numericCast</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Notice how the C pointer remains hidden the whole time. Instead I simply work with my class instance. The client of my class does not even need to know that there are C pointers being passed around behind the scenes. This is much more Swifty in my opinion.</p>
+
+<h3 id="constants">Constants</h3>
+
+<p><code class="language-plaintext highlighter-rouge">ncurses</code> does not export any constant properties that I can show you as examples. At least not in the traditional sense. It defines most of its constants through the <code class="language-plaintext highlighter-rouge">#define</code> directive (If you are unfamiliar with C, <a href="https://www.freecodecamp.org/news/constants-in-c-explained-how-to-use-define-and-const-keyword/">this article</a> explains what the <code class="language-plaintext highlighter-rouge">#define</code> directive does).</p>
+
+<p>Preprocessor directives do not translate to Swift well. By default, if it is a macro that maps directly to literal values it will try to coerce it as a top-level constant. If it also accepts parameters it will be coerced into a function. However if the macro maps to another macro then it will not be translated to the Swift interface at all.</p>
+
+<p>An example of one such macro is <code class="language-plaintext highlighter-rouge">A_UNDERLINE</code>. In <code class="language-plaintext highlighter-rouge">ncurses</code> you use this to make your output text underlined. It is a macro that does not accept parameters, but depends on the <code class="language-plaintext highlighter-rouge">NCURSES_BITS(mask, shift)</code> macro. If you try to access it in your Swift code you will get a compile-time error, saying it is not defined:</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">underline</span> <span class="o">=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="kt">A_UNDERLINE</span>
+<span class="c1">// Error: Module 'Cncurses' has no member named 'A_UNDERLINE'</span></code></pre></figure>
+
+<p>The only way around this, that I found to work is to go back to my bridging header and declare a wrapper function that accesses the unavailable member.</p>
+
+<p>In <code class="language-plaintext highlighter-rouge">bridging-header.h</code></p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;ncurses.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">getUnderlineAttribute</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">A_UNDERLINE</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>I would do this for any unavailable member that I need access to.</p>
+
+<p>With that, back in my <code class="language-plaintext highlighter-rouge">main.swift</code> file I should be able to access the new wrapper function.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">underline</span> <span class="o">=</span> <span class="kt">Cncurses</span><span class="o">.</span><span class="nf">getUnderlineAttribute</span><span class="p">()</span></code></pre></figure>
+
+<p>This works for most unavailable members.</p>
+
+<aside class="note">
+<h1>Note</h1>
+<p>It irks me to put implementation in the header file, but with the current configuration, the modulemap seems to ignore any <code class="language-plaintext highlighter-rouge">.c</code> source files the I add to the module. I was not able to figure out how to make it work. If you know of a way, please <a href="mailto:hello@inal.dev">do let me know</a>.</p>
+
+</aside>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>While it is definitely possible to work with C directly from Swift, in many cases it is rather cumbersome. Therefore, if your library is rather small, like a handful of functions and symbols, then you may get away with just using it directly. However if it is a library that you will be using heavily, throughout your codebase, or a library that is big and/or opinionated, I would highly recommend creating a Swift wrapper around it. Handle all the C logic in one centralized place, and keep the rest of the code base Swifty.</p>
+
+<h2 id="sources">Sources</h2>
+
+<ul>
+  <li><a href="https://developer.apple.com/documentation/swift/calling-functions-with-pointer-parameters">Calling Functions With Pointer Parameters | Apple Developer Documentation</a></li>
+  <li><a href="https://rderik.com/blog/building-a-text-based-application-using-swift-and-ncurses/">Building a text-based application using Swift and ncurses | rderik</a></li>
+  <li><a href="https://github.com/rderik/SwiftCursesTerm">rderik/SwiftCursesTerm | GitHub</a></li>
+  <li><a href="https://github.com/TheCoderMerlin/Curses/">TheCoderMerlin/Curses | GitHub</a></li>
+  <li><a href="https://keith.github.io/xcode-man-pages/ncurses.3x.html">Xcode man pages | keith.github.io</a></li>
+  <li><a href="https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/index.html">NCURSES Programming HOWTO | The Linux Documentation Project</a></li>
+</ul>
+
+</article>
+
+  <footer>
+  © 2023 Inal Gotov
+  <br>
+  <a href="/index.html">Home</a> | <a href="/articles.html">Articles</a> | <a href="/feed.xml">RSS</a>
+  <br>
+  <a href="/privacy.html">Privacy Policy</a> | <a href="/assets/Inal_Gotov.pdf">Résumé</a>
+</footer>
+
+</body>
+</html>

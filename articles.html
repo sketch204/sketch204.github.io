@@ -1,20 +1,87 @@
----
-layout: default
-title: Articles
-description: All the stuff I've written
----
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<div class="readingMargins">
+  <title>Articles</title>
+  
+  <meta name="description" content="All the stuff I've written">
+  
+  <meta name="author" content="Inal Gotov">
+
+  <link rel="stylesheet" href="/assets/css/styles.css?v=1.0">
+
+  <link type="application/atom+xml" rel="alternate" href="https://inalgotov.com/feed.xml" title="Inal&apos;s Gotov" />
+  <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Articles | Inal’s Gotov</title>
+<meta name="generator" content="Jekyll v4.3.2" />
+<meta property="og:title" content="Articles" />
+<meta name="author" content="Inal Gotov" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="All the stuff I’ve written" />
+<meta property="og:description" content="All the stuff I’ve written" />
+<link rel="canonical" href="https://inalgotov.com/articles.html" />
+<meta property="og:url" content="https://inalgotov.com/articles.html" />
+<meta property="og:site_name" content="Inal’s Gotov" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Articles" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"Inal Gotov"},"description":"All the stuff I’ve written","headline":"Articles","url":"https://inalgotov.com/articles.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+</head>
+
+<body>
+
+  <div class="readingMargins">
   <h1>Articles</h1>
 
   <hr>
 
-  {% for post in site.posts %}
+  
   <div>
-    <a href="{{ post.url }}">
-      <h2>{{ post.title }}</h2>
+    <a href="/2023/09/07/how-to-use-tables-in-swiftui.html">
+      <h2>How to use Tables in SwiftUI</h2>
     </a>
-    <p>{{ post.excerpt }}</p>
+    <p>In this article we're going to take a quick look at how tables are setup and used in SwiftUI.</p>
   </div>
-  {% endfor %}
+  
+  <div>
+    <a href="/2023/07/15/from-c-to-swift-pt2.html">
+      <h2>From C to Swift - Part 2</h2>
+    </a>
+    <p><p>In <a href="/2023/07/15/from-c-to-swift-pt1.html">part 1</a> of this series we looked at how we can integrate a C library with SwiftPM such that we can import it into our code. In this article, we will be taking a look at how to actually use the C code, and what the edge cases of using C code in Swift are. If you missed the first part, I highly recommend you give it a read.</p>
+</p>
+  </div>
+  
+  <div>
+    <a href="/2023/07/15/from-c-to-swift-pt1.html">
+      <h2>From C to Swift - Part 1</h2>
+    </a>
+    <p><p>In this article I will walk you through the steps required to set up a C library as a SwiftPM package. This will allow you to use C code within a Swift project. I will then also show you how to use said C code from Swift, as well as how to make it more Swift-friendly.</p>
+</p>
+  </div>
+  
+  <div>
+    <a href="/2023/05/01/xcode-bag-of-trick.html">
+      <h2>Big bag of Xcode tips & tricks</h2>
+    </a>
+    <p><p>I’ve been a developer for a number of years now. Primarily iOS. Over the years I’ve learned to use Xcode quite efficiently. I won’t claim to now all the ins and outs of it but I do consider myself to know more than most. Below is a list of my learnings. Perhaps you’ll find them useful.</p>
+</p>
+  </div>
+  
 </div>
+
+  <footer>
+  © 2023 Inal Gotov
+  <br>
+  <a href="/index.html">Home</a> | <a href="/articles.html">Articles</a> | <a href="/feed.xml">RSS</a>
+  <br>
+  <a href="/privacy.html">Privacy Policy</a> | <a href="/assets/Inal_Gotov.pdf">Résumé</a>
+</footer>
+
+</body>
+</html>
