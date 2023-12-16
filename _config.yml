@@ -6,6 +6,7 @@ base_url: sketch204.github.io
 url: https://inalgotov.com
 contact_email: hello@inalgotov.com
 author: Inal Gotov
+exclude: ["Gemfile", "Gemfile.lock", "scripts"]
 lsi: false
 incremental: false
 highlighter: rouge
