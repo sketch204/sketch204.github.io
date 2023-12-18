@@ -6,17 +6,20 @@ excerpt: "Un-stage or reset files back to their last committed state."
 Restore changes in the working directory and index.
 
 {% highlight bash %}
-# Restore all changes made in the working directory. Staged changes are left untouched
+# Reset changes made in the working directory. Staged changes are left untouched
 git restore <filepath>...
 # Same as above
 git restore [-W|--worktree] <filepath>...
 
-# Same as above, but only restore staged changed instead of changes in the working directory.
+# Unstage changes
 git restore [-S|--staged] <filepath>...
 
-# Restore changes in both staged and working directory changes. This essentially removes all uncommitted changes.
+# Reset both staged and working directory changes. This essentially removes all uncommitted changes.
 git restore [-SW|--staged --worktree] <filepath>...
 
-# Restore files to a different point in time, specifically whatever is referenced by <ref>. By default HEAD is used.
+
+# By default `restore` will reset files back to their state at `HEAD`.
+
+# Reset files to their state at `<ref>`.
 git restore --source <ref> <filepath>...
 {% endhighlight %}
