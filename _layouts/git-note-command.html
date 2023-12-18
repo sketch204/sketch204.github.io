@@ -1,0 +1,14 @@
+---
+layout: default
+---
+
+<article class="readingMargins">
+  <h1>{{ page.title }}</h1>
+
+  {% if page.tldr %}
+  {% assign tldr_path = 'git-notes/tldr/' | append: page.name %}
+  <p class="tldr-prompt">Short on time? <a href="{% link {{ tldr_path }} %}">View the TLDR version here</a></p>
+  {% endif %}
+
+  {{ content }}
+</article>

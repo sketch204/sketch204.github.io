@@ -1,7 +1,6 @@
 ---
+title: "[TLDR] Restore"
 ---
-
-# [TLDR] Restore
 
 {% highlight bash %}
 # Restore all changes made in the working directory. Staged changes are left untouched

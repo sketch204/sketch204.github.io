@@ -1,8 +1,7 @@
 ---
+title: Restore
+tldr: True
 ---
-
-
-# Restore
 
 Un-stage or reset files back to their last committed state. Replacement for `git reset`.
 

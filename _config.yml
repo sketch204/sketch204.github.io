@@ -32,3 +32,11 @@ defaults:
       path: "tldr"
     values:
       layout: "tldr"
+  - scope:
+      path: "git-notes/tldr"
+    values:
+      layout: "git-note-command-tldr"
+  - scope:
+      path: "git-notes"
+    values:
+      layout: "git-note-command"
