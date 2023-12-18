@@ -1,6 +1,9 @@
 ---
 title: "[TLDR] Restore"
+excerpt: "Un-stage or reset files back to their last committed state."
 ---
+
+Restore changes in the working directory and index.
 
 {% highlight bash %}
 # Restore all changes made in the working directory. Staged changes are left untouched

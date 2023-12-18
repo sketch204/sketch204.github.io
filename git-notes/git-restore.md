@@ -1,5 +1,6 @@
 ---
 title: Restore
+excerpt: "Un-stage or reset files back to their last committed state."
 tldr: True
 ---
 
