@@ -82,3 +82,18 @@ footer {
     max-width: 800px;
     margin: auto;
 }
+
+.cv {
+
+}
+
+.cv section {
+    
+}
+
+.cvImage img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: solid var(--text-color) 2px;
+}
