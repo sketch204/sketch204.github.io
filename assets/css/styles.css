@@ -1,6 +1,7 @@
 @import url(colors.css);
 @import url(article.css);
 @import url(code-highlight.css);
+@import url(cv.css);
 
 body {
     font-family: system-ui, Helvetica, sans-serif;
@@ -81,4 +82,8 @@ footer {
 .readingMargins {
     max-width: 800px;
     margin: auto;
+}
+
+.secondary-text {
+    color: var(--secondary-text-color);
 }
