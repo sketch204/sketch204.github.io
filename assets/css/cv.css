@@ -107,3 +107,11 @@
     }
   }
 }
+
+@media (max-width: 630px) {
+  .cv {
+    .heading {
+      flex-direction: column-reverse;
+    }
+  }
+}
