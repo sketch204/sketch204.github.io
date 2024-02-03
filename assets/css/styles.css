@@ -83,3 +83,7 @@ footer {
     max-width: 800px;
     margin: auto;
 }
+
+.secondary-text {
+    color: var(--secondary-text-color);
+}

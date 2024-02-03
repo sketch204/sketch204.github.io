@@ -1,49 +1,71 @@
 .cv {
-
-}
-
-.cv section {
-
-}
-
-.cvHeading {
+  .heading {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-}
 
-.cvHeading h1 {
-    margin-bottom: 0;
-    font-size: xx-large;
-    color: var(--accent-color);
-}
+    h1 {
+        margin-bottom: 0;
+        font-size: xx-large;
+        color: var(--accent-color);
+    }
+  
+    p {
+        margin-top: 0;
+    }
+  }
 
-.cvHeading p {
-    margin-top: 0;
-}
-
-.cvSocialIcons {
+  .socialIcons {
     display: flex;
     gap: 8px;
-}
+  }
 
-.cv h2 {
-    margin-bottom: 0;
-}
-
-.cv hr {
-    color: var(--accent-color);
-    margin-top: 0;
-}
-
-.cvSkill {
-    
-}
-
-.cvImage img {
+  .image img {
     width: 200px;
     height: 200px;
     border-radius: 50%;
     border: solid var(--text-color) 2px;
+  }
+
+
+
+  h2 {
+    margin-bottom: 0;
+  }
+
+  hr {
+    color: var(--accent-color);
+    margin-top: 0;
+  }
+
+  .job {
+    .heading {
+      align-items: first baseline;
+    }
+
+    h3 {
+      margin: 0;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .titleTextBox {
+      display: flex;
+      flex-direction: row;
+      align-items: first baseline;
+      gap: 4px;
+    }
+
+    ul {
+      margin-top: 0;
+    }
+  }
+
+
+  .cvSkill {
+      
+  }
 }
