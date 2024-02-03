@@ -28,15 +28,21 @@
     border: solid var(--text-color) 2px;
   }
 
-
-
   h2 {
     margin-bottom: 0;
+    color: var(--accent-color);
   }
 
   hr {
     color: var(--accent-color);
     margin-top: 0;
+  }
+
+  .titleTextBox {
+    display: flex;
+    flex-direction: row;
+    align-items: first baseline;
+    gap: 4px;
   }
 
   .job {
@@ -50,13 +56,6 @@
 
     p {
       margin: 0;
-    }
-
-    .titleTextBox {
-      display: flex;
-      flex-direction: row;
-      align-items: first baseline;
-      gap: 4px;
     }
 
     ul {
@@ -85,6 +84,26 @@
       background-color: var(--code-background-color);
       padding: 2px 4px;
       border-radius: 5px;
+    }
+  }
+
+  .project {
+    h3 {
+      margin: 0;
+    }
+
+    a h3 {
+      color: var(--text-color);
+      text-decoration: none;
+      border: none;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    ul {
+      margin-top: 0;
     }
   }
 }
