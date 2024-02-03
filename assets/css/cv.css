@@ -64,6 +64,19 @@
     }
   }
 
+  .education {
+    .heading {
+      align-items: first baseline;
+    }
+    
+    h3 {
+      margin: 0;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
 
   .cvSkill {
       
