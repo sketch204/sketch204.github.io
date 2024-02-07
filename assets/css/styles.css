@@ -8,6 +8,33 @@ body {
     line-height: 1.5;
     background: var(--bg-color);
     color: var(--text-color);
+    margin-top: 3em;
+}
+
+@media (max-width: 630px) {
+    body {
+        margin-top: 4em;
+    }
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--bg-color);
+    width: 100%;
+  
+    a {
+        float: left;
+        text-align: center;
+        padding: 1em;
+        text-decoration: none;
+    }
+
+    a:hover {
+        background-color: var(--accent-color);
+        color: var(--bg-color);
+    }
 }
 
 a {
@@ -18,13 +45,7 @@ footer {
     color: var(--secondary-text-color);
     text-align: center;
     font-size: small;
-}
-
-@media (max-width: 630px) {
-    footer {
-        margin-top: 50px;
-        height: initial;
-    }
+    margin-top: 50px;
 }
 
 .content {
@@ -41,7 +62,6 @@ footer {
 @media (max-width: 630px) {
     .content {
         flex-direction: column;
-        height: initial;
     }
 }
 
