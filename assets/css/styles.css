@@ -8,6 +8,27 @@ body {
     line-height: 1.5;
     background: var(--bg-color);
     color: var(--text-color);
+    margin-top: 4em;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--bg-color);
+    width: 100%;
+  
+    a {
+        float: left;
+        text-align: center;
+        padding: 1em;
+        text-decoration: none;
+    }
+
+    a:hover {
+        background-color: var(--accent-color);
+        color: var(--bg-color);
+    }
 }
 
 a {
@@ -18,51 +39,35 @@ footer {
     color: var(--secondary-text-color);
     text-align: center;
     font-size: small;
-}
-
-@media (max-width: 630px) {
-    footer {
-        margin-top: 50px;
-        height: initial;
-    }
+    margin-top: 50px;
 }
 
 .content {
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
     justify-content: center;
     align-items: center;
-    height: 92.5vh;
-    max-width: 800px;
-    margin: auto;
+
+    h1 {
+        color: var(--accent-color);
+    }
 }
 
 @media (max-width: 630px) {
     .content {
         flex-direction: column;
-        height: initial;
     }
-}
-
-.verticalStack {
-    display: flex;
-    flex-direction: column;
-}
-
-.horizontalStack {
-    display: flex;
-    flex-direction: row;
 }
 
 .mainImage {
     margin-right: 30px;
-}
 
-.mainImage img {
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    border: solid var(--text-color) 2px;
+    img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: solid var(--text-color) 2px;
+    }
 }
 
 @media (max-width: 630px) {
@@ -71,12 +76,19 @@ footer {
     }
 }
 
-.highlight {
-    color: var(--highlight-color);
+.articleList {
+    h2 {
+        color: var(--accent-color);
+        margin-bottom: 0;
+    }
+    hr {
+        color: var(--accent-color);
+        margin-top: 0;
+    }
 }
 
-.content h1 {
-    color: var(--accent-color);
+.highlight {
+    color: var(--highlight-color);
 }
 
 .readingMargins {
@@ -86,4 +98,16 @@ footer {
 
 .secondary-text {
     color: var(--secondary-text-color);
+}
+
+.postNavigation {
+    height: 1.5em;
+
+    .previous {
+        float: left;
+    }
+
+    .next {
+        float: right;
+    }
 }
