@@ -13,22 +13,25 @@ description: Inal's personal webpage!
 
       <p>My name is <span title="Pronounced Ee-nal" class="highlight">Inal Gotov</span>.</p>
 
-      <p>I'm a software developer, guitarist, drummer, and a few other things. This is my personal webpage. There's not much on here right now. Perhaps there will be more later. Guess you'll have to just wait and see :D</p>
+      <p>I'm a software developer, guitarist, drummer, and a few other things. This is my personal webpage. I mostly write about iOS development whenever I find the free time to do that.</p>
 
       <p>If you wish to contact me you can reach me at <a href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a></p>
 
-      <p>I'm also available on <a href="{{ site.data.socials.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a>, <a href="{{ site.data.socials.github }}" target="_blank" rel="noopener noreferrer">GitHub</a> and <a href="{{ site.data.socials.twitter }}" target="_blank" rel="noopener noreferrer">Twitter</a></p>
+      <p>I'm also available on <a href="{{ site.data.socials.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a> and <a href="{{ site.data.socials.github }}" target="_blank" rel="noopener noreferrer">GitHub</a></p>
     </div>
   </div>
 
-  <h2>Articles</h2>
+  <div class="articleList">
+    <h2>Stuff I've written</h2>
+    <hr>
 
-  {% for post in site.posts %}
-  <div>
-    <a href="{{ post.url }}">
-      <h3>{{ post.title }}</h3>
-    </a>
-    <p>{{ post.excerpt }}</p>
+    {% for post in site.posts %}
+    <div>
+      <a href="{{ post.url }}">
+        <h3>{{ post.title }}</h3>
+      </a>
+      <p>{{ post.excerpt }}</p>
+    </div>
+    {% endfor %}
   </div>
-  {% endfor %}
 </div>

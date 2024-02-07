@@ -82,6 +82,17 @@ footer {
     }
 }
 
+.articleList {
+    h2 {
+        color: var(--accent-color);
+        margin-bottom: 0;
+    }
+    hr {
+        color: var(--accent-color);
+        margin-top: 0;
+    }
+}
+
 .highlight {
     color: var(--highlight-color);
 }
