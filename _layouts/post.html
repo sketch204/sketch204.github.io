@@ -1,8 +1,9 @@
 ---
 layout: default
 ---
-
 <article class="readingMargins">
+  {% include post_navigation.html %}
+
   <h1>{{ page.title }}</h1>
 
   <p class="date">Written on {{ page.date | date: "%b %e, %Y" }}</p>
@@ -13,4 +14,6 @@ layout: default
   {% endif %}
 
   {{ content }}
+
+  {% include post_navigation.html %}
 </article>
