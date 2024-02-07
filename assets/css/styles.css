@@ -29,12 +29,13 @@ footer {
 
 .content {
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
     justify-content: center;
     align-items: center;
-    height: 92.5vh;
-    max-width: 800px;
-    margin: auto;
+
+    h1 {
+        color: var(--accent-color);
+    }
 }
 
 @media (max-width: 630px) {
@@ -44,25 +45,15 @@ footer {
     }
 }
 
-.verticalStack {
-    display: flex;
-    flex-direction: column;
-}
-
-.horizontalStack {
-    display: flex;
-    flex-direction: row;
-}
-
 .mainImage {
     margin-right: 30px;
-}
 
-.mainImage img {
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    border: solid var(--text-color) 2px;
+    img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: solid var(--text-color) 2px;
+    }
 }
 
 @media (max-width: 630px) {
@@ -73,10 +64,6 @@ footer {
 
 .highlight {
     color: var(--highlight-color);
-}
-
-.content h1 {
-    color: var(--accent-color);
 }
 
 .readingMargins {

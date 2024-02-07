@@ -2,22 +2,33 @@
 title: Inal Gotov
 description: Inal's personal webpage!
 ---
-<div class="content">
-  <div class="mainImage">
-    <img src="/assets/img/profile_picture.jpeg" alt="A photo of Inal" sizes="250px">
+<div class="readingMargins">
+  <div class="content">
+    <div class="mainImage">
+      <img src="/assets/img/profile_picture.jpeg" alt="A photo of Inal" sizes="250px">
+    </div>
+
+    <div>
+      <h1 title="General Kenobi!">Hello there!</h1>
+
+      <p>My name is <span title="Pronounced Ee-nal" class="highlight">Inal Gotov</span>.</p>
+
+      <p>I'm a software developer, guitarist, drummer, and a few other things. This is my personal webpage. There's not much on here right now. Perhaps there will be more later. Guess you'll have to just wait and see :D</p>
+
+      <p>If you wish to contact me you can reach me at <a href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a></p>
+
+      <p>I'm also available on <a href="{{ site.data.socials.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a>, <a href="{{ site.data.socials.github }}" target="_blank" rel="noopener noreferrer">GitHub</a> and <a href="{{ site.data.socials.twitter }}" target="_blank" rel="noopener noreferrer">Twitter</a></p>
+    </div>
   </div>
 
-  <div class="verticalStack">
-    <h1 title="General Kenobi!">Hello there!</h1>
+  <h2>Articles</h2>
 
-    <p>My name is <span title="Pronounced Ee-nal" class="highlight">Inal Gotov</span>.</p>
-
-    <p>I'm a software developer, guitarist, drummer, and a few other things. This is my personal webpage. There's not much on here right now. Perhaps there will be more later. Guess you'll have to just wait and see :D</p>
-
-    <p>If you wish to contact me you can reach me at <a href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a></p>
-
-    <p>I'm also available on <a href="{{ site.data.socials.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a>, <a href="{{ site.data.socials.github }}" target="_blank" rel="noopener noreferrer">GitHub</a> and <a href="{{ site.data.socials.twitter }}" target="_blank" rel="noopener noreferrer">Twitter</a></p>
-
-    <p><a href="/articles.html">Check out some stuff I've written.</a></p>
+  {% for post in site.posts %}
+  <div>
+    <a href="{{ post.url }}">
+      <h3>{{ post.title }}</h3>
+    </a>
+    <p>{{ post.excerpt }}</p>
   </div>
+  {% endfor %}
 </div>
