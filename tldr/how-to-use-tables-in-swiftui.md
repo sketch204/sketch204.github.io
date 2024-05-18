@@ -1,21 +1,21 @@
----
-title: "[TLDR] How to use Tables in SwiftUI"
-description: An in-depth look at how Tables are implemented in SwiftUI
-date: "2023-09-07"
-tags: SwiftUI
----
++++
+title = "[TLDR] How to use Tables in SwiftUI"
+description = "An in-depth look at how Tables are implemented in SwiftUI"
+date = 2023-09-07
+tags = ["SwiftUI"]
++++
 
 Throughout this article I will assume the following structure is available.
 
-{% highlight swift linenos %}
+```swift
 struct User: Identifiable {
     let id: UUID
-    
+
     let firstName: String
     let lastName: String
     let age: Int
     let favoriteColor: Color
-    
+
     let createdAt: Date
     let updatedAt: Date
 }
@@ -23,7 +23,7 @@ struct User: Identifiable {
 enum Color {
     case red, orange, yellow, green, blue, purple
 }
-{% endhighlight %}
+```
 
 # Creating Tables
 
@@ -34,7 +34,7 @@ enum Color {
     - You can put buttons in these views
 - You are limited to 10 columns per table, however in iOS 16/macOS 12 we got the ability to compose more of them using `Group`s.
 
-{% highlight swift linenos %}
+```swift
 Table(users) {
   TableColumn("First Name", value: \.firstName)
   TableColumn("Last Name", value: \.lastName)
@@ -43,12 +43,12 @@ Table(users) {
     Text(user.age.formatted())
   }
   .width(40)
-  
+
   TableColumn("Color") { user in
     ColorView(color: user.favoriteColor)
   }
   .width(min: 55)
-  
+
   TableColumn("Created") { user in
     Text(user.createdAt.formatted())
   }
@@ -57,7 +57,7 @@ Table(users) {
     Text(user.updatedAt.formatted())
   }
 }
-{% endhighlight %}
+```
 
 # Row Control
 
@@ -65,7 +65,7 @@ Table(users) {
   - Alternatively, you can avoid passing in the array of items to the table, and instead pass in a second closure which builds `TableRow`s. You can use a `ForEach` in there too. This is also useful if you have fixed/constant data.
 - One benefit of doing this is the ability or provide a custom context menu for each row.
 
-{% highlight swift linenos %}
+```swift
 Table(of: User.self) {
   //...Columns...
 } rows: {
@@ -73,13 +73,13 @@ Table(of: User.self) {
     TableRow(user)
   }
 }
-{% endhighlight %}
+```
 
 # Selection
 
 - Selection works the same as it does in `List`s. You can provide a binding to a nullable property of the same type as the item's ID. This will enable selection in the table. To enable multiple selection provide a binding to a set IDs instead
 
-{% highlight swift linenos %}
+```swift
 let users: [User]
 @State private var selection: User.ID?
 
@@ -88,7 +88,7 @@ var body: some View {
     //...Columns...
   }
 }
-{% endhighlight %}
+```
 
 # Sorting
 
@@ -102,7 +102,7 @@ var body: some View {
 - With all this in place the table view will modify the sort order array based on user input. It will not however sort the actual data. That is your responsibility. For most cases, especially where the data is local, you can do this quite trivially with `Array`'s `sorted(using:)` method.
 - Keep in mind that all types related to sorting must be uniform across all of the table.This includes things passed/declared on the table, as well as the columns.
 
-{% highlight swift linenos %}
+```swift
 let users: [User]
 private var presentedUsers: [User] {
   users.sorted(using: sortOrder)
@@ -117,28 +117,28 @@ var body: some View {
   Table(presentedUsers) {
     TableColumn("First Name", value: \.firstName)
     TableColumn("Last Name", value: \.lastName)
-  
+
     TableColumn("Age", value: \.age) { user in
       Text(user.age.formatted())
     }
     .width(40)
-  
+
     let colorComparator = KeyPathComparator(
-      \User.favoriteColor, 
+      \User.favoriteColor,
       comparator: Color.Comparator()
     )
     TableColumn("Color", sortUsing: colorComparator) { user in
       ColorView(color: user.favoriteColor)
     }
     .width(min: 55)
-    
+
     TableColumn("Created", value: \.createdAt) { user in
       Text(user.createdAt.formatted())
     }
-  
+
     TableColumn("Updated", value: \.updatedAt) { user in
       Text(user.updatedAt.formatted())
     }
   }
 }
-{% endhighlight %}
+```
