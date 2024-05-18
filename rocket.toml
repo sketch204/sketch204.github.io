@@ -1,0 +1,20 @@
+assetsPaths = [ "assets", "CNAME" ]
+ignoredPaths = [ "scripts", "README.md" ]
+
+[[defaults]]
+path = "posts"
+[defaults.values]
+layout = "post"
+layoutBlockName = "postContent"
+
+[[defaults]]
+path = "tldr"
+[defaults.values]
+layout = "tldr"
+layoutBlockName = "tldrContent"
+
+[[defaults]]
+path = ""
+[defaults.values]
+layout = "default"
+layoutBlockName = "content"
