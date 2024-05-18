@@ -1,33 +1,33 @@
----
-title: "[TLDR] Using Regex in Swift"
-description: An in-depth look at the various different ways to define and use regular expressions in Swift
-excerpt: In this article I will be walking you through the various different ways to define and use regular expressions in Swift
-date: "2023-12-02"
-tags: Swift
----
++++
+title = "[TLDR] Using Regex in Swift"
+description = "An in-depth look at the various different ways to define and use regular expressions in Swift"
+excerpt = "In this article I will be walking you through the various different ways to define and use regular expressions in Swift"
+date = 2023-12-02
+tags = ["Swift"]
++++
 
 Assume the following example input.
 
-{% highlight swift linenos %}
+```swift
 let input = """
 CREDIT    03/02/2022    Payroll                   $200.23
 CREDIT    03/03/2022    Sanctioned Individual A   $2,000,000.00
 DEBIT     03/03/2022    Totally Legit Shell Corp  $2,000,000.00
 DEBIT     03/05/2022    Beanie Babies Forever     $57.33
 """
-{% endhighlight %}
+```
 
 ## Before iOS 16
 
 Use [`NSRegularExpression`](https://developer.apple.com/documentation/foundation/nsregularexpression) from Foundation.
 
-{% highlight swift linenos %}
+```swift
 let regex = try NSRegularExpression(pattern: #"(CREDIT|DEBIT)\s+"#)
-{% endhighlight %}
+```
 
 Use methods on the regex object to perform regex operations on strings.
 
-{% highlight swift linenos %}
+```swift
 regex.enumerateMatches(
   in: input,
   range: NSRangeFromString(input)
@@ -40,7 +40,7 @@ regex.enumerateMatches(
     stopPointer.pointee = false
   }
 }
-{% endhighlight %}
+```
 
 The focus of this article is on modern Swift regex APIs. To learn more about how to use `NSRegularExpression` fully, [read the docs](https://developer.apple.com/documentation/foundation/nsregularexpression).
 
@@ -50,15 +50,15 @@ Use the new [`Regex`](https://developer.apple.com/documentation/swift/regex) typ
 
 Create regex patterns from string literals.
 
-{% highlight swift linenos %}
+```swift
 let regex = try Regex(#"(CREDIT|DEBIT)\s+"#)
-{% endhighlight %}
+```
 
 `Regex` is generic over what its output type is. The default is `AnyRegexOutput`. Specify an explicit output type on the regex to parse out captured groups.
 
-{% highlight swift linenos %}
+```swift
 let regex = try Regex(#"(CREDIT|DEBIT)\s+(\d+)"#, as: (Substring, Substring, Substring).self)
-{% endhighlight %}
+```
 
 The output type should
 
@@ -68,34 +68,34 @@ The output type should
 
 Use `String` APIs to perform regex operations on strings.
 
-{% highlight swift linenos %}
+```swift
 let match = input.firstMatch(of: regex)
 let allMatches = input.matches(of: regex)
-{% endhighlight %}
+```
 
 Output will be a [`Regex.Match`](https://developer.apple.com/documentation/swift/regex/match) object. Treat it as a tuple object to get captured values out.
 
-{% highlight swift linenos %}
+```swift
 let wholeMatchedSubstring = match?.0        // "CREDIT    03"
 let transactionTypeSubstring = match?.1     // "CREDIT"
 let monthSubstring = match?.2               // "03"
 
 let transactionTypes = allMatches.map(\.1)  // ["CREDIT", "CREDIT", "DEBIT", "DEBIT"]
-{% endhighlight %}
+```
 
 ## Regex Literals
 
 Use regex literals to define regex patterns quicker and more succinctly. To do so, wrap the raw regex pattern with forward slashes (`/`).
 
-{% highlight swift linenos %}
+```swift
 let regex = /(CREDIT|DEBIT)\s+(\d+)/
-{% endhighlight %}
+```
 
 Forward slashes that are part of the pattern must be escaped with back slashes (`\`). To avoid this, use extended delimiters.
 
-{% highlight swift linenos %}
+```swift
 let regex = #/(CREDIT|DEBIT)\s+(\d+)/(\d+)/(\d+)/#
-{% endhighlight %}
+```
 
 This produces a `Regex` object, same as using the normal `Regex` initializer. Except this time the compiler can validate the regex expression at compile time and figure out the right output generic type for us.
 
@@ -103,32 +103,32 @@ Usage of regex patterns generated through regex literals is the same as using an
 
 For regex patterns defined with extended delimiters, you can multiline them for better readability and to comment them. Newlines and white spaces are ignored for multiline regex literals.
 
-{% highlight swift linenos %}
+```swift
 let regex = #/
 (CREDIT|DEBIT)     # transaction type
 \s+
 (\d+)/(\d+)/(\d+)  # date
 /#
-{% endhighlight %}
+```
 
 Regex literals also allow us to provide names for our capture groups.
 
-{% highlight swift linenos %}
+```swift
 let regex = #/
 (?<transactionType> CREDIT|DEBIT)          # transaction type
 \s+
 (?<month> \d+)/(?<day> \d+)/(?<year> \d+)  # date
 /#
-{% endhighlight %}
+```
 
 For a regex with named capture groups, use the capture group name instead of the tuple indices.
 
-{% highlight swift linenos %}
+```swift
 let match = input.firstMatch(of: regex)
 let month = match?.month  // "03"
 let year = match?.year    // "2022"
 let day = match?.day      // "02"
-{% endhighlight %}
+```
 
 ## `RegexBuilder`
 
@@ -136,7 +136,7 @@ Use the first party [`RegexBuilder`](https://developer.apple.com/documentation/r
 
 Define a regex pattern using result builders
 
-{% highlight swift linenos %}
+```swift
 import RegexBuilder
 
 let regex = Regex {
@@ -171,11 +171,11 @@ let regex = Regex {
     }
   }
 }
-{% endhighlight %}
+```
 
 Make the regex more readable and clean by extrapolating repetitive code and composing regex patterns together.
 
-{% highlight swift linenos %}
+```swift
 let digitCapture = Regex {
   Capture {
     OneOrMore {
@@ -204,13 +204,13 @@ let regex = Regex {
   "/"
   digitCapture
 }
-{% endhighlight %}
+```
 
 The produced value is still just a `Regex` with its output type automatically set according to the result of the builder. Use it with the same String APIs as regex literals.
 
 For quick and short regex patterns, pass the builder directly into the String API methods.
 
-{% highlight swift linenos %}
+```swift
 let match = input.firstMatch {
   Capture {
     ChoiceOf {
@@ -220,11 +220,11 @@ let match = input.firstMatch {
   }
 }
 let transactionType = match?.1  // "CREDIT"
-{% endhighlight %}
+```
 
 Use [`Reference`s](https://developer.apple.com/documentation/regexbuilder/reference) to create named capture groups
 
-{% highlight swift linenos %}
+```swift
 let transactionTypeRef = Reference(Substring.self)
 let dayRef = Reference(Substring.self)
 let monthRef = Reference(Substring.self)
@@ -254,21 +254,21 @@ let regex = Regex {
   "/"
   digitCapture(as: yearRef)
 }
-{% endhighlight %}
+```
 
 Access the captured contents by using the reference objects like keys to the `match` dictionary.
 
-{% highlight swift linenos %}
+```swift
 let match = input.firstMatch(of: regex)
 let transactionType = match?[transactionTypeRef]  // "CREDIT"
 let year = match?[yearRef]                        // "2022"
 let day = match?[dayRef]                          // "02"
 let month = match?[monthRef]                      // "03"
-{% endhighlight %}
+```
 
 The type of captured data above is `Substring?`. Use `TryCapture` blocks `Capture` to have those `Substring`s automatically transformed into custom data.
 
-{% highlight swift linenos %}
+```swift
 enum TransactionType: String {
   case credit = "CREDIT"
   case debit = "DEBIT"
@@ -291,7 +291,7 @@ let regex = Regex {
 
 // transactionType is now a custom type, rather than a Substring.
 let transactionType: TransactionType? = match?[transactionTypeRef]
-{% endhighlight %}
+```
 
 Check the sources below for more info.
 
