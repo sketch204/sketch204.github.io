@@ -1,7 +1,7 @@
----
-title: Inal Gotov
-description: Inal's Resume
----
++++
+title = "Inal Gotov"
+description = "Inal's Resume"
++++
 <div class="cv readingMargins">
   <section>
     <div class="heading">
@@ -14,16 +14,16 @@ description: Inal's Resume
         </p>
 
         <div class="socialIcons fa-xl">
-          <a href="mailto:{{ site.contact_email }}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-envelope"></i></a>
-          <a href="{{ site.data.socials.github }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-square-github"></i></a>
-          <a href="{{ site.data.socials.linkedin }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="mailto:{{ socials.contact_email }}" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-envelope"></i></a>
+          <a href="{{ socials.github }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-square-github"></i></a>
+          <a href="{{ socials.linkedin }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin"></i></a>
           <a href="/assets/Inal_Gotov.pdf" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-file-pdf"></i></a>
-          <a href="{{ site.data.socials.youtube }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube"></i></a>
+          <a href="{{ socials.youtube }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube"></i></a>
         </div>
       </div>
 
       <div class="image">
-        <img src="/assets/img/profile_picture_alt.JPG" alt="A photo of Inal" sizes="200px">
+        <img src={{ "/assets/img/profile_picture_alt.JPG"|site_url }} alt="A photo of Inal" sizes="200px">
       </div>
     </div>
   </section>
@@ -31,7 +31,7 @@ description: Inal's Resume
   <section>
     <h2>Experience</h2>
     <hr/>
-    
+
     <div class="job">
       <div class="heading">
         <div>
