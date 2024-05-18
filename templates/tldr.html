@@ -1,0 +1,9 @@
+{% extends "post.html" %}
+
+{% block postContent %}
+
+<p class="tldr-prompt">This is the TLDR version of the article. <a href="{{ "/posts/"|append:page.filename|site_url }}">View the full version here</a></p>
+
+{% block tldrContent %}{% endblock %}
+
+{% endblock %}

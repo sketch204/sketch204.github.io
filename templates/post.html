@@ -1,0 +1,24 @@
+{% extends "default.html" %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+{% endblock %}
+
+{% block content %}
+<article class="readingMargins">
+  {% include "post_navigation.html" %}
+
+  <h1>{{ page.title }}</h1>
+
+  <p class="date">Written on {{ page.date|date:"MMMM d, yyyy" }}</p>
+
+  {% if page.tldr %}
+  <p class="tldr-prompt">Short on time? <a href="{{ "/tldr/"|append:page.filename|site_url }}">View the TLDR version here</a></p>
+  {% endif %}
+
+  {% block postContent %}{% endblock %}
+
+  {% include "post_navigation.html" %}
+</article>
+{% endblock %}
