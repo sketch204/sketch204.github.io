@@ -1,11 +1,11 @@
----
-title: Inal Gotov
-description: Inal's personal webpage!
----
++++
+title = "Inal Gotov"
+description = "Inal's personal webpage!"
++++
 <div class="readingMargins">
   <div class="content">
     <div class="mainImage">
-      <img src="/assets/img/profile_picture.jpeg" alt="A photo of Inal" sizes="250px">
+      <img src={{ "/assets/img/profile_picture.jpeg"|site_url }} alt="A photo of Inal" sizes="250px">
     </div>
 
     <div>
@@ -15,9 +15,9 @@ description: Inal's personal webpage!
 
       <p>I'm a software developer, guitarist, drummer, and a few other things. This is my personal webpage. I mostly write about iOS development whenever I find the free time to do that.</p>
 
-      <p>If you wish to contact me you can reach me at <a href="mailto:{{ site.contact_email }}">{{ site.contact_email }}</a></p>
+      <p>If you wish to contact me you can reach me at <a href="mailto:{{ socials.contact_email }}">{{ socials.contact_email }}</a></p>
 
-      <p>I'm also available on <a href="{{ site.data.socials.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a> and <a href="{{ site.data.socials.github }}" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+      <p>I'm also available on <a href="{{ socials.linkedin }}" target="_blank" rel="noopener noreferrer">LinkedIn</a> and <a href="{{ socials.github }}" target="_blank" rel="noopener noreferrer">GitHub</a></p>
     </div>
   </div>
 
@@ -25,12 +25,12 @@ description: Inal's personal webpage!
     <h2>Stuff I've written</h2>
     <hr>
 
-    {% for post in site.posts %}
+    {% for post in posts %}
     <div>
-      <a href="{{ post.url }}">
+      <a href="{{ post.outputPath|site_url }}">
         <h3>{{ post.title }}</h3>
       </a>
-      <p>{{ post.excerpt }}</p>
+      <p>{{ post.excerpt|default:post.description }}</p>
     </div>
     {% endfor %}
   </div>
