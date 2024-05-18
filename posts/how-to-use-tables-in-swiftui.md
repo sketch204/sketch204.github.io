@@ -1,16 +1,17 @@
----
-title: How to use Tables in SwiftUI
-description: An in-depth look at how Tables are implemented in SwiftUI
-excerpt: In this article we're going to take a quick look at how tables are setup and used in SwiftUI.
-tags: SwiftUI
-tldr: True
----
++++
+title = "How to use Tables in SwiftUI"
+description = "An in-depth look at how Tables are implemented in SwiftUI"
+excerpt = "In this article we're going to take a quick look at how tables are setup and used in SwiftUI."
+tags = ["SwiftUI"]
+tldr = true
+date = 2023-09-07
++++
 
 In this article we're going to take a quick look at how tables are setup and used in SwiftUI.
 
 Throughout the article I will be using the following structures as sample data for the tables.
 
-{% highlight swift linenos %}
+```swift
 struct User: Identifiable {
     let id: UUID
 
@@ -18,7 +19,7 @@ struct User: Identifiable {
     let lastName: String
     let age: Int
     let favoriteColor: Color
-    
+
     let createdAt: Date
     let updatedAt: Date
 }
@@ -26,7 +27,7 @@ struct User: Identifiable {
 enum Color {
     case red, orange, yellow, green, blue, purple
 }
-{% endhighlight %}
+```
 
 ## Creating Tables
 
@@ -34,7 +35,7 @@ Just like a `List` you can create a table by passing in an array of `Identifiabl
 
 Below is an example of a simple table.
 
-{% highlight swift linenos %}
+```swift
 Table(users) {
     TableColumn("First Name", value: \.firstName)
 
@@ -42,7 +43,7 @@ Table(users) {
         Text(user.lastName)
     }
 }
-{% endhighlight %}
+```
 
 This table has two columns, the first shows the first name of the user, while the second shows the last name. Notice how the `Table` is comprised of `TableColumn`s. Each `TableColumn` has a view builder which defines how a cell in the column will look. The builder gets a single item from the array of items given to the `Table`.
 
@@ -54,7 +55,7 @@ Here's how that looks when running on macOS.
 
 Let's add a few more columns.
 
-{% highlight swift linenos %}
+```swift
 Table(users) {
     TableColumn("First Name", value: \.firstName)
     TableColumn("Last Name", value: \.lastName)
@@ -77,7 +78,7 @@ Table(users) {
         Text(user.updatedAt.formatted())
     }
 }
-{% endhighlight %}
+```
 
 Here I've added some more columns to display more of the user's properties. I've also adjusted the last name column to use the key path initializers. With the other columns I was forced to provide a custom view, since the property that I was presenting there was not a `String`. You can also see that for the color column, I've provided a completely custom `ColorView`.
 
@@ -91,9 +92,8 @@ Overriding the width to a fixed value, such as how we did it with the *Age* colu
 
 In terms of height, in my experience, the table will adjust the row height to accommodate what is presented in the cell, with a default minimum. The default is similar to what you would find in the Finder app.
 
-{% aside info %}
-Before iOS 16/macOS 13, you were limited to 10 columns per table. This limit was due to how the column builder was implemented. In iOS 16/macOS 13 and later, Apple expanded `Group` to be composable with columns, allowing us to have more than 10 columns in a table.
-{% endaside %}
+> info:
+> Before iOS 16/macOS 13, you were limited to 10 columns per table. This limit was due to how the column builder was implemented. In iOS 16/macOS 13 and later, Apple expanded `Group` to be composable with columns, allowing us to have more than 10 columns in a table.
 
 ## Row Control
 
@@ -103,7 +103,7 @@ For this we can use an alternative initializer, where we tell the table what the
 
 Assuming we have a `UserSection` struct like below, we could present a sectioned table like so.
 
-{% highlight swift linenos %}
+```swift
 struct UserSection: Identifiable {
     let name: String
     let users: [User]
@@ -123,7 +123,7 @@ var body: some View {
         }
     }
 }
-{% endhighlight %}
+```
 
 The above code renders to this.
 
@@ -133,7 +133,7 @@ The above code renders to this.
 
 Selection works pretty much the same way to how it works in `List`s. The type of items that you present in the table must conform to the `Identifiable` protocol. To enable selection, you must have an optional, bindable property of the `ID` type of your presented item. With that in place, simply pass the bindable property to the `selection` argument when creating your `Table` and selection should just work.
 
-{% highlight swift linenos %}
+```swift
 let users: [User]
 @State private var selectedId: User.ID?
 
@@ -142,13 +142,13 @@ var body: some View {
         //...Columns...
     }
 }
-{% endhighlight %}
+```
 
 Whenever a user taps on a row within the table, the row will be highlighted, and the `selectedId` property will be populated with the row's `id` value. Clicking on an empty area in the table will set the `selectedId` to `nil`. The binding works both ways, so if you were to change `selectedId` programmatically, the table would update to reflect the change.
 
 To enable multiple selection simply change the optional property to a `Set` of `ID`s.
 
-{% highlight swift linenos %}
+```swift
 let users: [User]
 @State private var selectedIds: Set<User.ID> = []
 
@@ -157,7 +157,7 @@ var body: some View {
         //...Columns...
     }
 }
-{% endhighlight %}
+```
 
 ## Sorting
 
@@ -169,13 +169,13 @@ Enabling sorting in the table is a bit of a delicate process and is comprised of
     - If the property backing the column is not `Comparable` or the data is backing the column is more complex you can make the column sortable by providing a custom `SortComparator` instance to the `sortUsing` argument. The type of the sort comparator must be the same as the comparators stored in your array from step 1. So if you were using `KeyPathComparator<User>`, then this must be the same type.
 1. Lastly, the table having pretty much all the necessary information about how to sort the array of items, you must still sort the array yourself.
 
-If you have access to the entire array of data in the table then you can simply use the `.sorted(using:)` function, available on `Array`. This functions accepts a single `SortComparator` or a list of them, so you can simply pass in your sort comparator array from step 1. 
+If you have access to the entire array of data in the table then you can simply use the `.sorted(using:)` function, available on `Array`. This functions accepts a single `SortComparator` or a list of them, so you can simply pass in your sort comparator array from step 1.
 
 If the data is paginated and fetched from a backend, then you may need to rely on custom sort comparators, to be able to translate that into a compatible sorting specification.
 
 Following the above steps, here's how we would update our table to support sorting.
 
-{% highlight swift linenos %}
+```swift
 let users: [User]
 private var presentedUsers: [User] {
     users.sorted(using: sortOrder)
@@ -197,7 +197,7 @@ var body: some View {
         .width(40)
 
         let colorComparator = KeyPathComparator(
-            \User.favoriteColor, 
+            \User.favoriteColor,
             comparator: Color.Comparator()
         )
         TableColumn("Color", sortUsing: colorComparator) { user in
@@ -214,29 +214,27 @@ var body: some View {
         }
     }
 }
-{% endhighlight %}
+```
 
 Notice how my `sortOrder` property starts with a default value, sorting the table first by `firstName`, then by `lastName`. This ensures that the table is sorted when it is first presented. The sorting arrows will also be pointing in the right directions when the table is first presented.
 
 Most properties on the `User` type are simple foundational types that conform to the `Comparable` protocol out of the box. This is why for most of them we simply specify our sorting using the `value` argument. However, since the color property is a custom type that does not conform to `Comparable`, we must take special care here. To make this work we provide a custom comparator that knows how to compare `Color` values.
 
-{% aside note %}
-We could of course make the `Color` type conform to `Comparable` quite trivially. However I specifically avoid this here, so that I have an example of a custom comparator to show you. If `Color` conformed to `Comparable` we could have simply passed in a key path to `value`, like we did with the other columns.
-{% endaside %}
+> note: We could of course make the `Color` type conform to `Comparable` quite trivially. However I specifically avoid this here, so that I have an example of a custom comparator to show you. If `Color` conformed to `Comparable` we could have simply passed in a key path to `value`, like we did with the other columns.
 
 Implementing a custom comparator type is outside the scope of this argument, so I leave this as an exercise for the reader. To make usee of the comparator we must jump through a couple of hoops. Let's isolate the piece of code that I'm interested in. This is an excerpt from the code snippet above.
 
-{% highlight swift linenos %}
+```swift
 let colorComparator = KeyPathComparator(
     \User.favoriteColor,
     comparator: Color.Comparator()
 )
 TableColumn("Color", sortUsing: colorComparator) { ... }
-{% endhighlight %}
+```
 
 Let's walk through this. First we define a `KeyPathComparator` that points to the `favoriteColor` property, on `User`. By default, with no other arguments, the `KeyPathComparator` will simply compare by that property using the `Comparable` implementation supplied by the type of the property. Since the `Color` type is not `Comparable` this would not work. There is a work around.
 
-For types that do not conform to `Comparable` we must tell the `KeyPathComparator` how items should be compared. This is done by passing a custom comparator to the `comparator` argument of the `KeyPathComparator` initializer. 
+For types that do not conform to `Comparable` we must tell the `KeyPathComparator` how items should be compared. This is done by passing a custom comparator to the `comparator` argument of the `KeyPathComparator` initializer.
 
 With the `KeyPathComparator` created and assigned to`colorComparator` we pass that to the column's `sortUsing` argument. I've split this into two declaration for readability, but you can inline it in your own code if you wish.
 

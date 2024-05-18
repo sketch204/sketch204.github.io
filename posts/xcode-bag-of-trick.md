@@ -1,8 +1,9 @@
----
-title: Big bag of Xcode tips & tricks
-description: A list of Xcode tips and tricks that I've learned through the years
-tags: xcode
----
++++
+title = "Big bag of Xcode tips & tricks"
+description = "A list of Xcode tips and tricks that I've learned through the years"
+tags = ["xcode"]
+date = 2023-05-01
++++
 
 I've been a developer for a number of years now. Primarily iOS. Over the years I've learned to use Xcode quite efficiently. I won't claim to now all the ins and outs of it but I do consider myself to know more than most. Below is a list of my learnings. Perhaps you'll find them useful.
 

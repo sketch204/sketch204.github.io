@@ -1,32 +1,31 @@
----
-title: From C to Swift - Part 2
-description: Learn to how to integrate C system libraries into your Swift code
-tags: swift swiftpm c
----
++++
+title = "From C to Swift - Part 2"
+description = "Learn to how to integrate C system libraries into your Swift code"
+tags = ["swift", "swiftpm", "c"]
+date = 2023-07-15
++++
 
-In [part 1]({% post_url 2023-07-15-from-c-to-swift-pt1 %}) of this series we looked at how we can integrate a C library with SwiftPM such that we can import it into our code. In this article, we will be taking a look at how to actually use the C code, and what the edge cases of using C code in Swift are. If you missed the first part, I highly recommend you give it a read.
+In [part 1](/posts/from-c-to-swift-pt1.html) of this series we looked at how we can integrate a C library with SwiftPM such that we can import it into our code. In this article, we will be taking a look at how to actually use the C code, and what the edge cases of using C code in Swift are. If you missed the first part, I highly recommend you give it a read.
 
 ## Using `ncurses`
 
 First, most basic constants and functions that are defined in C, will be available in Swift as their global constant and function Swift counterparts. You can call them without any name-spacing from any context. For example, the `ncurses` library has a `getch` function which reads a characters from the input stream. It returns an `int` and takes no arguments. In my `main.swift`, after importing `Cnurses`, I can very easily call this function.
 
-{% highlight swift linenos %}
+```swift
 import Cncurses
 let c = getch()
-{% endhighlight %}
+```
 
 However, to make things clear for myself and help me keep my sanity, I try not to access the C library members directly as top-level members. Instead I prepend their module name to the member names. So given the above example, I prefer to make the call like so:
 
-{% highlight swift linenos %}
+```swift
 import Cncurses
 let c = Cncurses.getch()
-{% endhighlight %}
+```
 
 This makes it very explicit when I am working with C code.
 
-{% aside note %}
-In part 1 we defined the main `Curses` target as a library. This means it cannot have top-level executable code. If you wish to test if some code compiles, you can declare a top level testing function, and place your executable code there. However if you wish to execute that code, the easiest way would be to either call it from a test, or write the code in the test directly. New SwiftPM packages are typically created with tests, so looks for a `Tests` folder.
-{% endaside %}
+> note: In part 1 we defined the main `Curses` target as a library. This means it cannot have top-level executable code. If you wish to test if some code compiles, you can declare a top level testing function, and place your executable code there. However if you wish to execute that code, the easiest way would be to either call it from a test, or write the code in the test directly. New SwiftPM packages are typically created with tests, so looks for a `Tests` folder.
 
 ### Structs
 
@@ -42,27 +41,27 @@ If the pointer is constant, that is, it is only read and never changed, then you
 
 For example, `ncurses` has a function called `pair_content`, which given an int identifier, will return a pair of colors associated with said identifier. One for the text and one for the background. The C signature of this function is as follows.
 
-{% highlight c %}
+```c
 extern int pair_content(short, short*, short*);
-{% endhighlight %}
+```
 
 Note the last two arguments, they are pointer types. In my case, the Swift compiler interpreted this declaration like so:
 
-{% highlight swift %}
+```swift
 public func pair_content(_: Int16, _: UnsafeMutablePointer<Int16>!, _: UnsafeMutablePointer<Int16>!) -> Int32
-{% endhighlight %}
+```
 
 Notice that the two C `short` pointers were transformed into `UnsafeMutablePointer<Int16>`. The way to use these functions in Swift would be to simply pass two in-out references to it.
 
-{% highlight swift linenos %}
+```swift
 let id: CShort = 0
 var textColor: CShort = 0, backgroundColor: CShort = 0
 Cncurses.pair_content(id, &textColor, &backgroundColor)
-{% endhighlight %}
+```
 
 We could wrap this in a Swift-friendly, re-usable function. That way we can hide all the C details, like so:
 
-{% highlight swift linenos %}
+```swift
 func getColors(for id: Int) -> (textColor: Int, backgroundColor: Int) {
     var rawForegroundColor: CShort = 0
     var rawBackgroundColor: CShort = 0
@@ -76,13 +75,11 @@ func getColors(for id: Int) -> (textColor: Int, backgroundColor: Int) {
         Int(rawBackgroundColor)
     )
 }
-{% endhighlight %}
+```
 
 To make it even more Swift friendly, we would define an `enum` or `struct` to hold constants for all of the available colors, but I leave that as an exercise to the reader.
 
-{% aside info %}
-Note the use of the `CShort` type. It is a `typealias` that maps to `Int16`. It is from a collection of types that map to C primitives. We could have used `Int16` directly, but I find this conveys my intent a little better. If you want to learn more, you can find a full list of mapped C types [here](https://developer.apple.com/documentation/swift/c-interoperability) (there's no header linking in Apple docs, so you'll have to scroll down a bit).
-{% endaside %}
+> info: Note the use of the `CShort` type. It is a `typealias` that maps to `Int16`. It is from a collection of types that map to C primitives. We could have used `Int16` directly, but I find this conveys my intent a little better. If you want to learn more, you can find a full list of mapped C types [here](https://developer.apple.com/documentation/swift/c-interoperability) (there's no header linking in Apple docs, so you'll have to scroll down a bit).
 
 ### Strings
 
@@ -90,14 +87,14 @@ Strings in C are simple arrays of `char`s. With that in mind, the only real way 
 
 Things get interesting when a C function return a string value, by assigning it a passed in pointer. In that case you must appropriate allocate some data, call the function passing it in, and then transform that data into a Swift string. There are a number of ways to accomplish this, but the most sane one I found is as follows.
 
-{% highlight swift linenos %}
+```swift
 // 1
 var buffer = [CChar](repeating: 0, count: 80)
 // 2
 Cncurses.getstr(&buffer)
 // 3
 let str = String(cString: buffer)
-{% endhighlight %}
+```
 Here we are calling the `getstr` string. This function will read a user input from the console, until it reads a newline feed. It will then take what it has read, and place it in the passed it pointer.
 
 Now let's look at what is happening in the code.
@@ -110,19 +107,17 @@ This looks cumbersome and annoying, but again, this is the most sane way I found
 
 If we were to wrap this in a Swifty function, I would do it like so.
 
-{% highlight swift linenos %}
+```swift
 public func getString(maxLength: Int = 80) -> String {
     var buffer = [CChar](repeating: 0, count: maxLength)
     Cncurses.getstr(&buffer)
     return String(cString: buffer)
 }
-{% endhighlight %}
+```
 
 This gives us the ability to override the max string length, if we anticipate a longer string, while also keeping a default of 80, which is common on a lot of other platforms.
 
-{% aside info %}
-Apple has a [whole page](https://developer.apple.com/documentation/swift/calling-functions-with-pointer-parameters) dedicated to the implicit casting rules between Swift types and C pointer types. Be sure to check it out, if your work involves C pointers.
-{% endaside %}
+> info: Apple has a [whole page](https://developer.apple.com/documentation/swift/calling-functions-with-pointer-parameters) dedicated to the implicit casting rules between Swift types and C pointer types. Be sure to check it out, if your work involves C pointers.
 
 ### Status Codes
 
@@ -130,15 +125,15 @@ It is common in C to pass values back to the caller through pointers, rather tha
 
 Rather than checking for the value of the status code every time you call the function in Swift, I would recommend declaring a throwing wrapper function. Let's continue our `getstr` function example from the previous section. First I declare an error type so I have something to `throw` in case of an error.
 
-{% highlight swift linenos %}
+```swift
 public enum CursesError: Error {
     case unknown
 }
-{% endhighlight %}
+```
 
 Next I modify my Swift `getString` function such that it throws an error if the status code of the C function is equal to `ERR`. I use the... in this case rather counter-intuitive, `guard` clause to perform the logic check.
 
-{% highlight swift linenos %}
+```swift
 public func getString(maxLength: Int = 80) throws -> String {
     var buffer = [CChar](repeating: 0, count: maxLength)
     let status = Cncurses.getstr(&buffer)
@@ -147,7 +142,7 @@ public func getString(maxLength: Int = 80) throws -> String {
     }
     return String(cString: buffer)
 }
-{% endhighlight %}
+```
 
 This is much better. Now I actually take the error into account, and provide a very Swifty way of handling it. The client can choose to ignore it if they are confident, but are otherwise forced to handle it.
 
@@ -161,17 +156,17 @@ While you could manually create the pointer, hold a reference to it and pass it 
 
 Let's begin. I will create a new class called `Window`.
 
-{% highlight swift linenos %}
+```swift
 import Cncurses
 
 public final class Window {
     // More code to follow
 }
-{% endhighlight %}
+```
 
 It will have a single constant property called `windowPointer`. This will be the C pointer to the window struct. I will create this pointer in the initializer, exposing the window creation arguments. I will also make sure to properly destroy the window pointer once my class is de-allocated.
 
-{% highlight swift linenos %}
+```swift
 import Cncurses
 
 public final class Window {
@@ -190,22 +185,20 @@ public final class Window {
         Cncurses.delwin(windowPointer)
     }
 }
-{% endhighlight %}
+```
 
-{% aside info %}
-`numericCast` is a neat little [built-in Swift function](https://developer.apple.com/documentation/swift/numericcast(_:)), which will take in whatever numeric type you give it, and cast it to whatever numeric type is expected on the other end.
-{% endaside %}
+> info: `numericCast` is a neat little [built-in Swift function](https://developer.apple.com/documentation/swift/numericcast(_:)), which will take in whatever numeric type you give it, and cast it to whatever numeric type is expected on the other end.
 
 Now, with my wrapper class set up, I can start adding all of those window modifying functions as methods of the class. For example, this is how I would declare a `getCharacter` function. This function reads a single character the is passed to the input stream of my window and returns it.
 
-{% highlight swift linenos %}
+```swift
 extension Window {
     public func getCharacter() -> Int {
         let c = Cncurses.wgetch(windowPointer)
         return numericCast(c)
     }
 }
-{% endhighlight %}
+```
 
 Notice how the C pointer remains hidden the whole time. Instead I simply work with my class instance. The client of my class does not even need to know that there are C pointers being passed around behind the scenes. This is much more Swifty in my opinion.
 
@@ -217,34 +210,32 @@ Preprocessor directives do not translate to Swift well. By default, if it is a m
 
 An example of one such macro is `A_UNDERLINE`. In `ncurses` you use this to make your output text underlined. It is a macro that does not accept parameters, but depends on the `NCURSES_BITS(mask, shift)` macro. If you try to access it in your Swift code you will get a compile-time error, saying it is not defined:
 
-{% highlight swift linenos %}
+```swift
 let underline = Cncurses.A_UNDERLINE
 // Error: Module 'Cncurses' has no member named 'A_UNDERLINE'
-{% endhighlight %}
+```
 
 The only way around this, that I found to work is to go back to my bridging header and declare a wrapper function that accesses the unavailable member.
 
 In `bridging-header.h`
-{% highlight c linenos %}
+```c
 #include <ncurses.h>
 
 int getUnderlineAttribute() {
     return A_UNDERLINE;
 }
-{% endhighlight %}
+```
 
 I would do this for any unavailable member that I need access to.
 
 With that, back in my `main.swift` file I should be able to access the new wrapper function.
-{% highlight swift %}
+```swift
 let underline = Cncurses.getUnderlineAttribute()
-{% endhighlight %}
+```
 
 This works for most unavailable members.
 
-{% aside note %}
-It irks me to put implementation in the header file, but with the current configuration, the modulemap seems to ignore any `.c` source files the I add to the module. I was not able to figure out how to make it work. If you know of a way, please [do let me know](mailto:hello@inal.dev).
-{% endaside %}
+> note: It irks me to put implementation in the header file, but with the current configuration, the modulemap seems to ignore any `.c` source files the I add to the module. I was not able to figure out how to make it work. If you know of a way, please [do let me know](mailto:hello@inal.dev).
 
 ## Conclusion
 
