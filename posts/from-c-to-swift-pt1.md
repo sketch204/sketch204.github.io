@@ -140,7 +140,7 @@ Build complete! (1.55s)
  %
 ```
 
-Now the C library is imported and you can use all of its compatible member. This is the end of part 1. In [part 2](/posts/from-c-to-swift-pt2.html), we will go through what using this library is actually like, as well as some tips on how to wrap the C API behind a more Swift-friendly interface.
+Now the C library is imported and you can use all of its compatible member. This is the end of part 1. In [part 2]({{ "/posts/from-c-to-swift-pt2.html"|site_url }}), we will go through what using this library is actually like, as well as some tips on how to wrap the C API behind a more Swift-friendly interface.
 
 ## Sources
 

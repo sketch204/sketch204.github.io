@@ -5,7 +5,7 @@ tags = ["swift", "swiftpm", "c"]
 date = 2023-07-15
 +++
 
-In [part 1](/posts/from-c-to-swift-pt1.html) of this series we looked at how we can integrate a C library with SwiftPM such that we can import it into our code. In this article, we will be taking a look at how to actually use the C code, and what the edge cases of using C code in Swift are. If you missed the first part, I highly recommend you give it a read.
+In [part 1]({{ "/posts/from-c-to-swift-pt1.html"|site_url }}) of this series we looked at how we can integrate a C library with SwiftPM such that we can import it into our code. In this article, we will be taking a look at how to actually use the C code, and what the edge cases of using C code in Swift are. If you missed the first part, I highly recommend you give it a read.
 
 ## Using `ncurses`
 
