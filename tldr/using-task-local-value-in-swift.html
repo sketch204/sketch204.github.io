@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[TLDR] Using Task Local Value in Swift</title>
+  <meta name="description" content="A quick look at how Task Local Values work in Swift">
+  <meta name="author" content="Inal Gotov">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <link rel="stylesheet" href=/assets/css/styles.css?v=1.0>
+  <script src="https://kit.fontawesome.com/bae51c7054.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<header>
+  <div class="readingMargins">
+    <a href=/index.html>Home</a>
+    <a href=/about.html>About</a>
+  </div>
+</header>
+<article class="readingMargins">
+  <h1>[TLDR] Using Task Local Value in Swift</h1>
+  <p class="date">Written on May 18, 2024</p>
+<p class="tldr-prompt">This is the TLDR version of the article. <a href="/posts/using-task-local-value-in-swift.html">View the full version here</a></p>
+<ul>
+<li><p>Declare a mutable static property on a type. Annotate the property with the <code>@TaskLocal</code> property wrapper</p></li>
+<li><p>Inside of a task, set the property by accessing its <code>projectedValue</code> and calling the <code>withValue</code> method. All code and subtasks created within the closure will have the value of the static property set to whatever was passed as the first argument of the <code>withValue</code> method.</p></li>
+</ul>
+<pre><code class="language-swift">extension Logger {
+    @TaskLocal static var traceId: String?
+}
+
+let trace1 = &quot;Trace1&quot;
+let trace2 = &quot;Trace2&quot;
+
+print(trace1)
+// Trace1
+print(trace2)
+// Trace2
+print(&quot;Outside of tasks: \(Logger.traceId)&quot;)
+// nil
+
+Task {
+    await Logger.$traceId.withValue(trace1) {
+        print(&quot;\(Logger.traceId ?? &quot;&quot;): Doing some work for user with ID&quot;)
+        // Trace1: Doing some work for user with ID
+        try? await Task.sleep(for: .seconds(1))
+        print(&quot;\(Logger.traceId ?? &quot;&quot;): Finished some work for user with ID&quot;)
+        // Trace1: Finished some work for user with ID
+    }
+}
+
+Task {
+    await Logger.$traceId.withValue(trace2) {
+        print(&quot;\(Logger.traceId ?? &quot;&quot;): Doing some work for user with ID&quot;)
+        // Trace2: Doing some work for user with ID
+        try? await Task.sleep(for: .seconds(2))
+        print(&quot;\(Logger.traceId ?? &quot;&quot;): Finished some work for user with ID&quot;)
+        // Trace2: Finished some work for user with ID
+    }
+}
+</code></pre>
+</article>
+<footer>
+  <a href=/privacy.html>Privacy Policy</a> | <a href=/feed.xml>RSS</a>
+  <br>
+  ©2024 Inal Gotov
+</footer>
+</body>
+</html>

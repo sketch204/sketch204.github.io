@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Using Task Local Value in Swift</title>
+  <meta name="description" content="A quick look at how Task Local Values work in Swift">
+  <meta name="author" content="Inal Gotov">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <link rel="stylesheet" href=/assets/css/styles.css?v=1.0>
+  <script src="https://kit.fontawesome.com/bae51c7054.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<header>
+  <div class="readingMargins">
+    <a href=/index.html>Home</a>
+    <a href=/about.html>About</a>
+  </div>
+</header>
+<article class="readingMargins">
+<div class="postNavigation">
+  <a href="/posts/using-regex-in-swift.html" class="next">Next &gt;</a>
+</div>
+  <h1>Using Task Local Value in Swift</h1>
+  <p class="date">Written on May 18, 2024</p>
+  <p class="tldr-prompt">Short on time? <a href="/tldr/using-task-local-value-in-swift.html">View the TLDR version here</a></p>
+<p>Task local values are a way to bind a value to an execution scope. This is similar to normal variable scoping rules, except instead of applying values to curly brace code blocks, it applies them to a branch of <code>Task</code>s in a structured concurrency hierarchy. The easiest way to explain it is with an example.</p><p>Let&apos;s say we want to build a tracing system for our logs, such that whenever an operation occurs, it is given a unique ID for that instance of the operation. Any time anything is logged for that operation, it is prefixed with that unique ID. This way if something goes wrong, we can trace only the logs that are produced by this operation using the trace ID.</p><p>Let&apos;s assume that our operation is defined like so.</p><pre><code class="language-swift">let logger: Logger
+
+final class Model {
+    func doComplicatedWork() async {
+        logger.trace(&quot;Begin complicated work&quot;)
+        // Some work happens here
+        // There would be more log traces throughout the complicated work
+        logger.trace(&quot;End complicated work&quot;)
+    }
+}
+</code></pre>
+<p>To execute this operation we would do something like this.</p><pre><code class="language-swift">// Created elsewhere
+let model: Model
+
+Task {
+    await model.doComplicatedWork()
+}
+</code></pre>
+<p>As it stands right now, if we are in a highly concurrent system, with many things happening (and logging) at the same time, it would be very difficult to isolate the log statements of our <code>doComplicatedWork</code> method. Especially if there are multiple instance of that method being invoked at the same time.</p><p>One solution is to generate a unique trace ID and pass it in as an argument to the method. Inside it can use that ID as a prefix whenever it generates any logs. While this would work, it polluted the input of our method with unnecessary debugging details about logging. The inputs and output of <code>doComplicatedWork</code> should only be concerned with the actual complicated work, not some external factors.</p><p>An alternative is to use Task Local Values. These are values that you bind to a scope of a particular <code>Task</code>. Let&apos;s explore how this would work.</p><p>First define a mutable static property somewhere, for example <code>Logger</code>. The property must be annotated with the <code>@TaskLocal</code> property wrapper.</p><pre><code class="language-swift">extension Logger {
+    @TaskLocal static var traceId: String?
+}
+</code></pre>
+<p>This property will hold a trace ID for a single <code>Task</code>. The Swift Concurrency model does some magic behind the scenes that allows it to actually hold multiple values at once, depending on which context (<code>Task</code>) you access it from.</p><p>In our model, we must make sure to use this new property. It is as simple as just accessing it.</p><pre><code class="language-swift">let logger: Logger
+
+final class Model {
+    func doComplicatedWork() async {
+        logger.trace(&quot;\(Logger.traceId ?? &quot;&quot;): Begin complicated work&quot;)
+        // Some work happens here
+        // There would be more log traces throughout the complicated work
+        logger.trace(&quot;\(Logger.traceId ?? &quot;&quot;): End complicated work&quot;)
+    }
+}
+</code></pre>
+<p>Lastly, for the magic sauce. Whenever we invoke our <code>doComplicatedWork</code> method, we must wrap it in a <code>withValue</code> call. This function is exposed on our new property when we access it with the <code>$</code> prefix.</p><pre><code class="language-swift">Task {
+    Logger.$traceId.withValue(UUID().uuidString) {
+        await model.doComplicatedWork()
+    }
+}
+</code></pre>
+<p>With this change, each new execution of our task should print a trace with a unique trace ID. You can imagine that this can be quite helpful when executing this method several times, sometimes concurrently, especially in a server environment.</p><aside data-kind="info">
+<h1>Info</h1><p>When working with property wrappers, the value that is returned with using the <code>$</code> prefix is called the <em>projected value</em>. Conversely when we access the property without the prefix, what&apos;s returned is called the <em>wrapped value</em>.</p></aside>
+<div class="postNavigation">
+  <a href="/posts/using-regex-in-swift.html" class="next">Next &gt;</a>
+</div>
+</article>
+<footer>
+  <a href=/privacy.html>Privacy Policy</a> | <a href=/feed.xml>RSS</a>
+  <br>
+  ©2024 Inal Gotov
+</footer>
+</body>
+</html>
