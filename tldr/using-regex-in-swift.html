@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[TLDR] Using Regex in Swift</title>
+  <meta name="description" content="An in-depth look at the various different ways to define and use regular expressions in Swift">
+  <meta name="author" content="Inal Gotov">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <link rel="stylesheet" href=/assets/css/styles.css?v=1.0>
+  <script src="https://kit.fontawesome.com/bae51c7054.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<header>
+  <div class="readingMargins">
+    <a href=/index.html>Home</a>
+    <a href=/about.html>About</a>
+  </div>
+</header>
+<article class="readingMargins">
+  <h1>[TLDR] Using Regex in Swift</h1>
+  <p class="date">Written on December 2, 2023</p>
+<p class="tldr-prompt">This is the TLDR version of the article. <a href="/posts/using-regex-in-swift.html">View the full version here</a></p>
+<p>Assume the following example input.</p><pre><code class="language-swift">let input = &quot;&quot;&quot;
+CREDIT    03/02/2022    Payroll                   $200.23
+CREDIT    03/03/2022    Sanctioned Individual A   $2,000,000.00
+DEBIT     03/03/2022    Totally Legit Shell Corp  $2,000,000.00
+DEBIT     03/05/2022    Beanie Babies Forever     $57.33
+&quot;&quot;&quot;
+</code></pre>
+<h2>Before iOS 16</h2><p>Use <a href="https://developer.apple.com/documentation/foundation/nsregularexpression"><code>NSRegularExpression</code></a> from Foundation.</p><pre><code class="language-swift">let regex = try NSRegularExpression(pattern: #&quot;(CREDIT|DEBIT)\s+&quot;#)
+</code></pre>
+<p>Use methods on the regex object to perform regex operations on strings.</p><pre><code class="language-swift">regex.enumerateMatches(
+  in: input,
+  range: NSRangeFromString(input)
+) { result, flags, stopPointer in
+  // Do something with result
+
+  // Stop early if needed
+  let shouldStop = false
+  if shouldStop {
+    stopPointer.pointee = false
+  }
+}
+</code></pre>
+<p>The focus of this article is on modern Swift regex APIs. To learn more about how to use <code>NSRegularExpression</code> fully, <a href="https://developer.apple.com/documentation/foundation/nsregularexpression">read the docs</a>.</p><h2>For iOS 16+</h2><p>Use the new <a href="https://developer.apple.com/documentation/swift/regex"><code>Regex</code></a> type.</p><p>Create regex patterns from string literals.</p><pre><code class="language-swift">let regex = try Regex(#&quot;(CREDIT|DEBIT)\s+&quot;#)
+</code></pre>
+<p><code>Regex</code> is generic over what its output type is. The default is <code>AnyRegexOutput</code>. Specify an explicit output type on the regex to parse out captured groups.</p><pre><code class="language-swift">let regex = try Regex(#&quot;(CREDIT|DEBIT)\s+(\d+)&quot;#, as: (Substring, Substring, Substring).self)
+</code></pre>
+<p>The output type should</p><ul>
+<li><p>Always be a tuple</p></li>
+<li><p>Should consist of <code>Substring</code>s (most of the time)</p></li>
+<li><p>Should have one more <code>Substring</code> than there are capture groups. The first match is always the whole matched string.</p></li>
+</ul>
+<p>Use <code>String</code> APIs to perform regex operations on strings.</p><pre><code class="language-swift">let match = input.firstMatch(of: regex)
+let allMatches = input.matches(of: regex)
+</code></pre>
+<p>Output will be a <a href="https://developer.apple.com/documentation/swift/regex/match"><code>Regex.Match</code></a> object. Treat it as a tuple object to get captured values out.</p><pre><code class="language-swift">let wholeMatchedSubstring = match?.0        // &quot;CREDIT    03&quot;
+let transactionTypeSubstring = match?.1     // &quot;CREDIT&quot;
+let monthSubstring = match?.2               // &quot;03&quot;
+
+let transactionTypes = allMatches.map(\.1)  // [&quot;CREDIT&quot;, &quot;CREDIT&quot;, &quot;DEBIT&quot;, &quot;DEBIT&quot;]
+</code></pre>
+<h2>Regex Literals</h2><p>Use regex literals to define regex patterns quicker and more succinctly. To do so, wrap the raw regex pattern with forward slashes (<code>/</code>).</p><pre><code class="language-swift">let regex = /(CREDIT|DEBIT)\s+(\d+)/
+</code></pre>
+<p>Forward slashes that are part of the pattern must be escaped with back slashes (<code>\</code>). To avoid this, use extended delimiters.</p><pre><code class="language-swift">let regex = #/(CREDIT|DEBIT)\s+(\d+)/(\d+)/(\d+)/#
+</code></pre>
+<p>This produces a <code>Regex</code> object, same as using the normal <code>Regex</code> initializer. Except this time the compiler can validate the regex expression at compile time and figure out the right output generic type for us.</p><p>Usage of regex patterns generated through regex literals is the same as using any other <code>Regex</code> instance.</p><p>For regex patterns defined with extended delimiters, you can multiline them for better readability and to comment them. Newlines and white spaces are ignored for multiline regex literals.</p><pre><code class="language-swift">let regex = #/
+(CREDIT|DEBIT)     # transaction type
+\s+
+(\d+)/(\d+)/(\d+)  # date
+/#
+</code></pre>
+<p>Regex literals also allow us to provide names for our capture groups.</p><pre><code class="language-swift">let regex = #/
+(?&lt;transactionType&gt; CREDIT|DEBIT)          # transaction type
+\s+
+(?&lt;month&gt; \d+)/(?&lt;day&gt; \d+)/(?&lt;year&gt; \d+)  # date
+/#
+</code></pre>
+<p>For a regex with named capture groups, use the capture group name instead of the tuple indices.</p><pre><code class="language-swift">let match = input.firstMatch(of: regex)
+let month = match?.month  // &quot;03&quot;
+let year = match?.year    // &quot;2022&quot;
+let day = match?.day      // &quot;02&quot;
+</code></pre>
+<h2>`RegexBuilder`</h2><p>Use the first party <a href="https://developer.apple.com/documentation/regexbuilder"><code>RegexBuilder</code></a> framework for an even better regex crafting experience.</p><p>Define a regex pattern using result builders</p><pre><code class="language-swift">import RegexBuilder
+
+let regex = Regex {
+  // Transaction type
+  Capture {
+    ChoiceOf {
+      &quot;CREDIT&quot;
+      &quot;DEBIT&quot;
+    }
+  }
+
+  OneOrMore {
+    CharacterClass.whitespace
+  }
+
+  // Date
+  Capture {
+    OneOrMore {
+      CharacterClass.digit
+    }
+  }
+  &quot;/&quot;
+  Capture {
+    OneOrMore {
+      CharacterClass.digit
+    }
+  }
+  &quot;/&quot;
+  Capture {
+    OneOrMore {
+      CharacterClass.digit
+    }
+  }
+}
+</code></pre>
+<p>Make the regex more readable and clean by extrapolating repetitive code and composing regex patterns together.</p><pre><code class="language-swift">let digitCapture = Regex {
+  Capture {
+    OneOrMore {
+      CharacterClass.digit
+    }
+  }
+}
+
+let regex = Regex {
+  // Transaction type
+  Capture {
+    ChoiceOf {
+      &quot;CREDIT&quot;
+      &quot;DEBIT&quot;
+    }
+  }
+
+  OneOrMore {
+    CharacterClass.whitespace
+  }
+
+  // Date
+  digitCapture
+  &quot;/&quot;
+  digitCapture
+  &quot;/&quot;
+  digitCapture
+}
+</code></pre>
+<p>The produced value is still just a <code>Regex</code> with its output type automatically set according to the result of the builder. Use it with the same String APIs as regex literals.</p><p>For quick and short regex patterns, pass the builder directly into the String API methods.</p><pre><code class="language-swift">let match = input.firstMatch {
+  Capture {
+    ChoiceOf {
+      &quot;CREDIT&quot;
+      &quot;DEBIT&quot;
+    }
+  }
+}
+let transactionType = match?.1  // &quot;CREDIT&quot;
+</code></pre>
+<p>Use <a href="https://developer.apple.com/documentation/regexbuilder/reference"><code>Reference</code>s</a> to create named capture groups</p><pre><code class="language-swift">let transactionTypeRef = Reference(Substring.self)
+let dayRef = Reference(Substring.self)
+let monthRef = Reference(Substring.self)
+let yearRef = Reference(Substring.self)
+
+func digitCapture(as ref: Reference&lt;Substring&gt;) -&gt; some RegexComponent {
+  Capture(as: ref) {
+    OneOrMore {
+      CharacterClass.digit
+    }
+  }
+}
+
+let regex = Regex {
+  Capture(as: transactionTypeRef) {
+    ChoiceOf {
+      &quot;CREDIT&quot;
+      &quot;DEBIT&quot;
+    }
+  }
+  OneOrMore {
+    CharacterClass.whitespace
+  }
+  digitCapture(as: monthRef)
+  &quot;/&quot;
+  digitCapture(as: dayRef)
+  &quot;/&quot;
+  digitCapture(as: yearRef)
+}
+</code></pre>
+<p>Access the captured contents by using the reference objects like keys to the <code>match</code> dictionary.</p><pre><code class="language-swift">let match = input.firstMatch(of: regex)
+let transactionType = match?[transactionTypeRef]  // &quot;CREDIT&quot;
+let year = match?[yearRef]                        // &quot;2022&quot;
+let day = match?[dayRef]                          // &quot;02&quot;
+let month = match?[monthRef]                      // &quot;03&quot;
+</code></pre>
+<p>The type of captured data above is <code>Substring?</code>. Use <code>TryCapture</code> blocks <code>Capture</code> to have those <code>Substring</code>s automatically transformed into custom data.</p><pre><code class="language-swift">enum TransactionType: String {
+  case credit = &quot;CREDIT&quot;
+  case debit = &quot;DEBIT&quot;
+}
+
+let transactionTypeRef = Reference(TransactionType.self)
+// Other references...
+
+let regex = Regex {
+  TryCapture(as: transactionTypeRef) {
+    ChoiceOf {
+      &quot;CREDIT&quot;
+      &quot;DEBIT&quot;
+    }
+  } transform: { substring in
+    TransactionType(rawValue: String(substring))
+  }
+  // More regex...
+}
+
+// transactionType is now a custom type, rather than a Substring.
+let transactionType: TransactionType? = match?[transactionTypeRef]
+</code></pre>
+<p>Check the sources below for more info.</p><h3>Sources</h3><ul>
+<li><p><a href="https://developer.apple.com/documentation/foundation/nsregularexpression">NSRegularExpression</a></p></li>
+<li><p><a href="https://docs.swift.org/swift-book/documentation/the-swift-programming-language/stringsandcharacters/#Extended-String-Delimiters">Extended String Delimiters</a></p></li>
+<li><p><a href="https://github.com/apple/swift-evolution/blob/main/proposals/0350-regex-type-overview.md">SE-0350 - Regex Type Overview</a></p></li>
+<li><p><a href="https://github.com/apple/swift-evolution/blob/main/proposals/0351-regex-builder.md">SE-0351 - Regex Builder</a></p></li>
+<li><p><a href="https://github.com/apple/swift-evolution/blob/main/proposals/0354-regex-literals.md">SE-0354 - Regex Literals</a></p></li>
+<li><p><a href="https://developer.apple.com/documentation/swift/regex">Regex</a></p></li>
+<li><p><a href="https://developer.apple.com/documentation/regexbuilder">RegexBuilder</a></p></li>
+</ul>
+</article>
+<footer>
+  <a href=/privacy.html>Privacy Policy</a> | <a href=/feed.xml>RSS</a>
+  <br>
+  ©2024 Inal Gotov
+</footer>
+</body>
+</html>

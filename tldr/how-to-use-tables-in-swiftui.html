@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[TLDR] How to use Tables in SwiftUI</title>
+  <meta name="description" content="An in-depth look at how Tables are implemented in SwiftUI">
+  <meta name="author" content="Inal Gotov">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+  <link rel="stylesheet" href=/assets/css/styles.css?v=1.0>
+  <script src="https://kit.fontawesome.com/bae51c7054.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<header>
+  <div class="readingMargins">
+    <a href=/index.html>Home</a>
+    <a href=/about.html>About</a>
+  </div>
+</header>
+<article class="readingMargins">
+  <h1>[TLDR] How to use Tables in SwiftUI</h1>
+  <p class="date">Written on September 7, 2023</p>
+<p class="tldr-prompt">This is the TLDR version of the article. <a href="/posts/how-to-use-tables-in-swiftui.html">View the full version here</a></p>
+<p>Throughout this article I will assume the following structure is available.</p><pre><code class="language-swift">struct User: Identifiable {
+    let id: UUID
+
+    let firstName: String
+    let lastName: String
+    let age: Int
+    let favoriteColor: Color
+
+    let createdAt: Date
+    let updatedAt: Date
+}
+
+enum Color {
+    case red, orange, yellow, green, blue, purple
+}
+</code></pre>
+<h1>Creating Tables</h1><ul>
+<li><p>Tables are created by passing in an array of identifiable items and defining what the columns look like inside the table</p></li>
+<li><p>The columns can be created by either</p><ul>
+<li><p>Passing in a <code>KeyPath</code> of the item that leads to a string property</p></li>
+<li><p>Passing in a view builder that takes in an item and returns a view</p><ul>
+<li><p>You can put buttons in these views</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>You are limited to 10 columns per table, however in iOS 16/macOS 12 we got the ability to compose more of them using <code>Group</code>s.</p></li>
+</ul>
+<pre><code class="language-swift">Table(users) {
+  TableColumn(&quot;First Name&quot;, value: \.firstName)
+  TableColumn(&quot;Last Name&quot;, value: \.lastName)
+
+  TableColumn(&quot;Age&quot;) { user in
+    Text(user.age.formatted())
+  }
+  .width(40)
+
+  TableColumn(&quot;Color&quot;) { user in
+    ColorView(color: user.favoriteColor)
+  }
+  .width(min: 55)
+
+  TableColumn(&quot;Created&quot;) { user in
+    Text(user.createdAt.formatted())
+  }
+
+  TableColumn(&quot;Updated&quot;) { user in
+    Text(user.updatedAt.formatted())
+  }
+}
+</code></pre>
+<h1>Row Control</h1><ul>
+<li><p>You can customize which rows are visible or not by either changing the data set (the source array), which is the recommended approach.</p><ul>
+<li><p>Alternatively, you can avoid passing in the array of items to the table, and instead pass in a second closure which builds <code>TableRow</code>s. You can use a <code>ForEach</code> in there too. This is also useful if you have fixed/constant data.</p></li>
+</ul>
+</li>
+<li><p>One benefit of doing this is the ability or provide a custom context menu for each row.</p></li>
+</ul>
+<pre><code class="language-swift">Table(of: User.self) {
+  //...Columns...
+} rows: {
+  ForEach(users) { user in
+    TableRow(user)
+  }
+}
+</code></pre>
+<h1>Selection</h1><ul>
+<li><p>Selection works the same as it does in <code>List</code>s. You can provide a binding to a nullable property of the same type as the item&apos;s ID. This will enable selection in the table. To enable multiple selection provide a binding to a set IDs instead</p></li>
+</ul>
+<pre><code class="language-swift">let users: [User]
+@State private var selection: User.ID?
+
+var body: some View {
+  Table(users, selection: $selection) {
+    //...Columns...
+  }
+}
+</code></pre>
+<h1>Sorting</h1><ul>
+<li><p>To enable sorting there are a number of steps you must take.</p></li>
+<li><p>First declare a bindable property that contains an array of <code>SortComparator</code> types. Typically these will be <code>KeyPathComparator</code>s. Pass this property to the table.</p></li>
+<li><p>Next you must specify how each table will be sorted. There are a number of ways to do this.</p><ul>
+<li><p>If you are creating the table using the <code>KeyPath</code> initializer and the property is comparable then this happens automatically.</p></li>
+<li><p>If the property that this column should be sorted by is comparable, but you want to customize its presentation, you can provide an additional <code>value</code> argument, of type <code>KeyPath</code> to the initializer.</p></li>
+<li><p>If the property is not comparable (or if you want to customize the default sorting behaviour) you must provide a custom sort comparator parameter.</p></li>
+<li><p>If neither of these are given, the column is not sortable.</p></li>
+</ul>
+</li>
+<li><p>With all this in place the table view will modify the sort order array based on user input. It will not however sort the actual data. That is your responsibility. For most cases, especially where the data is local, you can do this quite trivially with <code>Array</code>&apos;s <code>sorted(using:)</code> method.</p></li>
+<li><p>Keep in mind that all types related to sorting must be uniform across all of the table.This includes things passed/declared on the table, as well as the columns.</p></li>
+</ul>
+<pre><code class="language-swift">let users: [User]
+private var presentedUsers: [User] {
+  users.sorted(using: sortOrder)
+}
+
+@State private var sortOrder: [KeyPathComparator&lt;User&gt;] = [
+  KeyPathComparator(\.firstName),
+  KeyPathComparator(\.lastName),
+]
+
+var body: some View {
+  Table(presentedUsers) {
+    TableColumn(&quot;First Name&quot;, value: \.firstName)
+    TableColumn(&quot;Last Name&quot;, value: \.lastName)
+
+    TableColumn(&quot;Age&quot;, value: \.age) { user in
+      Text(user.age.formatted())
+    }
+    .width(40)
+
+    let colorComparator = KeyPathComparator(
+      \User.favoriteColor,
+      comparator: Color.Comparator()
+    )
+    TableColumn(&quot;Color&quot;, sortUsing: colorComparator) { user in
+      ColorView(color: user.favoriteColor)
+    }
+    .width(min: 55)
+
+    TableColumn(&quot;Created&quot;, value: \.createdAt) { user in
+      Text(user.createdAt.formatted())
+    }
+
+    TableColumn(&quot;Updated&quot;, value: \.updatedAt) { user in
+      Text(user.updatedAt.formatted())
+    }
+  }
+}
+</code></pre>
+</article>
+<footer>
+  <a href=/privacy.html>Privacy Policy</a> | <a href=/feed.xml>RSS</a>
+  <br>
+  ©2024 Inal Gotov
+</footer>
+</body>
+</html>
