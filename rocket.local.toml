@@ -1,5 +1,6 @@
 assetsPaths = [ "assets", "CNAME" ]
-ignoredPaths = [ "scripts", "README.md", "rocket.local.toml" ]
+ignoredPaths = [ "scripts", "README.md", "rocket.toml" ]
+baseURL = "/Users/sketch204/Developer/sketch204.github.io/dist"
 
 [[defaults]]
 path = "posts"
