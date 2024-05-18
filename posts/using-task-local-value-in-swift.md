@@ -16,12 +16,12 @@ Let's assume that our operation is defined like so.
 let logger: Logger
 
 final class Model {
-	func doComplicatedWork() async {
-		logger.trace("Begin complicated work")
-		// Some work happens here
-		// There would be more log traces throughout the complicated work
-		logger.trace("End complicated work")
-	}
+    func doComplicatedWork() async {
+        logger.trace("Begin complicated work")
+        // Some work happens here
+        // There would be more log traces throughout the complicated work
+        logger.trace("End complicated work")
+    }
 }
 ```
 
@@ -32,7 +32,7 @@ To execute this operation we would do something like this.
 let model: Model
 
 Task {
-	await model.doComplicatedWork()
+    await model.doComplicatedWork()
 }
 ```
 
@@ -58,12 +58,12 @@ In our model, we must make sure to use this new property. It is as simple as jus
 let logger: Logger
 
 final class Model {
-	func doComplicatedWork() async {
-		logger.trace("\(Logger.traceId ?? ""): Begin complicated work")
-		// Some work happens here
-		// There would be more log traces throughout the complicated work
-		logger.trace("\(Logger.traceId ?? ""): End complicated work")
-	}
+    func doComplicatedWork() async {
+        logger.trace("\(Logger.traceId ?? ""): Begin complicated work")
+        // Some work happens here
+        // There would be more log traces throughout the complicated work
+        logger.trace("\(Logger.traceId ?? ""): End complicated work")
+    }
 }
 ```
 
@@ -71,9 +71,9 @@ Lastly, for the magic sauce. Whenever we invoke our `doComplicatedWork` method, 
 
 ```swift
 Task {
-	Logger.$traceId.withValue(UUID().uuidString) {
-		await model.doComplicatedWork()
-	}
+    Logger.$traceId.withValue(UUID().uuidString) {
+        await model.doComplicatedWork()
+    }
 }
 ```
 
