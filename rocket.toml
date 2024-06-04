@@ -1,6 +1,15 @@
 assetsPaths = [ "assets", "CNAME" ]
 ignoredPaths = [ "scripts", "README.md", "rocket.local.toml" ]
 
+[seo]
+title = "Inal Gotov"
+description = "Inal's personal website"
+locale = "en_CA"
+siteURL = "https://inalgotov.com"
+[seo.author]
+firstName = "Inal"
+lastName = "Gotov"
+
 [[defaults]]
 path = "posts"
 [defaults.values]
