@@ -32,8 +32,14 @@
   </div>
 </header>
 <article class="readingMargins">
-  <h1>[TLDR] How to use Tables in SwiftUI</h1>
-  <p class="date">Written on September 7, 2023</p>
+<h1>[TLDR] How to use Tables in SwiftUI</h1>
+<div class="articleTitleDecorators">
+<div class="left">
+<p class="date">Written on September 7, 2023</p>
+</div>
+<div class="right">
+</div>
+</div>
 <p class="tldr-prompt">This is the TLDR version of the article. <a href="/posts/how-to-use-tables-in-swiftui.html">View the full version here</a></p>
 <p>Throughout this article I will assume the following structure is available.</p><pre><code class="language-swift">struct User: Identifiable {
     let id: UUID
@@ -51,7 +57,7 @@ enum Color {
     case red, orange, yellow, green, blue, purple
 }
 </code></pre>
-<h1>Creating Tables</h1><ul>
+<h1 id="creating-tables">Creating Tables</h1><ul>
 <li><p>Tables are created by passing in an array of identifiable items and defining what the columns look like inside the table</p></li>
 <li><p>The columns can be created by either</p><ul>
 <li><p>Passing in a <code>KeyPath</code> of the item that leads to a string property</p></li>
@@ -86,7 +92,7 @@ enum Color {
   }
 }
 </code></pre>
-<h1>Row Control</h1><ul>
+<h1 id="row-control">Row Control</h1><ul>
 <li><p>You can customize which rows are visible or not by either changing the data set (the source array), which is the recommended approach.</p><ul>
 <li><p>Alternatively, you can avoid passing in the array of items to the table, and instead pass in a second closure which builds <code>TableRow</code>s. You can use a <code>ForEach</code> in there too. This is also useful if you have fixed/constant data.</p></li>
 </ul>
@@ -101,7 +107,7 @@ enum Color {
   }
 }
 </code></pre>
-<h1>Selection</h1><ul>
+<h1 id="selection">Selection</h1><ul>
 <li><p>Selection works the same as it does in <code>List</code>s. You can provide a binding to a nullable property of the same type as the item&apos;s ID. This will enable selection in the table. To enable multiple selection provide a binding to a set IDs instead</p></li>
 </ul>
 <pre><code class="language-swift">let users: [User]
@@ -113,7 +119,7 @@ var body: some View {
   }
 }
 </code></pre>
-<h1>Sorting</h1><ul>
+<h1 id="sorting">Sorting</h1><ul>
 <li><p>To enable sorting there are a number of steps you must take.</p></li>
 <li><p>First declare a bindable property that contains an array of <code>SortComparator</code> types. Typically these will be <code>KeyPathComparator</code>s. Pass this property to the table.</p></li>
 <li><p>Next you must specify how each table will be sorted. There are a number of ways to do this.</p><ul>

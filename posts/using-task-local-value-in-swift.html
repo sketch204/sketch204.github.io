@@ -36,9 +36,15 @@
 <div class="postNavigation">
   <a href="/posts/using-regex-in-swift.html" class="next">Next &gt;</a>
 </div>
-  <h1>Using Task Local Value in Swift</h1>
-  <p class="date">Written on May 18, 2024</p>
-  <p class="tldr-prompt">Short on time? <a href="/tldr/using-task-local-value-in-swift.html">View the TLDR version here</a></p>
+<h1>Using Task Local Value in Swift</h1>
+<div class="articleTitleDecorators">
+<div class="left">
+<p class="date">Written on May 18, 2024</p>
+</div>
+<div class="right">
+<p class="tldr-prompt">Short on time? <a href="/tldr/using-task-local-value-in-swift.html">View the TLDR version here</a></p>
+</div>
+</div>
 <p>Task local values are a way to bind a value to an execution scope. This is similar to normal variable scoping rules, except instead of applying values to curly brace code blocks, it applies them to a branch of <code>Task</code>s in a structured concurrency hierarchy. The easiest way to explain it is with an example.</p><p>Let&apos;s say we want to build a tracing system for our logs, such that whenever an operation occurs, it is given a unique ID for that instance of the operation. Any time anything is logged for that operation, it is prefixed with that unique ID. This way if something goes wrong, we can trace only the logs that are produced by this operation using the trace ID.</p><p>Let&apos;s assume that our operation is defined like so.</p><pre><code class="language-swift">let logger: Logger
 
 final class Model {
