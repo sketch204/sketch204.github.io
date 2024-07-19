@@ -7,18 +7,35 @@
 
 {% block content %}
 <article class="readingMargins">
-  {% include "post_navigation.html" %}
+{% include "post_navigation.html" %}
 
-  <h1>{{ page.title }}</h1>
+<h1>{{ page.title }}</h1>
 
-  <p class="date">Written on {{ page.date|date:"MMMM d, yyyy" }}</p>
+<div class="articleTitleDecorators">
+<div class="left">
+{% block leftArticleTitleDecorator %}
+<p class="date">Written on {{ page.date|date:"MMMM d, yyyy" }}</p>
+{% endblock %}
+</div>
 
-  {% if page.tldr %}
-  <p class="tldr-prompt">Short on time? <a href="{{ "/tldr/"|append:page.filename|site_url }}">View the TLDR version here</a></p>
-  {% endif %}
+<div class="right">
+{% block rightArticleTitleDecorator %}
+{% if page.tldr %}
+<p class="tldr-prompt">Short on time? <a href="{{ "/tldr/"|append:page.filename|site_url }}">View the TLDR version here</a></p>
+{% endif %}
+{% endblock %}
+</div>
+</div>
 
-  {% block postContent %}{% endblock %}
+{% if page.tableOfContents %}
+<nav>
+<h4>On this page</h1>
+{% table_of_contents %}
+</nav>
+{% endif %}
 
-  {% include "post_navigation.html" %}
+{% block postContent %}{% endblock %}
+
+{% include "post_navigation.html" %}
 </article>
 {% endblock %}

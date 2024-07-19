@@ -13,6 +13,7 @@ path = "tldr"
 [defaults.values]
 layout = "tldr"
 layoutBlockName = "tldrContent"
+generateTOC = false
 
 [[defaults]]
 path = ""
