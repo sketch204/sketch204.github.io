@@ -1,8 +1,16 @@
 {% extends "default.html" %}
 
+{% block stylesheets %}
+<link rel="stylesheet" href={{ "/assets/css/highlightjs-copy.css"|site_url }}>
+{% endblock %}
+
 {% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
+<script src={{ "/assets/scripts/highlightjs-copy.js"|site_url }}></script>
+<script>
+    hljs.addPlugin(new CopyButtonPlugin({ autohide: true }));
+    hljs.highlightAll();
+</script>
 {% endblock %}
 
 {% block content %}
