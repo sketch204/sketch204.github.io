@@ -460,3 +460,7 @@ This was an overview of the changes and improvements introduced to working with 
 - [SE-0354 - Regex Literals](https://github.com/apple/swift-evolution/blob/main/proposals/0354-regex-literals.md)
 - [Regex](https://developer.apple.com/documentation/swift/regex)
 - [RegexBuilder](https://developer.apple.com/documentation/regexbuilder)
+
+### Notes
+
+- Shout out to [James Watmuff](https://github.com/ammojamo) for pointing out a few mistakes within some of the code blocks.
