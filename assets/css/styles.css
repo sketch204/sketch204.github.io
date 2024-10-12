@@ -17,7 +17,8 @@ header {
     left: 0;
     background-color: var(--bg-color);
     width: 100%;
-  
+    z-index: 1000;
+
     a {
         float: left;
         text-align: center;
