@@ -22,7 +22,7 @@
 <div class="articleTitleDecorators">
 <div class="left">
 {% block leftArticleTitleDecorator %}
-<p class="date">Written on {{ page.date|date:"MMMM d, yyyy" }}</p>
+<p class="date">Written on {{ page.date|date:"MMMM d, yyyy" }}{% if page.updatedDate %}, Updated on {{ page.updatedDate|date:"MMM d, yyyy" }}{% endif %}</p>
 {% endblock %}
 </div>
 

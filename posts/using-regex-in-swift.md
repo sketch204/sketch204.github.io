@@ -5,6 +5,7 @@ excerpt = "In this article I will be walking you through the various different w
 tags = ["Swift"]
 tldr = true
 date = 2023-12-02
+updatedDate = 2024-10-12
 +++
 
 In this article I will be walking you through the various different ways to define and use regular expressions in Swift.
