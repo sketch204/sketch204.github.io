@@ -1,10 +1,10 @@
 {% if page.previous or page.next %}
 <div class="postNavigation">
   {% if page.previous %}
-  <a href="{{ page.previous.outputPath|site_url }}" class="previous">&lt; Previous</a>
+  <a href="{{ page.previous.outputPath|site_url }}" class="previous">&lt; Newer Post</a>
   {% endif %}
   {% if page.next %}
-  <a href="{{ page.next.outputPath|site_url }}" class="next">Next &gt;</a>
+  <a href="{{ page.next.outputPath|site_url }}" class="next">Older Post &gt;</a>
   {% endif %}
 </div>
 {% endif %}
