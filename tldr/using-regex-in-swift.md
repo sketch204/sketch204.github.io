@@ -30,7 +30,7 @@ Use methods on the regex object to perform regex operations on strings.
 ```swift
 regex.enumerateMatches(
   in: input,
-  range: NSRangeFromString(input)
+  range: NSRange(location: 0, length: input.count)
 ) { result, flags, stopPointer in
   // Do something with result
 
@@ -125,9 +125,9 @@ For a regex with named capture groups, use the capture group name instead of the
 
 ```swift
 let match = input.firstMatch(of: regex)
+let day = match?.day      // "02"
 let month = match?.month  // "03"
 let year = match?.year    // "2022"
-let day = match?.day      // "02"
 ```
 
 ## `RegexBuilder`
@@ -261,9 +261,9 @@ Access the captured contents by using the reference objects like keys to the `ma
 ```swift
 let match = input.firstMatch(of: regex)
 let transactionType = match?[transactionTypeRef]  // "CREDIT"
-let year = match?[yearRef]                        // "2022"
 let day = match?[dayRef]                          // "02"
 let month = match?[monthRef]                      // "03"
+let year = match?[yearRef]                        // "2022"
 ```
 
 The type of captured data above is `Substring?`. Use `TryCapture` blocks `Capture` to have those `Substring`s automatically transformed into custom data.

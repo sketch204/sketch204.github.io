@@ -45,7 +45,7 @@ To actually use the regex on our string, we have to call methods on the `regex` 
 ```swift
 regex.enumerateMatches(
   in: input,
-  range: NSRangeFromString(input)
+  range: NSRange(location: 0, length: input.count)
 ) { result, flags, stopPointer in
   // Do something with result
 
@@ -90,7 +90,7 @@ Notice that I specified a tuple of two `Substring`s even though I only have one 
 If I wanted to also capture the first number of the date in the following column, I would use a regex like this
 
 ```swift
-let regex = try Regex(#"(CREDIT|DEBIT)\s+(\+d)"#, as: (Substring, Substring, Substring).self)
+let regex = try Regex(#"(CREDIT|DEBIT)\s+(\d+)"#, as: (Substring, Substring, Substring).self)
 ```
 
 Do get that number out of the match, I would simply access the tuple element on the match object like so.
@@ -185,9 +185,9 @@ Now, when we access the capture groups we can use the names we specify in the re
 
 ```swift
 let match = input.firstMatch(of: regex)
+let day = match?.day      // "02"
 let month = match?.month  // "03"
-let year = match?.year    // "02"
-let day = match?.day      // "2022"
+let year = match?.year    // "2022"
 ```
 
 This is definitely an improvement over what Foundation offered. But wait, there's more!
@@ -403,9 +403,9 @@ With this code in place, we should be able to read all the captured fields in th
 ```swift
 let match = input.firstMatch(of: regex)
 let transactionType = match?[transactionTypeRef]  // "CREDIT"
-let year = match?[yearRef]                        // "2022"
 let day = match?[dayRef]                          // "02"
 let month = match?[monthRef]                      // "03"
+let year = match?[yearRef]                        // "2022"
 ```
 
 ### Capturing Custom Types
