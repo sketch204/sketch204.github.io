@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-  <link rel="stylesheet" href=/assets/css/styles.css?v=1.0>
+  <link rel="stylesheet" href=/assets/css/styles.css>
+<link rel="stylesheet" href=/assets/css/highlightjs-copy.css>
 <title>[TLDR] Using Task Local Value in Swift</title>
 <meta property="og:title" content="[TLDR] Using Task Local Value in Swift" />
 <meta property="og:description" content="A quick look at how Task Local Values work in Swift" />
@@ -24,7 +25,11 @@
 </head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
+<script src=/assets/scripts/highlightjs-copy.js></script>
+<script>
+    hljs.addPlugin(new CopyButtonPlugin({ autohide: true }));
+    hljs.highlightAll();
+</script>
 <header>
   <div class="readingMargins">
     <a href=/index.html>Home</a>

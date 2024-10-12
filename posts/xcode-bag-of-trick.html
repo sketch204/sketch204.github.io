@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-  <link rel="stylesheet" href=/assets/css/styles.css?v=1.0>
+  <link rel="stylesheet" href=/assets/css/styles.css>
+<link rel="stylesheet" href=/assets/css/highlightjs-copy.css>
 <title>Big bag of Xcode tips & tricks</title>
 <meta property="og:title" content="Big bag of Xcode tips & tricks" />
 <meta property="og:description" content="A list of Xcode tips and tricks that I've learned through the years" />
@@ -25,7 +26,11 @@
 </head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
+<script src=/assets/scripts/highlightjs-copy.js></script>
+<script>
+    hljs.addPlugin(new CopyButtonPlugin({ autohide: true }));
+    hljs.highlightAll();
+</script>
 <header>
   <div class="readingMargins">
     <a href=/index.html>Home</a>
@@ -34,7 +39,7 @@
 </header>
 <article class="readingMargins">
 <div class="postNavigation">
-  <a href="/posts/from-c-to-swift-pt1.html" class="previous">&lt; Previous</a>
+  <a href="/posts/from-c-to-swift-pt1.html" class="previous">&lt; Newer Post</a>
 </div>
 <h1>Big bag of Xcode tips & tricks</h1>
 <div class="articleTitleDecorators">
@@ -195,7 +200,7 @@
 <li><p><a href="https://developer.apple.com/forums/thread/110227?answerId=341753022#341753022">Uninstall xcode 10 | Apple Developer Forums</a></p></li>
 </ul>
 <div class="postNavigation">
-  <a href="/posts/from-c-to-swift-pt1.html" class="previous">&lt; Previous</a>
+  <a href="/posts/from-c-to-swift-pt1.html" class="previous">&lt; Newer Post</a>
 </div>
 </article>
 <footer>

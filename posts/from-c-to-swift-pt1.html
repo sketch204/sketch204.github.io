@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-  <link rel="stylesheet" href=/assets/css/styles.css?v=1.0>
+  <link rel="stylesheet" href=/assets/css/styles.css>
+<link rel="stylesheet" href=/assets/css/highlightjs-copy.css>
 <title>From C to Swift - Part 1</title>
 <meta property="og:title" content="From C to Swift - Part 1" />
 <meta property="og:description" content="Learn to how to integrate C system libraries into your Swift code" />
@@ -27,7 +28,11 @@
 </head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
+<script src=/assets/scripts/highlightjs-copy.js></script>
+<script>
+    hljs.addPlugin(new CopyButtonPlugin({ autohide: true }));
+    hljs.highlightAll();
+</script>
 <header>
   <div class="readingMargins">
     <a href=/index.html>Home</a>
@@ -36,8 +41,8 @@
 </header>
 <article class="readingMargins">
 <div class="postNavigation">
-  <a href="/posts/from-c-to-swift-pt2.html" class="previous">&lt; Previous</a>
-  <a href="/posts/xcode-bag-of-trick.html" class="next">Next &gt;</a>
+  <a href="/posts/from-c-to-swift-pt2.html" class="previous">&lt; Newer Post</a>
+  <a href="/posts/xcode-bag-of-trick.html" class="next">Older Post &gt;</a>
 </div>
 <h1>From C to Swift - Part 1</h1>
 <div class="articleTitleDecorators">
@@ -121,8 +126,8 @@ Build complete! (1.55s)
 <li><p><a href="https://github.com/TheCoderMerlin/Curses/">TheCoderMerlin/Curses | GitHub</a></p></li>
 </ul>
 <div class="postNavigation">
-  <a href="/posts/from-c-to-swift-pt2.html" class="previous">&lt; Previous</a>
-  <a href="/posts/xcode-bag-of-trick.html" class="next">Next &gt;</a>
+  <a href="/posts/from-c-to-swift-pt2.html" class="previous">&lt; Newer Post</a>
+  <a href="/posts/xcode-bag-of-trick.html" class="next">Older Post &gt;</a>
 </div>
 </article>
 <footer>

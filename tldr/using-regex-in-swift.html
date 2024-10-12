@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-  <link rel="stylesheet" href=/assets/css/styles.css?v=1.0>
+  <link rel="stylesheet" href=/assets/css/styles.css>
+<link rel="stylesheet" href=/assets/css/highlightjs-copy.css>
 <title>[TLDR] Using Regex in Swift</title>
 <meta property="og:title" content="[TLDR] Using Regex in Swift" />
 <meta property="og:description" content="An in-depth look at the various different ways to define and use regular expressions in Swift" />
@@ -24,7 +25,11 @@
 </head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
+<script src=/assets/scripts/highlightjs-copy.js></script>
+<script>
+    hljs.addPlugin(new CopyButtonPlugin({ autohide: true }));
+    hljs.highlightAll();
+</script>
 <header>
   <div class="readingMargins">
     <a href=/index.html>Home</a>
@@ -52,7 +57,7 @@ DEBIT     03/05/2022    Beanie Babies Forever     $57.33
 </code></pre>
 <p>Use methods on the regex object to perform regex operations on strings.</p><pre><code class="language-swift">regex.enumerateMatches(
   in: input,
-  range: NSRangeFromString(input)
+  range: NSRange(location: 0, length: input.count)
 ) { result, flags, stopPointer in
   // Do something with result
 
@@ -98,9 +103,9 @@ let transactionTypes = allMatches.map(\.1)  // [&quot;CREDIT&quot;, &quot;CREDIT
 /#
 </code></pre>
 <p>For a regex with named capture groups, use the capture group name instead of the tuple indices.</p><pre><code class="language-swift">let match = input.firstMatch(of: regex)
+let day = match?.day      // &quot;02&quot;
 let month = match?.month  // &quot;03&quot;
 let year = match?.year    // &quot;2022&quot;
-let day = match?.day      // &quot;02&quot;
 </code></pre>
 <h2 id="regexbuilder">`RegexBuilder`</h2><p>Use the first party <a href="https://developer.apple.com/documentation/regexbuilder"><code>RegexBuilder</code></a> framework for an even better regex crafting experience.</p><p>Define a regex pattern using result builders</p><pre><code class="language-swift">import RegexBuilder
 
@@ -208,9 +213,9 @@ let regex = Regex {
 </code></pre>
 <p>Access the captured contents by using the reference objects like keys to the <code>match</code> dictionary.</p><pre><code class="language-swift">let match = input.firstMatch(of: regex)
 let transactionType = match?[transactionTypeRef]  // &quot;CREDIT&quot;
-let year = match?[yearRef]                        // &quot;2022&quot;
 let day = match?[dayRef]                          // &quot;02&quot;
 let month = match?[monthRef]                      // &quot;03&quot;
+let year = match?[yearRef]                        // &quot;2022&quot;
 </code></pre>
 <p>The type of captured data above is <code>Substring?</code>. Use <code>TryCapture</code> blocks <code>Capture</code> to have those <code>Substring</code>s automatically transformed into custom data.</p><pre><code class="language-swift">enum TransactionType: String {
   case credit = &quot;CREDIT&quot;

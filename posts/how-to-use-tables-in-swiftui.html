@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-  <link rel="stylesheet" href=/assets/css/styles.css?v=1.0>
+  <link rel="stylesheet" href=/assets/css/styles.css>
+<link rel="stylesheet" href=/assets/css/highlightjs-copy.css>
 <title>How to use Tables in SwiftUI</title>
 <meta property="og:title" content="How to use Tables in SwiftUI" />
 <meta property="og:description" content="An in-depth look at how Tables are implemented in SwiftUI" />
@@ -25,7 +26,11 @@
 </head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
+<script src=/assets/scripts/highlightjs-copy.js></script>
+<script>
+    hljs.addPlugin(new CopyButtonPlugin({ autohide: true }));
+    hljs.highlightAll();
+</script>
 <header>
   <div class="readingMargins">
     <a href=/index.html>Home</a>
@@ -34,8 +39,8 @@
 </header>
 <article class="readingMargins">
 <div class="postNavigation">
-  <a href="/posts/using-regex-in-swift.html" class="previous">&lt; Previous</a>
-  <a href="/posts/from-c-to-swift-pt2.html" class="next">Next &gt;</a>
+  <a href="/posts/using-regex-in-swift.html" class="previous">&lt; Newer Post</a>
+  <a href="/posts/from-c-to-swift-pt2.html" class="next">Older Post &gt;</a>
 </div>
 <h1>How to use Tables in SwiftUI</h1>
 <div class="articleTitleDecorators">
@@ -200,8 +205,8 @@ var body: some View {
 TableColumn(&quot;Color&quot;, sortUsing: colorComparator) { ... }
 </code></pre>
 <p>Let&apos;s walk through this. First we define a <code>KeyPathComparator</code> that points to the <code>favoriteColor</code> property, on <code>User</code>. By default, with no other arguments, the <code>KeyPathComparator</code> will simply compare by that property using the <code>Comparable</code> implementation supplied by the type of the property. Since the <code>Color</code> type is not <code>Comparable</code> this would not work. There is a work around.</p><p>For types that do not conform to <code>Comparable</code> we must tell the <code>KeyPathComparator</code> how items should be compared. This is done by passing a custom comparator to the <code>comparator</code> argument of the <code>KeyPathComparator</code> initializer.</p><p>With the <code>KeyPathComparator</code> created and assigned to<code>colorComparator</code> we pass that to the column&apos;s <code>sortUsing</code> argument. I&apos;ve split this into two declaration for readability, but you can inline it in your own code if you wish.</p><p>You might be asking yourself, how does the table tell us how we should sort the data? Notice that <code>sortOrder</code> is a bindable property. This means that the table modifies the sort order array, whenever the user changes the sorting in the table. Let&apos;s take another look at the bigger code sample above.</p><p>Initially the sort order contains two comparators, first sorting by the first name, second by the last name. No direction is provided, so the default of <code>forward</code> (ascending) is used. Now let&apos;s assume that the user clicks on the <em>Age</em> column. This makes the table sorted by the <code>age</code> property, in ascending (<code>.forward</code>) order. What the table does is it looks through the current sort order to find an existing comparator for <code>age</code>. Not finding one it creates a new comparator, starting with the <code>.forward</code> (ascending) direction and inserts that to the beginning of the <code>sortOrder</code> array.</p><p>This works in tandem with how <code>Array</code>&apos;s <code>sorted(using:)</code> function works. Since that will always look at the first comparator in the list and sort by that. If it so happens that a set of items are equivalent according to the first comparator, it will ask the second comparator to compare. If they are equivalent according to the second as well, it will ask the third, and so on. This is also a neat and straightforward way of achieving &quot;tiered&quot; sorting, even outside of SwiftUI tables. However this behavior is assumed to be supported in tables on macOS, so if you are rolling your own sorting algorithm, make sure you take the &quot;tiering&quot; into account.</p><p>Now let&apos;s assume that having sorted the table by age, the user clicks on the <em>First Name</em> column again. This time the table will go through the sort order again. However since there is an existing comparator for <code>firstName</code> it will simply move it to the top. This causes the array to re-sort itself according to the new sorting rules. If the user were to click on the <em>First Name</em> column one more time, the table would replace the <code>firstName</code> comparator with the same one, except sorting in the other direction, causing the table to reverse.</p><p>Here&apos;s the table sorting in action.</p><p><img src="/assets/img/2023-09-07-how-to-use-tables-in-swiftui/table_sorting_demo.gif" /></p><h2 id="conclusion">Conclusion</h2><p>There&apos;s still more to tables such as styling and column composition that I&apos;m hoping to cover later. Hopefully this article shed some light on how tables work in SwiftUI and how best to use them. I remember when I first started using them I found it very daunting to figure out how all of these features worked. Something like this article is something that I really could&apos;ve used back then.</p><div class="postNavigation">
-  <a href="/posts/using-regex-in-swift.html" class="previous">&lt; Previous</a>
-  <a href="/posts/from-c-to-swift-pt2.html" class="next">Next &gt;</a>
+  <a href="/posts/using-regex-in-swift.html" class="previous">&lt; Newer Post</a>
+  <a href="/posts/from-c-to-swift-pt2.html" class="next">Older Post &gt;</a>
 </div>
 </article>
 <footer>

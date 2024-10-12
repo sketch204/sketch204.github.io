@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-  <link rel="stylesheet" href=/assets/css/styles.css?v=1.0>
+  <link rel="stylesheet" href=/assets/css/styles.css>
+<link rel="stylesheet" href=/assets/css/highlightjs-copy.css>
 <title>Using Task Local Value in Swift</title>
 <meta property="og:title" content="Using Task Local Value in Swift" />
 <meta property="og:description" content="A quick look at how Task Local Values work in Swift" />
@@ -25,7 +26,11 @@
 </head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
+<script src=/assets/scripts/highlightjs-copy.js></script>
+<script>
+    hljs.addPlugin(new CopyButtonPlugin({ autohide: true }));
+    hljs.highlightAll();
+</script>
 <header>
   <div class="readingMargins">
     <a href=/index.html>Home</a>
@@ -34,7 +39,7 @@
 </header>
 <article class="readingMargins">
 <div class="postNavigation">
-  <a href="/posts/using-regex-in-swift.html" class="next">Next &gt;</a>
+  <a href="/posts/using-regex-in-swift.html" class="next">Older Post &gt;</a>
 </div>
 <h1>Using Task Local Value in Swift</h1>
 <div class="articleTitleDecorators">
@@ -87,7 +92,7 @@ final class Model {
 <p>With this change, each new execution of our task should print a trace with a unique trace ID. You can imagine that this can be quite helpful when executing this method several times, sometimes concurrently, especially in a server environment.</p><aside data-kind="info">
 <h1>Info</h1><p>When working with property wrappers, the value that is returned with using the <code>$</code> prefix is called the <em>projected value</em>. Conversely when we access the property without the prefix, what&apos;s returned is called the <em>wrapped value</em>.</p></aside>
 <div class="postNavigation">
-  <a href="/posts/using-regex-in-swift.html" class="next">Next &gt;</a>
+  <a href="/posts/using-regex-in-swift.html" class="next">Older Post &gt;</a>
 </div>
 </article>
 <footer>

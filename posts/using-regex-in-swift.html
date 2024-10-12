@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-  <link rel="stylesheet" href=/assets/css/styles.css?v=1.0>
+  <link rel="stylesheet" href=/assets/css/styles.css>
+<link rel="stylesheet" href=/assets/css/highlightjs-copy.css>
 <title>Using Regex in Swift</title>
 <meta property="og:title" content="Using Regex in Swift" />
 <meta property="og:description" content="An in-depth look at the various different ways to define and use regular expressions in Swift" />
@@ -25,7 +26,11 @@
 </head>
 <body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
+<script src=/assets/scripts/highlightjs-copy.js></script>
+<script>
+    hljs.addPlugin(new CopyButtonPlugin({ autohide: true }));
+    hljs.highlightAll();
+</script>
 <header>
   <div class="readingMargins">
     <a href=/index.html>Home</a>
@@ -34,13 +39,13 @@
 </header>
 <article class="readingMargins">
 <div class="postNavigation">
-  <a href="/posts/using-task-local-value-in-swift.html" class="previous">&lt; Previous</a>
-  <a href="/posts/how-to-use-tables-in-swiftui.html" class="next">Next &gt;</a>
+  <a href="/posts/using-task-local-value-in-swift.html" class="previous">&lt; Newer Post</a>
+  <a href="/posts/how-to-use-tables-in-swiftui.html" class="next">Older Post &gt;</a>
 </div>
 <h1>Using Regex in Swift</h1>
 <div class="articleTitleDecorators">
 <div class="left">
-<p class="date">Written on December 2, 2023</p>
+<p class="date">Written on December 2, 2023, Updated on Oct 12, 2024</p>
 </div>
 <div class="right">
 <p class="tldr-prompt">Short on time? <a href="/tldr/using-regex-in-swift.html">View the TLDR version here</a></p>
@@ -63,6 +68,7 @@
 </ul></li>
 <li><a href="#conclusion">Conclusion</a><ul>
 <li><a href="#sources">Sources</a></li>
+<li><a href="#notes">Notes</a></li>
 </ul></li>
 </ul></nav>
 <p>In this article I will be walking you through the various different ways to define and use regular expressions in Swift.</p><p>Throughout this article I will be using the following string as the sample text we are trying to parse with Regex. It is an example of a basic CSV table that one might encounter in their day-to-day work. I stole this example text from <a href="https://github.com/apple/swift-evolution/blob/main/proposals/0350-regex-type-overview.md">here</a> because it&apos;s a very good example that shows the flexibility of Regex in Swift.</p><pre><code class="language-swift">let input = &quot;&quot;&quot;
@@ -78,7 +84,7 @@ DEBIT     03/05/2022    Beanie Babies Forever     $57.33
 </code></pre>
 <p>To actually use the regex on our string, we have to call methods on the <code>regex</code> object such as <code>firstMatch(in:options:range:)</code>, <code>matches(in:options:range:)</code> or <code>enumerateMatches(in:options:range:using:)</code>. For example</p><pre><code class="language-swift">regex.enumerateMatches(
   in: input,
-  range: NSRangeFromString(input)
+  range: NSRange(location: 0, length: input.count)
 ) { result, flags, stopPointer in
   // Do something with result
 
@@ -95,7 +101,7 @@ DEBIT     03/05/2022    Beanie Babies Forever     $57.33
 </code></pre>
 <p>This returns a <code>Regex.Match</code> object that we can use to query the output of our regex pattern. You can then use <code>match.output</code> to get the output of the regex.</p><p>So far this is not much different than what we had before. We still have to provide a string literal, and we still have to <code>try</code> the initializer, as it might fail if the regex is invalid. However this new API has some hidden improvements that we haven&apos;t made use of yet.</p><h3 id="output-types">Output types</h3><p><code>Regex</code> is generic over it&apos;s output type. What this means, is that when we define capture groups in our regex, we can actually specify them on the <code>Regex</code> as the output of the object. To do this, you provide an extra <code>as:</code> argument to the initializer, where you specify a tuple type of what you&apos;re expecting. Most of the time this will be a tuple of two or more <code>Substring</code>s.</p><pre><code class="language-swift">let regex = try Regex(#&quot;(CREDIT|DEBIT)\s+&quot;#, as: (Substring, Substring).self)
 </code></pre>
-<p>Notice that I specified a tuple of two <code>Substring</code>s even though I only have one capture group. That is because the first captured of the regex is always the whole string that was matched. Which is then followed by all of the explicit capture groups.</p><p>If I wanted to also capture the first number of the date in the following column, I would use a regex like this</p><pre><code class="language-swift">let regex = try Regex(#&quot;(CREDIT|DEBIT)\s+(\+d)&quot;#, as: (Substring, Substring, Substring).self)
+<p>Notice that I specified a tuple of two <code>Substring</code>s even though I only have one capture group. That is because the first captured of the regex is always the whole string that was matched. Which is then followed by all of the explicit capture groups.</p><p>If I wanted to also capture the first number of the date in the following column, I would use a regex like this</p><pre><code class="language-swift">let regex = try Regex(#&quot;(CREDIT|DEBIT)\s+(\d+)&quot;#, as: (Substring, Substring, Substring).self)
 </code></pre>
 <p>Do get that number out of the match, I would simply access the tuple element on the match object like so.</p><pre><code class="language-swift">let match = input.firstMatch(of: regex)
 let month = match?.2  // &quot;03&quot;
@@ -128,9 +134,9 @@ let month = match?.2  // &quot;03&quot;
 /#
 </code></pre>
 <p>Now, when we access the capture groups we can use the names we specify in the regex, rather than the number of their position.</p><pre><code class="language-swift">let match = input.firstMatch(of: regex)
+let day = match?.day      // &quot;02&quot;
 let month = match?.month  // &quot;03&quot;
-let year = match?.year    // &quot;02&quot;
-let day = match?.day      // &quot;2022&quot;
+let year = match?.year    // &quot;2022&quot;
 </code></pre>
 <p>This is definitely an improvement over what Foundation offered. But wait, there&apos;s more!</p><h2 id="regexbuilder">`RegexBuilder`</h2><p>Along with regex literals, the Swift team introduced the <a href="https://developer.apple.com/documentation/regexbuilder"><code>RegexBuilder</code></a> framework. This is a framework that let&apos;s us define regex patterns using Swift&apos;s result builder syntax, similar to how we define views in SwiftUI.</p><p>Let&apos;s define the same pattern we were working with, using <code>RegexBuilder</code> this time.</p><p>First we import the framework.</p><pre><code class="language-swift">import RegexBuilder
 </code></pre>
@@ -268,9 +274,9 @@ let regex = Regex {
 </code></pre>
 <p>Notice here that we specified a return type of <code>some RegexComponent</code> for the <code>digitCapture</code> function. This again is very similar to how SwiftUI works, where we specify a return type of <code>some View</code> for custom views. We could of course use a concrete <code>Regex</code> type, but then we would need to figure out a concrete return type from our builder expression anytime the pattern changes, and unfortunately it&apos;s not as simple as <code>Regex&lt;(Substring, Substring)&gt;</code>.</p><p>Notice also that we didn&apos;t need to wrap our digit capture pattern in a <code>Regex { ... }</code> block. That is because <code>Capture</code> along with most other Regex Builder blocks all conform to <code>RegexComponent</code>. This can save you some code when composing regex patterns together.</p><p>With this code in place, we should be able to read all the captured fields in the regex.</p><pre><code class="language-swift">let match = input.firstMatch(of: regex)
 let transactionType = match?[transactionTypeRef]  // &quot;CREDIT&quot;
-let year = match?[yearRef]                        // &quot;2022&quot;
 let day = match?[dayRef]                          // &quot;02&quot;
 let month = match?[monthRef]                      // &quot;03&quot;
+let year = match?[yearRef]                        // &quot;2022&quot;
 </code></pre>
 <h3 id="capturing-custom-types">Capturing Custom Types</h3><p>The last thing that I want to mention has to do with string parsing. We can use these regex patterns to fish out parts of strings, but this just gives us <code>Substring</code>s. There is a way to have the regex pattern transform those <code>Substring</code>s into custom data types for us. Let&apos;s look at how we can do that.</p><p>Let&apos;s assume that we have a custom <code>enum</code> to represent the different kinds of transactions that we can encounter.</p><pre><code class="language-swift">enum TransactionType: String {
   case credit = &quot;CREDIT&quot;
@@ -297,9 +303,12 @@ let month = match?[monthRef]                      // &quot;03&quot;
 <li><p><a href="https://developer.apple.com/documentation/swift/regex">Regex</a></p></li>
 <li><p><a href="https://developer.apple.com/documentation/regexbuilder">RegexBuilder</a></p></li>
 </ul>
+<h3 id="notes">Notes</h3><ul>
+<li><p>Shout out to <a href="https://github.com/ammojamo">James Watmuff</a> for pointing out a few mistakes within some of the code blocks.</p></li>
+</ul>
 <div class="postNavigation">
-  <a href="/posts/using-task-local-value-in-swift.html" class="previous">&lt; Previous</a>
-  <a href="/posts/how-to-use-tables-in-swiftui.html" class="next">Next &gt;</a>
+  <a href="/posts/using-task-local-value-in-swift.html" class="previous">&lt; Newer Post</a>
+  <a href="/posts/how-to-use-tables-in-swiftui.html" class="next">Older Post &gt;</a>
 </div>
 </article>
 <footer>
